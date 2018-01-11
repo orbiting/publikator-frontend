@@ -146,3 +146,24 @@ test('components.Tree.transformData', assert => {
 
   assert.end()
 })
+
+test('components.Tree.transformData.', assert => {
+  const realResponse = require('./testData.js').response
+
+  const {commits, links} = transformData(realResponse.data.repo)
+
+  // copied from ./index.js: `this.state.links.forEach`
+  // - find proper way to test
+  links.forEach(({ sourceId, destinationId, ref }) => {
+    let source = commits.filter(o => {
+      return o.id === sourceId
+    })[0]
+    assert.ok(source, `has source data ${sourceId}`)
+    let destination = commits.filter(o => {
+      return o.id === destinationId
+    })[0]
+    assert.ok(destination, `has target ${destinationId}`)
+  })
+
+  assert.end()
+})
