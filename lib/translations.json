@@ -745,6 +745,10 @@
     {
       "key": "ui/sidebar/info/numCharacters",
       "value": "Anzahl Zeichen"
+    },
+    {
+      "key": "styleguide/documentcloud/showDocument",
+      "value": "Dokument anzeigen"
     }
   ]
 }

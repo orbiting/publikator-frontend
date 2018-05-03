@@ -70,6 +70,26 @@ query getTwitterEmbed($id: ID!, $embedType: EmbedType!) {
 }
 `
 
+const documentCloudQuery = gql`
+query getDocumentCloudEmbed($id: ID!, $embedType: EmbedType!) {
+  embed(id: $id, embedType: $embedType) {
+    id
+    __typename
+    ... on DocumentCloudEmbed {
+      id,
+      createdAt,
+      updatedAt,
+      retrievedAt
+      contributorUrl,
+      contributorName,
+      thumbnail,
+      title,
+      url
+    }
+  }
+}
+`
+
 const fromMdast = ({ TYPE }) => (
   node
 ) => {
@@ -197,6 +217,9 @@ const YOUTUBE_REGEX = /^.*(?:(?:youtu\.be\/|v\/|vi\/|u\/\w\/|embed\/)|(?:(?:watc
 // One capturing group at match[1] that catches the video id
 const VIMEO_REGEX = /^(?:http|https)?:\/\/(?:www\.)?vimeo.com\/(?:channels\/(?:\w+\/)?|groups\/(?:[^/]*)\/videos\/|)(\d+)(?:|\/\?)$/
 
+// One capturing group at match[1] that catches the video id
+const DOCUMENTCLOUD_REGEX = /^(?:http|https)?:\/\/(?:www\.)?documentcloud.org\/documents\/([0-9]*)-.*\.html$/
+
 const matchVideoUrl = url =>
   YOUTUBE_REGEX.test(url) || VIMEO_REGEX.test(url)
 
@@ -229,6 +252,19 @@ const getTwitterQueryParams = url => {
   throw new Error(`No valid twitter embed URL: ${url}`)
 }
 
+const matchDocumentCloudUrl = url =>
+  DOCUMENTCLOUD_REGEX.test(url)
+
+const getDocumentCloudQueryParams = url => {
+  if (DOCUMENTCLOUD_REGEX.test(url)) {
+    return {
+      embedType: 'DocumentCloudEmbed',
+      id: DOCUMENTCLOUD_REGEX.exec(url)[1]
+    }
+  }
+  throw new Error(`No valid documentcloud embed URL: ${url}`)
+}
+
 export const createEmbedVideoModule = moduleFactory({
   matchUrl: matchVideoUrl,
   getQueryParams: getVideoQueryParams,
@@ -239,4 +275,10 @@ export const createEmbedTwitterModule = moduleFactory({
   matchUrl: matchTwitterUrl,
   getQueryParams: getTwitterQueryParams,
   query: twitterQuery
+})
+
+export const createEmbedDocumentCloudModule = moduleFactory({
+  matchUrl: matchDocumentCloudUrl,
+  getQueryParams: getDocumentCloudQueryParams,
+  query: documentCloudQuery
 })

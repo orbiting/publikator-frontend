@@ -25,7 +25,8 @@ import createTeaserModule from './modules/teaser'
 import createTeaserGroupModule from './modules/teasergroup'
 import {
   createEmbedVideoModule,
-  createEmbedTwitterModule
+  createEmbedTwitterModule,
+  createEmbedDocumentCloudModule
 } from './modules/embed'
 import createBlockQuoteModule from './modules/blockquote'
 import createSpecialModule from './modules/special'
@@ -46,6 +47,7 @@ import createChartCanvasModule from './modules/chart/canvas'
 const moduleCreators = {
   embedVideo: createEmbedVideoModule,
   embedTwitter: createEmbedTwitterModule,
+  embedDocumentCloud: createEmbedDocumentCloudModule,
   document: createDocumentModule,
   documentPlain: createDocumentPlainModule,
   cover: createCoverModule,
