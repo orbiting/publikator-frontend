@@ -5,7 +5,6 @@ import { Router } from '../../lib/routes'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Value, resetKeyGenerator } from 'slate'
-import debounce from 'lodash.debounce'
 
 import withData from '../../lib/apollo/withData'
 import withAuthorization from '../../components/Auth/withAuthorization'
@@ -33,7 +32,6 @@ import withT from '../../lib/withT'
 import withMe from '../../lib/withMe'
 
 import { errorToString } from '../../lib/utils/errors'
-import initLocalStore from '../../lib/utils/localStorage'
 
 import { getSchema } from '../../components/Templates'
 import { API_UNCOMMITTED_CHANGES_URL } from '../../lib/settings'
@@ -125,7 +123,6 @@ export const getRepoHistory = gql`
 `
 
 const debug = createDebug('publikator:pages:edit')
-const TEST = process.env.NODE_ENV === 'test'
 
 const addWarning = message => state => ({
   showSidebar: true,
@@ -142,6 +139,12 @@ const rmWarning = message => state => ({
     .filter(warning => warning !== message)
 })
 
+const hasChanges = state => (
+  state.editorState &&
+  state.initialEditorState &&
+  state.editorState.document !== state.initialEditorState.document
+)
+
 export class EditorPage extends Component {
   constructor (...args) {
     super(...args)
@@ -154,10 +157,8 @@ export class EditorPage extends Component {
     }
     this.changeHandler = this.changeHandler.bind(this)
     this.commitHandler = this.commitHandler.bind(this)
-    this.documentChangeHandler = debounce(
-      this.documentChangeHandler.bind(this),
-      500
-    )
+    this.documentChangeHandler =
+      this.documentChangeHandler.bind(this)
     this.uiChangeHandler = change => {
       this.changeHandler(change)
       this.documentChangeHandler(null, change)
@@ -170,10 +171,10 @@ export class EditorPage extends Component {
       }
       this.setState({
         didUnlock: false,
-        acknowledgedUsers: []
+        hasUncommittedChanges: false,
+        acknowledgedUsers: [],
+        editorState: this.state.initialEditorState
       })
-      this.store.clear()
-      this.loadState(this.props)
     }
 
     this.editorRef = ref => {
@@ -254,6 +255,10 @@ export class EditorPage extends Component {
         hasUncommittedChanges,
         didUnlock
       } = this.state
+      if (hasChanges(this.state)) {
+        event.returnValue = 'foo'
+      }
+
       if (!hasUncommittedChanges && didUnlock) {
         this.notifyChanges('delete')
         if (event) {
@@ -291,7 +296,7 @@ export class EditorPage extends Component {
 
   beginChanges () {
     this.setState({
-      hasUncommittedChanges: true,
+      hasUncommittedChanges: hasChanges(this.state),
       beginChanges: new Date(),
       readOnly: false
     })
@@ -301,7 +306,8 @@ export class EditorPage extends Component {
 
   concludeChanges (notify = true) {
     this.setState({
-      hasUncommittedChanges: false
+      hasUncommittedChanges: false,
+      initialEditorState: this.state.editorState
     })
 
     if (notify) {
@@ -402,15 +408,15 @@ export class EditorPage extends Component {
       url
     } = props
 
-    if (!process.browser && !TEST) {
-      // running without local storage doesn't make sense
-      // - we always want to render the correct version
-      // - flash of an outdated version could confuse an user
-      // - if js loading fails or is disabled no editing should happen
-      //   - server rendered native content editable edits are not recoverable
-      console.warn(`loadState should only run in the browser`)
-      return
-    }
+    // if (!process.browser && !TEST) {
+    //   // running without local storage doesn't make sense
+    //   // - we always want to render the correct version
+    //   // - flash of an outdated version could confuse an user
+    //   // - if js loading fails or is disabled no editing should happen
+    //   //   - server rendered native content editable edits are not recoverable
+    //   console.warn(`loadState should only run in the browser`)
+    //   return
+    // }
     if (loading || error) {
       debug('loadState', 'isLoading', loading, 'hasError', error)
       return
@@ -483,43 +489,44 @@ export class EditorPage extends Component {
 
       debug('loadState', 'edit document', committedEditorState)
     }
-    const committedRawDocString = JSON.stringify(
-      committedEditorState.document.toJSON()
-    )
+    // const committedRawDocString = JSON.stringify(
+    //   committedEditorState.document.toJSON()
+    // )
 
-    const storeKey = [repoId, commitId].join('/')
-    if (!this.store || this.store.key !== storeKey) {
-      this.store = initLocalStore(storeKey)
-      this.checkLocalStorageSupport()
-    }
+    // const storeKey = [repoId, commitId].join('/')
+    // if (!this.store || this.store.key !== storeKey) {
+    //   this.store = initLocalStore(storeKey)
+    //   this.checkLocalStorageSupport()
+    // }
 
-    let localState = this.store.get('editorState')
-    let localEditorState
-    if (localState) {
-      try {
-        if (typeof localState.kind !== 'undefined') {
-          localEditorState = Value.fromJSON(localState)
-          debug('loadState', 'using local slate document', localEditorState)
-        } else {
-          localEditorState = this.editor.serializer.deserialize(localState)
-          debug('loadState', 'using local mdast document', localEditorState)
-        }
-      } catch (e) {
-        console.error(e)
-        this.setState(addWarning(t('commit/warn/localParseError')))
-      }
-    }
+    // let localState = this.store.get('editorState')
+    // let localEditorState
+    // if (localState) {
+    //   try {
+    //     if (typeof localState.kind !== 'undefined') {
+    //       localEditorState = Value.fromJSON(localState)
+    //       debug('loadState', 'using local slate document', localEditorState)
+    //     } else {
+    //       localEditorState = this.editor.serializer.deserialize(localState)
+    //       debug('loadState', 'using local mdast document', localEditorState)
+    //     }
+    //   } catch (e) {
+    //     console.error(e)
+    //     this.setState(addWarning(t('commit/warn/localParseError')))
+    //   }
+    // }
 
     const nextState = {
-      committedRawDocString
+      initialEditorState: Value.fromJSON(committedEditorState)
+      // committedRawDocString
     }
-    if (localEditorState) {
-      this.beginChanges()
-      nextState.editorState = localEditorState
-    } else {
-      this.concludeChanges()
-      nextState.editorState = committedEditorState
-    }
+    // if (localEditorState) {
+    //   this.beginChanges()
+    //   nextState.editorState = localEditorState
+    // } else {
+    this.concludeChanges()
+    nextState.editorState = committedEditorState
+    // }
     this.setState(nextState, () => {
       this.updateActiveUsers(this.props)
     })
@@ -530,31 +537,16 @@ export class EditorPage extends Component {
   }
 
   documentChangeHandler (_, {value: newEditorState}) {
-    const { committedRawDocString, hasUncommittedChanges } = this.state
-
-    if (
-      JSON.stringify(newEditorState.document.toJSON()) !== committedRawDocString
-    ) {
-      this.store.set('editorState', this.editor.serializer.serialize(newEditorState))
-      debug('loadState', 'documentChangeHandler', 'edited document', newEditorState)
-      if (process.env.NODE_ENV !== 'production') {
-        debug(
-          'loadState', 'documentChangeHandler', 'diff',
-          require('diff').createPatch(
-            'string',
-            JSON.stringify(JSON.parse(committedRawDocString), null, 2),
-            JSON.stringify(newEditorState.document.toJSON(), null, 2)
-          )
-        )
-      }
-
+    const { initialEditorState } = this.state
+    const changed = newEditorState.document !== initialEditorState.document
+    if (changed) {
       const msSinceBegin = (
         this.state.beginChanges &&
         (new Date()).getTime() - this.state.beginChanges.getTime()
       )
       const { uncommittedChanges, me } = this.props
       if (
-        !hasUncommittedChanges ||
+        !changed ||
         msSinceBegin > 1000 * 60 * 5 ||
         (
           !uncommittedChanges.users.find(user => user.id === me.id) &&
@@ -565,8 +557,7 @@ export class EditorPage extends Component {
       }
     } else {
       debug('loadState', 'documentChangeHandler', 'committed document')
-      if (hasUncommittedChanges) {
-        this.store.clear()
+      if (changed) {
         this.concludeChanges(!this.state.didUnlock)
       }
     }
@@ -599,7 +590,6 @@ export class EditorPage extends Component {
       }
     })
       .then(({data}) => {
-        this.store.clear()
         this.concludeChanges()
 
         this.setState({
@@ -680,7 +670,7 @@ export class EditorPage extends Component {
               isNew={isNew}
               readOnly={!showLoading && readOnly}
               didUnlock={didUnlock}
-              hasUncommittedChanges={!showLoading && hasUncommittedChanges}
+              hasUncommittedChanges={!showLoading && hasChanges(this.state)}
               onUnlock={this.unlockHandler}
               onLock={this.lockHandler}
               onCommit={this.commitHandler}
