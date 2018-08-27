@@ -79,7 +79,6 @@
     "debug": "^2.6.9",
     "dotenv": "^4.0.0",
     "downshift": "^1.18.0",
-    "email-validator": "^1.1.1",
     "express": "^4.15.4",
     "express-basic-auth": "^1.1.1",
     "glamor": "^2.20.39",
@@ -115,6 +114,7 @@
     "slate-prop-types": "^0.4.16",
     "slate-react": "^0.10.23",
     "subscriptions-transport-ws": "^0.8.2",
-    "unified": "^6.1.5"
+    "unified": "^6.1.5",
+    "validator": "^10.7.0"
   }
 }
