@@ -5,7 +5,8 @@ import { Spinner } from '@project-r/styleguide'
 const Template = dynamic({
   modules: ({ name }) => {
     switch (name) {
-      case 'article':
+      default:
+        //case 'article':
         return {
           template: import('./Templates/article'),
           createEditorSchema: import('./Templates/article/schema'),
