@@ -2,6 +2,7 @@
 
 General:
 
+All dependecies updated as of 2018-09-17, with the exception of downshift.
 Slate and MDAST conversion is handled separately. All things serializer can be found in folders `lib/transform` and `lib/rules`. whereas all things editor are located in folders `components/Editor` and `components/Plugins` respectively. They are tied together by a template config (in `components/Templates/article`.
 
 ## Serialization
