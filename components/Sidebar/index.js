@@ -1,7 +1,13 @@
 import React, { Component } from 'react'
 import { css } from 'glamor'
-import { HEADER_HEIGHT, ZINDEX_SIDEBAR } from '../Frame/constants'
-import { colors, Label } from '@project-r/styleguide'
+import {
+  HEADER_HEIGHT,
+  ZINDEX_SIDEBAR,
+} from '../Frame/constants'
+import {
+  colors,
+  Label,
+} from '@project-r/styleguide'
 
 const SIDEBAR_WIDTH_SMALL = 270
 const SIDEBAR_WIDTH_LARGE = 340
@@ -14,14 +20,14 @@ const styles = {
     right: -SIDEBAR_WIDTH_SMALL,
     transition: 'right 0.2s ease',
     '&.open': {
-      right: 0
+      right: 0,
     },
     '@media only screen and (min-width: 1400px)': {
       width: SIDEBAR_WIDTH_LARGE,
       right: -SIDEBAR_WIDTH_LARGE,
       '&.open': {
-        right: 0
-      }
+        right: 0,
+      },
     },
     bottom: 0,
     overflow: 'auto',
@@ -30,7 +36,7 @@ const styles = {
     opacity: 1,
     zIndex: ZINDEX_SIDEBAR,
     // ensure 10px white space for <UIForm>s negative magins
-    padding: 10 + 1 * 2 // 1px border
+    padding: 10 + 1 * 2, // 1px border
   }),
   overlay: css({
     opacity: '0.5',
@@ -40,90 +46,107 @@ const styles = {
     top: 0,
     right: 0,
     bottom: 0,
-    left: 0
+    left: 0,
   }),
   tabButtonContainer: css({
     borderBottom: `1px solid ${colors.divider}`,
     paddingBottom: '10px',
-    marginBottom: '15px'
+    marginBottom: '15px',
   }),
   tabButton: css({
     display: 'inline-block',
     marginRight: '10px',
     cursor: 'pointer',
     '&.active': {
-      textDecoration: 'underline'
-    }
+      textDecoration: 'underline',
+    },
   }),
   warnings: css({
     padding: 10,
     backgroundColor: colors.error,
     color: '#fff',
-    marginBottom: 10
+    marginBottom: 10,
   }),
   warning: css({
-    marginBottom: 5
-  })
+    marginBottom: 5,
+  }),
 }
 
-export const TabButton = ({ active, tabId, onSelect, children }) => (
+export const TabButton = ({
+  active,
+  tabId,
+  onSelect,
+  children,
+}) => (
   <Label
     {...styles.tabButton}
     className={active ? 'active' : ''}
-    onMouseDown={e => { e.preventDefault(); !active && onSelect(tabId) }}
+    onMouseDown={e => {
+      e.preventDefault()
+      !active && onSelect(tabId)
+    }}
   >
     {children}
   </Label>
 )
 
-export const Tab = ({ active, children }) => {
-  return (
-    <div>
-      {children}
-    </div>
-  )
+export const Tab = ({ children }) => {
+  return <div>{children}</div>
 }
 
 export default class Sidebar extends Component {
-  constructor (props, ...args) {
+  constructor(props, ...args) {
     super(props, ...args)
     this.state = {
-      selectedTabId: props.selectedTabId || null
+      selectedTabId: props.selectedTabId || null,
     }
 
-    this.tabClickHandler = this.tabClickHandler.bind(this)
-    this.mouseDownHandler = this.mouseDownHandler.bind(this)
+    this.tabClickHandler = this.tabClickHandler.bind(
+      this
+    )
+    this.mouseDownHandler = this.mouseDownHandler.bind(
+      this
+    )
   }
 
-  tabClickHandler (id) {
+  tabClickHandler(id) {
     this.setState({
-      selectedTabId: id
+      selectedTabId: id,
     })
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     if (nextProps.selectedTabId) {
       this.setState({
-        selectedTabId: nextProps.selectedTabId
+        selectedTabId: nextProps.selectedTabId,
       })
     }
   }
 
-  mouseDownHandler (event) {
+  mouseDownHandler(event) {
     if (this.props.isDisabled) {
       event.stopPropagation()
       event.preventDefault()
     }
   }
 
-  render () {
-    const { children, isOpen, warnings, isDisabled } = this.props
+  render() {
+    const {
+      children,
+      isOpen,
+      warnings,
+      isDisabled,
+    } = this.props
     const { selectedTabId } = this.state
 
-    const cleanChildren = React.Children.toArray(children)
+    const cleanChildren = React.Children.toArray(
+      children
+    )
       .filter(Boolean)
       .filter(c => Boolean(c.props))
-    const tabProperties = cleanChildren.map(child => child.props)
+    const tabProperties = cleanChildren.map(
+      child => child.props
+    )
 
     const tabButtons = tabProperties.map(
       ({ tabId, label }) => (
@@ -141,22 +164,31 @@ export default class Sidebar extends Component {
     const activeTab = cleanChildren
       .filter(Boolean)
       .find(
-        child => child.props.tabId === selectedTabId
+        child =>
+          child.props.tabId === selectedTabId
       )
 
     return (
-      <div {...styles.container} className={(isOpen && 'open') || ''}>
-        {
-          isDisabled &&
-          <div {...styles.overlay} onMouseDown={e => e.preventDefault()} />
-        }
-        {warnings.length > 0 && <div {...styles.warnings}>
-          {warnings.map((message, i) => (
-            <div key={i} {...styles.warning}>
-              {message}
+      <div
+        {...styles.container}
+        className={(isOpen && 'open') || ''}
+      >
+        {isDisabled && (
+          <div
+            {...styles.overlay}
+            onMouseDown={e => e.preventDefault()}
+          />
+        )}
+        {warnings &&
+          warnings.length > 0 && (
+            <div {...styles.warnings}>
+              {warnings.map((message, i) => (
+                <div key={i} {...styles.warning}>
+                  {message}
+                </div>
+              ))}
             </div>
-          ))}
-        </div>}
+          )}
         <div {...styles.tabButtonContainer}>
           {tabButtons}
         </div>
