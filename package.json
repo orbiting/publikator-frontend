@@ -6,7 +6,11 @@
   "scripts": {
     "dev": "nodemon --watch server --watch app --watch lib/routes.js server/index.js",
     "start": "node server/index.js",
-    "build": "next build"
+    "build": "next build",
+    "heroku-postbuild": "npm run build",
+    "cloc": "find . -name '*.js' -not -path \"./node_modules*\" -not -path \"./.next*\" | xargs wc -l",
+    "translations": "gsheets --key=1qPubCKz2YzbcFkRfF0MrgRqD0KLsgRPxoZfG5G3tHOA --title=live --pretty --out lib/translations.json",
+    "preinstall": "if [[ -z \"${TRAVIS}\" ]]; then rm -rf .next && rm -rf node_modules/glamor && rm -rf node_modules/@project-r/styleguide; fi"
   },
   "dependencies": {
     "@orbiting/remark-preset": "^1.2.3",
