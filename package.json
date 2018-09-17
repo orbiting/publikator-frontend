@@ -1,17 +1,30 @@
 {
   "name": "publikator-frontend",
   "version": "1.0.0",
-  "main": "index.js",
-  "license": "MIT",
+  "engines": {
+    "node": "10.4.1"
+  },
+  "description": "",
+  "main": "server/index.js",
   "scripts": {
     "dev": "nodemon --watch server --watch app --watch lib/routes.js server/index.js",
     "start": "node server/index.js",
     "build": "next build",
     "heroku-postbuild": "npm run build",
-    "cloc": "find . -name '*.js' -not -path \"./node_modules*\" -not -path \"./.next*\" | xargs wc -l",
     "translations": "gsheets --key=1qPubCKz2YzbcFkRfF0MrgRqD0KLsgRPxoZfG5G3tHOA --title=live --pretty --out lib/translations.json",
-    "preinstall": "if [[ -z \"${TRAVIS}\" ]]; then rm -rf .next && rm -rf node_modules/glamor && rm -rf node_modules/@project-r/styleguide; fi"
+    "preinstall": "if [[ -z \"${TRAVIS}\" ]]; then rm -rf .next && rm -rf node_modules/glamor && rm -rf node_modules/@project-r/styleguide; fi",
+    "link:sg": "rm -rf .next && npm link @project-r/styleguide && rm -rf node_modules/glamor && ln -s @project-r/styleguide/node_modules/glamor node_modules/glamor && echo '\n⚠️  Make sure to restart the next.js server. To unlink simply run npm install.\n'"
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/orbiting/publikator-frontend.git"
+  },
+  "author": "",
+  "license": "BSD-3-Clause",
+  "bugs": {
+    "url": "https://github.com/orbiting/publikator-frontend/issues"
+  },
+  "homepage": "https://github.com/orbiting/publikator-frontend#readme",
   "dependencies": {
     "@orbiting/remark-preset": "^1.2.3",
     "@project-r/styleguide": "^5.94.0",
