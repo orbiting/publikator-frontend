@@ -59,10 +59,19 @@ const transformer = rootRule(n => {
 })
 ```
 
+There is also a normalization API in `lib/transform/normalize`, which I will explain in a upcoming update.
+
 ## Editor UI
 
 - We render UI elements within the Slate render cycle, in the `renderNode`-methods of a given plugin.
   They will not necessarily get displayed as DOM children of the slate content, and we do that by using React Portals.
 - We don't have plugin factories, only static, specific implementations, therefore interdependencies are handled by simple imports rather than injected behaviour.
-- The styleguide schema is _not_ parsed for serializing rules, but for mere components. Schema rules will get persisted to a simple map, with their unique type as key.
+- As long as we don't have an agreement on how and where the single source of truth for parsing and, more importantly, normalizing a Markdown document, the styleguide schema is not parsed for serializing rules, but for mere components. Schema rules will get persisted to a simple map, with their unique type as key.
 - I used redux to write injectable state behaviour (`components/Editor/apps`) because reading from a controlled global state is something we desperately need (think of locking a document and all its implications). With redux, we can write UI's that are not bound by the state model and how props should get passed around. I don't fancy redux in particular, but went for it because it's a well-established library with quite good tooling around it.
+
+## Roadmap
+
+- Get rid of ramda in Editor. That was a serious mistake and adds to complexity with no real advantage. This should reduce the API surface of the Editor further.
+- Documentation
+- Refactor `pages/repo/edit` into smaller chunks. Use other local storage than localStorage (e.g. IndexedDB).
+- Port all modules
