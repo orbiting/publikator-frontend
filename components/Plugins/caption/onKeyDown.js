@@ -1,15 +1,3 @@
-import {
-  compose,
-  equals,
-  complement,
-  converge,
-  both,
-  ifElse,
-  either,
-  always,
-  allPass,
-} from 'ramda'
-
 import { Block } from 'slate'
 
 import {
@@ -20,230 +8,205 @@ import {
   removeBlock,
 } from '../../Editor/lib/changes'
 
-import {
-  isBlock,
-  isExpanded,
-  notIsMixed,
-  isMixed,
-  hasEdgeInSelection,
-  getChange,
-  isCollapsed,
-  getEndBlock,
-  getNextBlockOf,
-  isCollapsedAtStart,
-  isCollapsedAtEnd,
-  getNumNodes,
-  getParentOf,
-  getStartBlock,
-  hasEmptyText,
-  getPreviousBlockOf,
-  eventHandler,
-  isEnter,
-  isDelete,
-  isBackspace,
-} from '../../Editor/lib'
+import { isBlock } from '../../Editor/lib'
 
-const onEnter = compose(
-  ifElse(
-    both(
-      isExpanded,
-      hasEdgeInSelection([
-        isBlock('captionText'),
-        isBlock('captionByline'),
-      ])
-    ),
-    compose(
-      change => change.moveToStart(),
-      getChange
+const onEnter = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+  let c
+
+  if (
+    selection.isExpanded &&
+    (isBlock('captionText', value.startBlock) ||
+      isBlock(
+        'captionByline',
+        value.startBlock
+      ) ||
+      isBlock('captionText', value.endBlock) ||
+      isBlock('captionByline', value.endBlock))
+  ) {
+    return change.moveToStart()
+  }
+
+  if (selection.isCollapsed) {
+    if (
+      isBlock('captionText', value.startBlock)
+    ) {
+      if (
+        isBlock(
+          'captionByline',
+          document.getNextBlock(
+            value.startBlock.key
+          )
+        )
+      ) {
+        return focusNext(change)
+      } else {
+        c = insertBlockAfter(
+          change,
+          Block.create({
+            type: 'captionByline',
+          }),
+          value.startBlock
+        )
+        return focusNext(c)
+      }
+    }
+    if (
+      isBlock('captionByline', value.startBlock)
+    ) {
+      if (
+        selection.start.isAtStartOfNode(
+          value.startBlock
+        ) &&
+        !isBlock(
+          'captionText',
+          document.getPreviousBlock(
+            value.startBlock.key
+          )
+        )
+      ) {
+        c = insertBlockBefore(
+          change,
+          Block.create({
+            type: 'captionText',
+          }),
+          value.startBlock
+        )
+        return focusPrevious(c)
+      }
+      return focusNext(change)
+    }
+  }
+}
+
+export const onDeleteOrBackspace = (
+  _,
+  change
+) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+  let n
+
+  if (
+    value.startBlock === value.endBlock &&
+    selection.isExpanded
+  ) {
+    return
+  }
+
+  if (
+    selection.isExpanded &&
+    (isBlock('captionText', value.startBlock) ||
+      isBlock(
+        'captionByline',
+        value.startBlock
+      ) ||
+      isBlock('captionText', value.endBlock) ||
+      isBlock('captionByline', value.endBlock))
+  ) {
+    return change.moveToStart()
+  }
+
+  n = document.getParent(value.startBlock.key)
+  if (
+    isBlock('caption', n) &&
+    n.text.trim() === '' &&
+    n.nodes.size === 1
+  ) {
+    return removeBlock(change, n)
+  }
+}
+
+export const onBackspace = (_, change) => {
+  let handled = onDeleteOrBackspace(_, change)
+  if (handled) {
+    return handled
+  }
+
+  const {
+    value,
+    value: { selection, document },
+  } = change
+  let n
+  let c
+
+  if (
+    selection.start.isAtStartOfNode(
+      value.startBlock
     )
-  ),
-  ifElse(
-    isCollapsed,
-    compose(
-      ifElse(
-        compose(
-          isBlock('captionText'),
-          getStartBlock
-        ),
-        ifElse(
-          compose(
-            isBlock('captionByline'),
-            getNextBlockOf(getEndBlock)
-          ),
-          compose(
-            focusNext,
-            getChange
-          ),
-          compose(
-            focusNext,
-            converge(insertBlockAfter, [
-              getChange,
-              () =>
-                Block.create({
-                  type: 'captionByline',
-                }),
-              getEndBlock,
-            ])
-          )
-        )
-      ),
-      ifElse(
-        compose(
-          isBlock('captionByline'),
-          getStartBlock
-        ),
-        ifElse(
-          both(
-            isCollapsedAtStart,
-            compose(
-              complement(isBlock('captionText')),
-              getPreviousBlockOf(getEndBlock)
-            )
-          ),
-          compose(
-            focusPrevious,
-            converge(insertBlockBefore, [
-              getChange,
-              () =>
-                Block.create({
-                  type: 'captionText',
-                }),
-              getStartBlock,
-            ])
-          ),
-          compose(
-            focusNext,
-            getChange
-          )
-        )
-      )
-    )(always(undefined))
-  )
-)(always(undefined))
+  ) {
+    n = document.getParent(value.startBlock.key)
+    if (
+      isBlock('caption', n) &&
+      n.nodes.size === 1
+    ) {
+      return focusPrevious(change)
+    }
+    if (
+      isBlock('caption', n) &&
+      n.nodes.size === 1
+    ) {
+      return focusPrevious(change)
+    }
 
-export const onDeleteOrBackspace = compose(
-  ifElse(
-    both(notIsMixed, isExpanded),
-    always(undefined)
-  ),
-  ifElse(
-    both(
-      isMixed,
-      hasEdgeInSelection([
-        isBlock('captionText'),
-        isBlock('captionByline'),
-      ])
-    ),
-    compose(
-      change => change.moveToStart(),
-      getChange
+    if (
+      isBlock('captionText', value.startBlock) &&
+      value.startBlock.text.trim() === ''
+    ) {
+      c = removeBlock(change, value.startBlock)
+      return focusNext(c)
+    }
+
+    n = document.getPreviousBlock(
+      value.startBlock.key
     )
-  ),
-  ifElse(
-    compose(
-      allPass([
-        hasEmptyText,
-        isBlock('caption'),
-        compose(
-          equals(1),
-          getNumNodes
-        ),
-      ]),
-      getParentOf(getStartBlock)
-    ),
-    converge(removeBlock, [
-      getChange,
-      getParentOf(getStartBlock),
-    ])
-  )
-)
+    if (
+      (isBlock('captionByline', n) ||
+        isBlock('captionText', n)) &&
+      !isBlock('captionByline', value.startBlock)
+    ) {
+      return focusPrevious(change)
+    }
+  }
+}
 
-export const onBackspace = compose(
-  onDeleteOrBackspace,
-  ifElse(
-    isCollapsedAtStart,
-    compose(
-      ifElse(
-        compose(
-          both(
-            isBlock('caption'),
-            compose(
-              equals(1),
-              getNumNodes
-            )
-          ),
-          getParentOf(getStartBlock)
-        ),
-        compose(
-          focusPrevious,
-          getChange
-        )
-      ),
-      ifElse(
-        compose(
-          both(
-            isBlock('captionText'),
-            hasEmptyText
-          ),
-          getStartBlock
-        ),
-        compose(
-          focusNext,
-          converge(removeBlock, [
-            getChange,
-            getStartBlock,
-          ])
-        )
-      ),
-      ifElse(
-        both(
-          compose(
-            either(
-              isBlock('captionByline'),
-              isBlock('captionText')
-            ),
-            getPreviousBlockOf(getStartBlock)
-          ),
-          compose(
-            complement(isBlock('captionByline')),
-            getStartBlock
-          )
-        ),
-        compose(
-          focusPrevious,
-          getChange
-        )
-      )
-    )(always(undefined))
-  )
-)(always(undefined))
+export const onDelete = (_, change) => {
+  let handled = onDeleteOrBackspace(_, change)
+  if (handled) {
+    return handled
+  }
 
-export const onDelete = compose(
-  // onDeleteOrBackspace,
-  ifElse(
-    allPass([
-      isCollapsedAtEnd,
+  const {
+    value,
+    value: { selection, document },
+  } = change
 
-      compose(
-        either(
-          isBlock('captionByline'),
-          isBlock('captionText')
-        ),
-        getEndBlock
-      ),
-      compose(
-        complement(isBlock('captionByline')),
-        getNextBlockOf(getEndBlock)
-      ),
-    ]),
-    getChange
-  )
-)(always(undefined))
+  if (
+    selection.end.isAtEndOfNode(value.endBlock) &&
+    (isBlock('captionByline', value.endBlock) ||
+      isBlock('captionText', value.endBlock)) &&
+    !isBlock(
+      'captionByline',
+      document.getNextBlock(value.endBlock.key)
+    )
+  ) {
+    return change
+  }
+}
 
-export default eventHandler(
-  compose(
-    ifElse(isEnter, onEnter),
-    ifElse(isBackspace, onBackspace),
-    ifElse(isDelete, onDelete)
-  )(always(undefined))
-)
+export default (event, change) => {
+  if (event.key === 'Enter') {
+    return onEnter(event, change)
+  }
+  if (event.key === 'Backspace') {
+    return onBackspace(event, change)
+  }
+  if (event.key === 'Delete') {
+    return onDelete(event, change)
+  }
+}

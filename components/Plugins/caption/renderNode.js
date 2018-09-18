@@ -1,25 +1,21 @@
 import React, { Fragment } from 'react'
+
 import { SchemaComponent } from '../../Editor/components/Schema'
-
-import { compose, always, ifElse } from 'ramda'
-
-import {
-  safeProp,
-  isBlock,
-} from '../../Editor/lib'
+import { isBlock } from '../../Editor/lib'
 
 import {
   CaptionTextUI,
   CaptionBylineUI,
 } from './ui'
 
-export default compose(
-  ifElse(
-    compose(
-      isBlock('caption'),
-      safeProp('node')
-    ),
-    ({ children, attributes }) => (
+export default ({
+  node,
+  children,
+  attributes,
+  editor,
+}) => {
+  if (isBlock('caption', node)) {
+    return (
       <SchemaComponent
         name="caption"
         {...attributes}
@@ -27,13 +23,10 @@ export default compose(
         {children}
       </SchemaComponent>
     )
-  ),
-  ifElse(
-    compose(
-      isBlock('captionText'),
-      safeProp('node')
-    ),
-    ({ node, children, attributes, editor }) => (
+  }
+
+  if (isBlock('captionText', node)) {
+    return (
       <Fragment>
         <CaptionTextUI
           key="ui"
@@ -45,13 +38,10 @@ export default compose(
         </span>
       </Fragment>
     )
-  ),
-  ifElse(
-    compose(
-      isBlock('captionByline'),
-      safeProp('node')
-    ),
-    ({ node, children, attributes, editor }) => (
+  }
+
+  if (isBlock('captionByline', node)) {
+    return (
       <Fragment>
         <CaptionBylineUI
           key="ui"
@@ -67,5 +57,5 @@ export default compose(
         </SchemaComponent>
       </Fragment>
     )
-  )
-)(always(undefined))
+  }
+}

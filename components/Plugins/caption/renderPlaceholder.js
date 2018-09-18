@@ -1,42 +1,26 @@
-import {
-  compose,
-  always,
-  ifElse,
-  both
-} from 'ramda'
-
-import {
-  safeProp,
-  hasEmptyText,
-  isBlock
-} from '../../Editor/lib'
+import { isBlock } from '../../Editor/lib'
 
 import { InlinePlaceholder } from '../../Editor/components/Placeholder'
 
-export default compose(
-  ifElse(
-    compose(
-      both(isBlock('captionText'), hasEmptyText),
-      safeProp('node')
-    ),
-    () => (
+export default ({ node }) => {
+  if (
+    isBlock('captionText', node) &&
+    node.text.trim() === ''
+  ) {
+    return (
       <InlinePlaceholder>
         Legende
       </InlinePlaceholder>
     )
-  ),
-  ifElse(
-    compose(
-      both(
-        isBlock('captionByline'),
-        hasEmptyText
-      ),
-      safeProp('node')
-    ),
-    () => (
+  }
+  if (
+    isBlock('captionByline', node) &&
+    node.text.trim() === ''
+  ) {
+    return (
       <InlinePlaceholder>
         Credits
       </InlinePlaceholder>
     )
-  )
-)(always(undefined))
+  }
+}
