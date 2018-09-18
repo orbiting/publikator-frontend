@@ -1,12 +1,8 @@
 import React, { Fragment } from 'react'
 import { SchemaComponent } from '../../Editor/components/Schema'
-import { compose, always, ifElse } from 'ramda'
 import { css } from 'glamor'
 
-import {
-  safeProp,
-  isBlock,
-} from '../../Editor/lib'
+import { isBlock } from '../../Editor/lib'
 
 const styles = {
   edgeToEdge: css({
@@ -21,41 +17,44 @@ const styles = {
 
 import { FigureUI } from './ui'
 
-export default ifElse(
-  compose(
-    isBlock('figure'),
-    safeProp('node')
-  ),
-  ({ node, attributes, children, editor }) => (
-    <Fragment>
-      <FigureUI
-        key="ui"
-        node={node}
-        editor={editor}
-      />
-      {node.data.get('size') === 'edgeToEdge' ? (
-        <div
-          key="content-edgeToEdge"
-          {...styles.edgeToEdge}
-        >
+export default ({
+  node,
+  attributes,
+  children,
+  editor,
+}) => {
+  if (isBlock('figure', node)) {
+    return (
+      <Fragment>
+        <FigureUI
+          key="ui"
+          node={node}
+          editor={editor}
+        />
+        {node.data.get('size') ===
+        'edgeToEdge' ? (
+          <div
+            key="content-edgeToEdge"
+            {...styles.edgeToEdge}
+          >
+            <SchemaComponent
+              name="figure"
+              {...attributes}
+            >
+              {children}
+            </SchemaComponent>
+          </div>
+        ) : (
           <SchemaComponent
             name="figure"
+            key="content"
             {...attributes}
+            size={node.data.get('size')}
           >
             {children}
           </SchemaComponent>
-        </div>
-      ) : (
-        <SchemaComponent
-          name="figure"
-          key="content"
-          {...attributes}
-          size={node.data.get('size')}
-        >
-          {children}
-        </SchemaComponent>
-      )}
-    </Fragment>
-  ),
-  always(undefined)
-)
+        )}
+      </Fragment>
+    )
+  }
+}

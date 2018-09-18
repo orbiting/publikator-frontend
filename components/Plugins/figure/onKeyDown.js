@@ -1,58 +1,35 @@
-import {
-  compose,
-  converge,
-  both,
-  ifElse,
-  always,
-  allPass,
-} from 'ramda'
-
 import { removeBlock } from '../../Editor/lib/changes'
 
-import {
-  getChange,
-  isCollapsed,
-  getParentOf,
-  getStartBlock,
-  hasEmptyText,
-  eventHandler,
-  isDelete,
-  isBackspace,
-  isBlock,
-} from '../../Editor/lib'
+import { isBlock } from '../../Editor/lib'
 
-const onDeleteOrBackspace = compose(
-  ifElse(
-    allPass([
-      isCollapsed,
-      compose(
-        isBlock('figureImage'),
-        getStartBlock
-      ),
-      compose(
-        both(isBlock('figure'), hasEmptyText),
-        getParentOf(getStartBlock)
-      ),
-    ]),
-    converge(removeBlock, [
-      getChange,
-      getParentOf(getStartBlock),
-      always({ url: '' }),
-    ])
-  )
-)
+const onDeleteOrBackspace = (_, change) => {
+  const {
+    value,
+    value: { document, selection },
+  } = change
 
-const onBackspace = onDeleteOrBackspace(
-  always(undefined)
-)
+  if (
+    selection.isCollapsed &&
+    isBlock('figureImage', value.startBlock) &&
+    value.startBlock.data.get('url') === ''
+  ) {
+    let parent = document.getParent(
+      value.startBlock.key
+    )
+    if (
+      isBlock('figure', parent) &&
+      parent.text.trim() === ''
+    ) {
+      return removeBlock(change, parent)
+    }
+  }
+}
 
-const onDelete = onDeleteOrBackspace(
-  always(undefined)
-)
-
-export default eventHandler(
-  compose(
-    ifElse(isBackspace, onBackspace),
-    ifElse(isDelete, onDelete)
-  )(always(undefined))
-)
+export default (event, change) => {
+  if (
+    event.key === 'Delete' ||
+    event.key === 'Backspace'
+  ) {
+    return onDeleteOrBackspace(event, change)
+  }
+}
