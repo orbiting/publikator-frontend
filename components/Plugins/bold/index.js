@@ -1,18 +1,9 @@
 import { SchemaComponent } from '../../Editor/components/Schema'
-
-import { ifElse, compose, always } from 'ramda'
-import {
-  safeProp,
-  isMark,
-} from '../../Editor/lib'
+import { isMark } from '../../Editor/lib'
 
 export default {
-  renderMark: ifElse(
-    compose(
-      isMark('bold'),
-      safeProp('mark')
-    ),
-    ({ children, attributes }) => {
+  renderMark({ node, children, attributes }) {
+    if (isMark('bold', node)) {
       return (
         <SchemaComponent
           name="bold"
@@ -21,7 +12,6 @@ export default {
           {children}
         </SchemaComponent>
       )
-    },
-    always(undefined)
-  ),
+    }
+  },
 }
