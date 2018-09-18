@@ -149,8 +149,9 @@ export const insertBlockBefore = (
   target
 ) => {
   return change.insertNodeByKey(
-    change.value.document.getParent(target).key,
-    getChildIndex(change.value, target).key,
+    change.value.document.getParent(target.key)
+      .key,
+    getChildIndex(change.value, target),
     block
   )
 }
