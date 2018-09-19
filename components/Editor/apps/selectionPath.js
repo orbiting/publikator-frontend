@@ -1,4 +1,3 @@
-import { is } from 'immutable'
 import { dissoc } from 'ramda'
 import { connect } from 'react-redux'
 import {
@@ -27,7 +26,10 @@ const mapStateToSelectionStatusProps = (
     selectionPath.selectedNode.type === nodeType
   ) {
     node = selectionPath.selectedNode
-  } else if (selectionPath.selectionPath) {
+  } else if (
+    offset &&
+    selectionPath.selectionPath
+  ) {
     node = selectionPath.selectionPath
       .skipLast(1)
       .takeLast(offset)
@@ -88,18 +90,10 @@ export const reducer = (
         const selectionPath = getSelectionPath(
           value
         )
-        const currentKeys =
-          state.selectionPath &&
-          state.selectionPath.map(v => v.key)
-        const nextKeys =
-          selectionPath &&
-          selectionPath.map(v => v.key)
 
-        if (!is(currentKeys, nextKeys)) {
-          return {
-            selectionPath,
-            selectedNode: selectionPath.last(),
-          }
+        return {
+          selectionPath,
+          selectedNode: selectionPath.last(),
         }
       }
       return state

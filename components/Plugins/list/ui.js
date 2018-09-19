@@ -111,7 +111,7 @@ export const UnorderedListButton = withTheme()(
 export const ListUI = withTheme()(
   ({ styles, editor }) => {
     return (
-      <Selected nodeType="list">
+      <Selected nodeType="list" offset={1}>
         {({ node }) => (
           <Fragment>
             <SidebarInsertOptions>
