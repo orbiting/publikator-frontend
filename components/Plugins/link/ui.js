@@ -164,43 +164,48 @@ export const LinkUI = compose(
   })
 )(
   ({
-    node,
-    editor,
     isInEditMode,
     startEditing,
     finishEditing,
     styles,
   }) => {
     return (
-      <Selected node={node}>
-        <SidebarBottom>
-          <div {...styles.layout.container}>
-            <div {...styles.sectionHeader}>
-              <Label>Link</Label>
+      <Selected block="link">
+        {({ node, editor }) => (
+          <SidebarBottom>
+            <div {...styles.layout.container}>
+              <div {...styles.sectionHeader}>
+                <Label>Link</Label>
+              </div>
+              <hr {...styles.layout.hairline} />
+              {!isInEditMode ? (
+                <Fragment>
+                  <LinkCard data={node.data} />
+                  <Button
+                    {...styles.buttons
+                      .labelButton}
+                    onClick={startEditing}
+                  >
+                    Bearbeiten
+                  </Button>
+                </Fragment>
+              ) : (
+                <LinkForm
+                  node={node}
+                  editor={editor}
+                  onSubmitSuccess={() => {
+                    finishEditing()
+                  }}
+                />
+              )}
             </div>
-            <hr {...styles.layout.hairline} />
-            {!isInEditMode ? (
-              <Fragment>
-                <LinkCard data={node.data} />
-                <Button
-                  {...styles.buttons.labelButton}
-                  onClick={startEditing}
-                >
-                  Bearbeiten
-                </Button>
-              </Fragment>
-            ) : (
-              <LinkForm
-                node={node}
-                editor={editor}
-                onSubmitSuccess={() => {
-                  finishEditing()
-                }}
-              />
-            )}
-          </div>
-        </SidebarBottom>
+          </SidebarBottom>
+        )}
       </Selected>
     )
   }
 )
+
+export const renderUI = () => {
+  return <LinkUI />
+}

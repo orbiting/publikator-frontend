@@ -1,22 +1,17 @@
 import { SchemaComponent } from '../../Editor/components/Schema'
-
-import { ifElse, compose, always } from 'ramda'
-import {
-  safeProp,
-  isMark,
-} from '../../Editor/lib'
+import { isMark } from '../../Editor/lib'
 
 export default {
-  renderMark: ifElse(
-    compose(
-      isMark('sub'),
-      safeProp('mark')
-    ),
-    ({ children, attributes }) => (
-      <SchemaComponent name="sub" {...attributes}>
-        {children}
-      </SchemaComponent>
-    ),
-    always(undefined)
-  ),
+  renderMark({ node, children, attributes }) {
+    if (isMark('sub', node)) {
+      return (
+        <SchemaComponent
+          name="sub"
+          {...attributes}
+        >
+          {children}
+        </SchemaComponent>
+      )
+    }
+  },
 }

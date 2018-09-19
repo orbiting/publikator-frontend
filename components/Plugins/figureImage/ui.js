@@ -12,24 +12,30 @@ export const SelectImageButton = withNodeData({
 })(ImageInput)
 
 export const FigureImageUI = withTheme()(
-  ({ node, editor, styles }) => (
-    <Selected offset={3} node={node}>
-      <SidebarBottom>
-        <div {...styles.layout.container}>
-          <div {...styles.layout.headerSection}>
-            <Label>Bild auswählen</Label>
+  ({ styles }) => (
+    <Selected block="figureImage" offset={3}>
+      {({ node, editor }) => (
+        <SidebarBottom>
+          <div {...styles.layout.container}>
+            <div {...styles.layout.headerSection}>
+              <Label>Bild auswählen</Label>
+            </div>
+            <div {...styles.layout.actions}>
+              <SelectImageButton
+                node={node}
+                editor={editor}
+                {...styles.buttons.iconButton}
+              >
+                <ChangeImageIcon size={22} />
+              </SelectImageButton>
+            </div>
           </div>
-          <div {...styles.layout.actions}>
-            <SelectImageButton
-              node={node}
-              editor={editor}
-              {...styles.buttons.iconButton}
-            >
-              <ChangeImageIcon size={22} />
-            </SelectImageButton>
-          </div>
-        </div>
-      </SidebarBottom>
+        </SidebarBottom>
+      )}
     </Selected>
   )
 )
+
+export const renderUI = () => {
+  return <FigureImageUI />
+}

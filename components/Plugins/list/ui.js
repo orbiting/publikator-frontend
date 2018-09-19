@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { Text } from 'slate'
 import { FaListOl as OrderedListIcon } from 'react-icons/fa'
 import { FaListUl as UnorderedListIcon } from 'react-icons/fa'
@@ -108,75 +109,87 @@ export const UnorderedListButton = withTheme()(
 )
 
 export const ListUI = withTheme()(
-  ({ node, editor, styles }) => {
+  ({ styles }) => {
     return (
-      <Selected offset={2} key="ui" node={node}>
-        <SidebarInsertOptions>
-          <InsertButtons
-            node={node}
-            editor={editor}
-          />
-        </SidebarInsertOptions>
+      <Selected block="list">
+        {({ node, editor }) => (
+          <Fragment>
+            <SidebarInsertOptions>
+              <InsertButtons
+                node={node}
+                editor={editor}
+              />
+            </SidebarInsertOptions>
 
-        <SidebarBlockOptions>
-          <div {...styles.layout.container}>
-            <div {...styles.layout.sectionHeader}>
-              <Label>Block</Label>
-            </div>
-            <div {...styles.layout.actions}>
-              <ParagraphButton
+            <SidebarBlockOptions>
+              <div {...styles.layout.container}>
+                <div
+                  {...styles.layout.sectionHeader}
+                >
+                  <Label>Block</Label>
+                </div>
+                <div {...styles.layout.actions}>
+                  <ParagraphButton
+                    node={node}
+                    editor={editor}
+                    conversionStrategy={
+                      toFlatBlockConversion
+                    }
+                  />
+                  <SubheadButton
+                    node={node}
+                    editor={editor}
+                    conversionStrategy={
+                      toFlatBlockConversion
+                    }
+                  />
+                  <UnorderedListButton
+                    node={node}
+                    editor={editor}
+                  />
+                  <OrderedListButton
+                    node={node}
+                    editor={editor}
+                  />
+                </div>
+              </div>
+            </SidebarBlockOptions>
+            <SidebarFormatOptions>
+              <div {...styles.layout.container}>
+                <div
+                  {...styles.layout.sectionHeader}
+                >
+                  <Label>Format</Label>
+                </div>
+                <div {...styles.layout.actions}>
+                  <BoldButton
+                    node={node}
+                    editor={editor}
+                  />
+                  <ItalicButton
+                    node={node}
+                    editor={editor}
+                  />
+                  <LinkButton
+                    node={node}
+                    editor={editor}
+                  />
+                </div>
+              </div>
+            </SidebarFormatOptions>
+            <SidebarTextOptions>
+              <TextButtons
                 node={node}
                 editor={editor}
-                conversionStrategy={
-                  toFlatBlockConversion
-                }
               />
-              <SubheadButton
-                node={node}
-                editor={editor}
-                conversionStrategy={
-                  toFlatBlockConversion
-                }
-              />
-              <UnorderedListButton
-                node={node}
-                editor={editor}
-              />
-              <OrderedListButton
-                node={node}
-                editor={editor}
-              />
-            </div>
-          </div>
-        </SidebarBlockOptions>
-        <SidebarFormatOptions>
-          <div {...styles.layout.container}>
-            <div {...styles.layout.sectionHeader}>
-              <Label>Format</Label>
-            </div>
-            <div {...styles.layout.actions}>
-              <BoldButton
-                node={node}
-                editor={editor}
-              />
-              <ItalicButton
-                node={node}
-                editor={editor}
-              />
-              <LinkButton
-                node={node}
-                editor={editor}
-              />
-            </div>
-          </div>
-        </SidebarFormatOptions>
-        <SidebarTextOptions>
-          <TextButtons
-            node={node}
-            editor={editor}
-          />
-        </SidebarTextOptions>
+            </SidebarTextOptions>
+          </Fragment>
+        )}
       </Selected>
     )
   }
 )
+
+export const renderUI = () => {
+  return <ListUI />
+}

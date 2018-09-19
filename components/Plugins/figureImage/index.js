@@ -1,6 +1,7 @@
 import { Block } from 'slate'
 import renderNode from './renderNode'
 import onKeyDown from './onKeyDown'
+import { renderUI } from './ui'
 
 const getNew = () =>
   Block.create({
@@ -16,6 +17,7 @@ const getNew = () =>
 export default {
   onKeyDown,
   renderNode,
+  renderUI,
   schema: {
     blocks: {
       figureImage: {

@@ -1,28 +1,16 @@
-import React, { Fragment } from 'react'
 import { SchemaComponent } from '../../Editor/components/Schema'
-
-import { ifElse, compose, always } from 'ramda'
-
-import {
-  safeProp,
-  isInline,
-} from '../../Editor/lib'
-
-import { LinkUI } from './ui'
+import { isInline } from '../../Editor/lib'
+import { renderUI } from '.ui'
 
 export default {
-  renderNode: ifElse(
-    compose(
-      isInline('link'),
-      safeProp('node')
-    ),
-    ({ node, children, attributes, editor }) => (
-      <Fragment>
-        <LinkUI
-          key="ui"
-          node={node}
-          editor={editor}
-        />
+  renderUI,
+  renderNode: ({
+    node,
+    children,
+    attributes,
+  }) => {
+    if (isInline('link', node)) {
+      return (
         <SchemaComponent
           key="content"
           name="link"
@@ -32,8 +20,7 @@ export default {
         >
           {children}
         </SchemaComponent>
-      </Fragment>
-    ),
-    always(undefined)
-  ),
+      )
+    }
+  },
 }

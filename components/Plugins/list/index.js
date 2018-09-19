@@ -1,52 +1,26 @@
-import React, { Fragment } from 'react'
-import { ifElse, compose, always } from 'ramda'
 import { SchemaComponent } from '../../Editor/components/Schema'
 import onKeyDown from './onKeyDown'
+import { renderUI } from './ui'
 
-import {
-  isBlock,
-  safeProp,
-} from '../../Editor/lib'
-
-import { ListUI } from './ui'
+import { isBlock } from '../../Editor/lib'
 
 export default {
   onKeyDown,
-  renderNode: compose(
-    ifElse(
-      compose(
-        isBlock('list'),
-        safeProp('node')
-      ),
-      ({
-        node,
-        children,
-        attributes,
-        editor,
-      }) => (
-        <Fragment>
-          <ListUI
-            key="ui"
-            node={node}
-            editor={editor}
-          />
-          <SchemaComponent
-            name="list"
-            key="content"
-            data={node.data.toJS()}
-            {...attributes}
-          >
-            {children}
-          </SchemaComponent>
-        </Fragment>
+  renderUI,
+  renderNode({ node, children, attributes }) {
+    if (isBlock('list')) {
+      return (
+        <SchemaComponent
+          name="list"
+          data={node.data.toJS()}
+          {...attributes}
+        >
+          {children}
+        </SchemaComponent>
       )
-    ),
-    ifElse(
-      compose(
-        isBlock('listItem'),
-        safeProp('node')
-      ),
-      ({ children, attributes }) => (
+    }
+    if (isBlock('listItem')) {
+      return (
         <SchemaComponent
           name="listItem"
           {...attributes}
@@ -54,6 +28,6 @@ export default {
           {children}
         </SchemaComponent>
       )
-    )
-  )(always(undefined)),
+    }
+  },
 }

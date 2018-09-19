@@ -1,3 +1,4 @@
+import React, { Fragment } from 'react'
 import { FaParagraph as ParagraphIcon } from 'react-icons/fa'
 import { Label } from '@project-r/styleguide'
 import FormatBlockButton from '../../Editor/components/FormatBlockButton'
@@ -32,47 +33,57 @@ export const ParagraphButton = withTheme()(
 )
 
 export const ParagraphUI = withTheme()(
-  ({ node, editor, styles }) => (
-    <Selected offset={1} node={node}>
-      <SidebarInsertOptions>
-        <InsertButtons
-          node={node}
-          editor={editor}
-        />
-      </SidebarInsertOptions>
-      <SidebarBlockOptions>
-        <BlockButtons
-          node={node}
-          editor={editor}
-        />
-      </SidebarBlockOptions>
-      <SidebarFormatOptions>
-        <div {...styles.layout.container}>
-          <div {...styles.layout.sectionHeader}>
-            <Label>Format</Label>
-          </div>
-          <div {...styles.layout.actions}>
-            <BoldButton
+  ({ styles }) => (
+    <Selected block="paragraph" offset={1}>
+      {({ node, editor }) => (
+        <Fragment>
+          <SidebarInsertOptions>
+            <InsertButtons
               node={node}
               editor={editor}
             />
-            <ItalicButton
+          </SidebarInsertOptions>
+          <SidebarBlockOptions>
+            <BlockButtons
               node={node}
               editor={editor}
             />
-            <LinkButton
+          </SidebarBlockOptions>
+          <SidebarFormatOptions>
+            <div {...styles.layout.container}>
+              <div
+                {...styles.layout.sectionHeader}
+              >
+                <Label>Format</Label>
+              </div>
+              <div {...styles.layout.actions}>
+                <BoldButton
+                  node={node}
+                  editor={editor}
+                />
+                <ItalicButton
+                  node={node}
+                  editor={editor}
+                />
+                <LinkButton
+                  node={node}
+                  editor={editor}
+                />
+              </div>
+            </div>
+          </SidebarFormatOptions>
+          <SidebarTextOptions>
+            <TextButtons
               node={node}
               editor={editor}
             />
-          </div>
-        </div>
-      </SidebarFormatOptions>
-      <SidebarTextOptions>
-        <TextButtons
-          node={node}
-          editor={editor}
-        />
-      </SidebarTextOptions>
+          </SidebarTextOptions>
+        </Fragment>
+      )}
     </Selected>
   )
 )
+
+export const renderUI = () => {
+  return <ParagraphUI />
+}

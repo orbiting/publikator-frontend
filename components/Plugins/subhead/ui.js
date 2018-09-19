@@ -1,3 +1,5 @@
+import React, { Fragment } from 'react'
+
 import { FaHeading as SubheadIcon } from 'react-icons/fa'
 import FormatBlockButton from '../../Editor/components/FormatBlockButton'
 import { withTheme } from '../../Editor/apps/theme'
@@ -26,19 +28,29 @@ export const SubheadButton = withTheme()(
   )
 )
 
-export const SubheadUI = ({ node, editor }) => (
-  <Selected offset={1} node={node}>
-    <SidebarInsertOptions>
-      <InsertButtons
-        node={node}
-        editor={editor}
-      />
-    </SidebarInsertOptions>
-    <SidebarBlockOptions>
-      <BlockButtons node={node} editor={editor} />
-    </SidebarBlockOptions>
-    <SidebarTextOptions>
-      <TextButtons node={node} editor={editor} />
-    </SidebarTextOptions>
+export const SubheadUI = (
+  <Selected offset={1} block="subhead">
+    {({ node, editor }) => (
+      <Fragment>
+        <SidebarInsertOptions>
+          <InsertButtons
+            node={node}
+            editor={editor}
+          />
+        </SidebarInsertOptions>
+        <SidebarBlockOptions>
+          <BlockButtons
+            node={node}
+            editor={editor}
+          />
+        </SidebarBlockOptions>
+        <SidebarTextOptions>
+          <TextButtons
+            node={node}
+            editor={editor}
+          />
+        </SidebarTextOptions>
+      </Fragment>
+    )}
   </Selected>
 )

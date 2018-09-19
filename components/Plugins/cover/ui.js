@@ -11,44 +11,54 @@ import {
 } from '../common/breakouts.js'
 
 export const CoverUI = withTheme()(
-  ({ styles, node, editor }) => {
+  ({ styles }) => {
     return (
-      <Selected node={node} offset={2}>
-        <SidebarBottom>
-          <div {...styles.layout.container}>
-            <div {...styles.layout.sectionHeader}>
-              <Label>Cover</Label>
-            </div>
-            <hr {...styles.layout.hairline} />
-            <div {...styles.layout.sectionHeader}>
-              <Label>Grösse</Label>
-            </div>
-            <div {...styles.layout.actions}>
-              <SizeButton
-                name="tiny"
-                node={node}
-                editor={editor}
+      <Selected block="cover" offset={2}>
+        {({ node, editor }) => (
+          <SidebarBottom>
+            <div {...styles.layout.container}>
+              <div
+                {...styles.layout.sectionHeader}
               >
-                <TinyIcon />
-              </SizeButton>
-              <SizeButton
-                name="center"
-                node={node}
-                editor={editor}
+                <Label>Cover</Label>
+              </div>
+              <hr {...styles.layout.hairline} />
+              <div
+                {...styles.layout.sectionHeader}
               >
-                <DefaultIcon />
-              </SizeButton>
-              <SizeButton
-                name={null}
-                node={node}
-                editor={editor}
-              >
-                <EdgeToEdgeIcon />
-              </SizeButton>
+                <Label>Grösse</Label>
+              </div>
+              <div {...styles.layout.actions}>
+                <SizeButton
+                  name="tiny"
+                  node={node}
+                  editor={editor}
+                >
+                  <TinyIcon />
+                </SizeButton>
+                <SizeButton
+                  name="center"
+                  node={node}
+                  editor={editor}
+                >
+                  <DefaultIcon />
+                </SizeButton>
+                <SizeButton
+                  name={null}
+                  node={node}
+                  editor={editor}
+                >
+                  <EdgeToEdgeIcon />
+                </SizeButton>
+              </div>
             </div>
-          </div>
-        </SidebarBottom>
+          </SidebarBottom>
+        )}
       </Selected>
     )
   }
 )
+
+export const renderUI = () => {
+  return <CoverUI />
+}

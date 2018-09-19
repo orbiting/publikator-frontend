@@ -1,3 +1,4 @@
+import { Fragment } from 'react'
 import { Label } from '@project-r/styleguide'
 
 import { withTheme } from '../../Editor/apps/theme'
@@ -11,26 +12,36 @@ import { TextButtons } from '../common/ui'
 import { LinkButton } from '../link/ui'
 
 export const CreditsUI = withTheme()(
-  ({ node, editor, styles }) => {
+  ({ styles }) => {
     return (
-      <Selected key="ui" node={node} offset={1}>
-        <SidebarFormatOptions>
-          <div {...styles.layout.container}>
-            <div {...styles.layout.sectionHeader}>
-              <Label>Format</Label>
-            </div>
-            <div {...styles.layout.actions}>
-              <LinkButton editor={editor} />
-            </div>
-          </div>
-        </SidebarFormatOptions>
-        <SidebarTextOptions>
-          <TextButtons
-            editor={editor}
-            node={node}
-          />
-        </SidebarTextOptions>
+      <Selected block="credits" offset={1}>
+        {({ node, editor }) => (
+          <Fragment>
+            <SidebarFormatOptions>
+              <div {...styles.layout.container}>
+                <div
+                  {...styles.layout.sectionHeader}
+                >
+                  <Label>Format</Label>
+                </div>
+                <div {...styles.layout.actions}>
+                  <LinkButton editor={editor} />
+                </div>
+              </div>
+            </SidebarFormatOptions>
+            <SidebarTextOptions>
+              <TextButtons
+                editor={editor}
+                node={node}
+              />
+            </SidebarTextOptions>
+          </Fragment>
+        )}
       </Selected>
     )
   }
 )
+
+export const renderUI = () => {
+  return <CreditsUI />
+}

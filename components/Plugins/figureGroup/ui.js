@@ -28,35 +28,41 @@ export const InsertFigureButton = withTheme()(
 )
 
 export const FigureGroupUI = withTheme()(
-  ({ node, editor, styles }) => (
-    <Selected offset={3} node={node}>
-      <SidebarTop>
-        <div {...styles.layout.container}>
-          <div {...styles.layout.headerSection}>
-            <Label>Bildergruppe</Label>
+  ({ styles }) => (
+    <Selected block="figureGroup" offset={3}>
+      {({ node, editor }) => (
+        <SidebarTop>
+          <div {...styles.layout.container}>
+            <div {...styles.layout.headerSection}>
+              <Label>Bildergruppe</Label>
+            </div>
+            <hr {...styles.layout.hairline} />
+            <div {...styles.layout.headerSection}>
+              <Label>Grösse</Label>
+            </div>
+            <div {...styles.layout.section}>
+              <SizeButton
+                name={null}
+                node={node}
+                editor={editor}
+              >
+                <DefaultIcon />
+              </SizeButton>
+              <SizeButton
+                name={'breakout'}
+                node={node}
+                editor={editor}
+              >
+                <BreakoutIcon />
+              </SizeButton>
+            </div>
           </div>
-          <hr {...styles.layout.hairline} />
-          <div {...styles.layout.headerSection}>
-            <Label>Grösse</Label>
-          </div>
-          <div {...styles.layout.section}>
-            <SizeButton
-              name={null}
-              node={node}
-              editor={editor}
-            >
-              <DefaultIcon />
-            </SizeButton>
-            <SizeButton
-              name={'breakout'}
-              node={node}
-              editor={editor}
-            >
-              <BreakoutIcon />
-            </SizeButton>
-          </div>
-        </div>
-      </SidebarTop>
+        </SidebarTop>
+      )}
     </Selected>
   )
 )
+
+export const renderUI = () => {
+  return <FigureGroupUI />
+}

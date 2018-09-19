@@ -30,38 +30,44 @@ export const InsertFigureButton = withTheme()(
 )
 
 export const FigureUI = withTheme()(
-  ({ node, editor, styles }) => (
-    <Selected node={node} offset={2}>
-      <SidebarTop>
-        <div {...styles.layout.container}>
-          <div {...styles.layout.headerSection}>
-            <Label>Bildgrösse</Label>
+  ({ styles }) => (
+    <Selected block="figure" offset={2}>
+      {({ node, editor }) => (
+        <SidebarTop>
+          <div {...styles.layout.container}>
+            <div {...styles.layout.headerSection}>
+              <Label>Bildgrösse</Label>
+            </div>
+            <div {...styles.layout.section}>
+              <SizeButton
+                name={null}
+                node={node}
+                editor={editor}
+              >
+                <DefaultIcon />
+              </SizeButton>
+              <SizeButton
+                name={'breakout'}
+                node={node}
+                editor={editor}
+              >
+                <BreakoutIcon />
+              </SizeButton>
+              <SizeButton
+                name={'edgeToEdge'}
+                node={node}
+                editor={editor}
+              >
+                <EdgeToEdgeIcon />
+              </SizeButton>
+            </div>
           </div>
-          <div {...styles.layout.section}>
-            <SizeButton
-              name={null}
-              node={node}
-              editor={editor}
-            >
-              <DefaultIcon />
-            </SizeButton>
-            <SizeButton
-              name={'breakout'}
-              node={node}
-              editor={editor}
-            >
-              <BreakoutIcon />
-            </SizeButton>
-            <SizeButton
-              name={'edgeToEdge'}
-              node={node}
-              editor={editor}
-            >
-              <EdgeToEdgeIcon />
-            </SizeButton>
-          </div>
-        </div>
-      </SidebarTop>
+        </SidebarTop>
+      )}
     </Selected>
   )
 )
+
+export const renderUI = () => {
+  return <FigureUI />
+}

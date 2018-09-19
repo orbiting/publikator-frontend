@@ -1,14 +1,7 @@
-import React, { Fragment } from 'react'
 import { SchemaComponent } from '../../Editor/components/Schema'
 import { withMeta } from '../../Editor/apps/meta'
-import { compose, ifElse, always } from 'ramda'
 
-import {
-  safeProp,
-  isBlock,
-} from '../../Editor/lib'
-
-import { CreditsUI } from './ui'
+import { isBlock } from '../../Editor/lib'
 
 const withMetaFormat = withMeta({
   fieldName: 'format',
@@ -36,80 +29,63 @@ const TitleBlock = withMetaFormat(
   }
 )
 
-export default compose(
-  ifElse(
-    compose(
-      isBlock('title'),
-      safeProp('node')
-    ),
-    ({ children, attributes }) => (
+export default ({
+  node,
+  children,
+  attributes,
+}) => {
+  if (isBlock('titleBlock')) {
+    return (
+      <TitleBlock
+        node={node}
+        attributes={attributes}
+      >
+        {children}
+      </TitleBlock>
+    )
+  }
+
+  if (isBlock('title')) {
+    return (
       <SchemaComponent
         name="title"
-        style={{ position: 'relative' }}
         {...attributes}
       >
         {children}
       </SchemaComponent>
     )
-  ),
-  ifElse(
-    compose(
-      isBlock('subject'),
-      safeProp('node')
-    ),
-    ({ children, attributes }) => (
+  }
+
+  if (isBlock('subject')) {
+    return (
       <SchemaComponent
         name="subject"
-        style={{ position: 'relative' }}
         {...attributes}
       >
         {children}
       </SchemaComponent>
     )
-  ),
-  ifElse(
-    compose(
-      isBlock('lead'),
-      safeProp('node')
-    ),
-    ({ children, attributes }) => (
+  }
+
+  if (isBlock('lead')) {
+    return (
       <SchemaComponent
         name="lead"
-        style={{ position: 'relative' }}
         {...attributes}
       >
         {children}
       </SchemaComponent>
     )
-  ),
-  ifElse(
-    compose(
-      isBlock('credits'),
-      safeProp('node')
-    ),
-    ({ children, attributes, editor, node }) => (
-      <Fragment>
-        <CreditsUI
-          key="ui"
-          node={node}
-          editor={editor}
-        />
-        <SchemaComponent
-          name="credits"
-          key="content"
-          style={{ position: 'relative' }}
-          {...attributes}
-        >
-          {children}
-        </SchemaComponent>
-      </Fragment>
+  }
+
+  if (isBlock('credits')) {
+    return (
+      <SchemaComponent
+        name="credits"
+        {...attributes}
+      >
+        {children}
+      </SchemaComponent>
     )
-  ),
-  ifElse(
-    compose(
-      isBlock('titleBlock'),
-      safeProp('node')
-    ),
-    props => <TitleBlock {...props} />
-  )
-)(always(undefined))
+  }
+}

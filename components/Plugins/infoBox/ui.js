@@ -98,152 +98,182 @@ const FigureToggleButton = withTheme()(
 )
 
 export const InfoBoxUI = withTheme()(
-  ({ node, editor, styles }) => {
-    const figure = node.nodes.get(1)
-    const hasFigure = isBlock(
-      'infoBoxFigure',
-      figure
-    )
-    const infoBoxSize = node.data.get('size')
+  ({ styles }) => {
     return (
-      <Selected node={node} offset={3}>
-        <SidebarBottom>
-          <div {...styles.layout.container}>
-            <div {...styles.layout.sectionHeader}>
-              <Label>Infobox</Label>
-            </div>
-            <hr {...styles.layout.hairline} />
-            <div {...styles.layout.sectionHeader}>
-              <Label>Ausrichtung</Label>
-            </div>
-            <div {...styles.layout.actions}>
-              <BreakoutButton
-                name={null}
-                node={node}
-                {...styles.buttons.iconButton}
-                editor={editor}
-              >
-                <DefaultIcon />
-              </BreakoutButton>
-              <BreakoutButton
-                name="breakout"
-                node={node}
-                {...styles.buttons.iconButton}
-                editor={editor}
-              >
-                <BreakoutLeftIcon />
-              </BreakoutButton>
-              <BreakoutButton
-                name="float"
-                node={node}
-                {...styles.buttons.iconButton}
-                editor={editor}
-              >
-                <FloatLeftIcon />
-              </BreakoutButton>
-            </div>
-          </div>
+      <Selected block="infoBox" offset={3}>
+        {({ node, editor }) => {
+          const figure = node.nodes.get(1)
+          const hasFigure = isBlock(
+            'infoBoxFigure',
+            figure
+          )
+          const infoBoxSize = node.data.get(
+            'size'
+          )
+          return (
+            <SidebarBottom>
+              <div {...styles.layout.container}>
+                <div
+                  {...styles.layout.sectionHeader}
+                >
+                  <Label>Infobox</Label>
+                </div>
+                <hr {...styles.layout.hairline} />
+                <div
+                  {...styles.layout.sectionHeader}
+                >
+                  <Label>Ausrichtung</Label>
+                </div>
+                <div {...styles.layout.actions}>
+                  <BreakoutButton
+                    name={null}
+                    node={node}
+                    {...styles.buttons.iconButton}
+                    editor={editor}
+                  >
+                    <DefaultIcon />
+                  </BreakoutButton>
+                  <BreakoutButton
+                    name="breakout"
+                    node={node}
+                    {...styles.buttons.iconButton}
+                    editor={editor}
+                  >
+                    <BreakoutLeftIcon />
+                  </BreakoutButton>
+                  <BreakoutButton
+                    name="float"
+                    node={node}
+                    {...styles.buttons.iconButton}
+                    editor={editor}
+                  >
+                    <FloatLeftIcon />
+                  </BreakoutButton>
+                </div>
+              </div>
 
-          <div {...styles.layout.container}>
-            <div {...styles.layout.sectionHeader}>
-              <Label>Mit Bild?</Label>
-            </div>
-            <div {...styles.layout.actions}>
-              <FigureToggleButton
-                node={node}
-                editor={editor}
-              />
-            </div>
-          </div>
-          {hasFigure && (
-            <div {...styles.layout.container}>
-              <div
-                {...styles.layout.sectionHeader}
-              >
-                <Label>Bild-Grösse</Label>
+              <div {...styles.layout.container}>
+                <div
+                  {...styles.layout.sectionHeader}
+                >
+                  <Label>Mit Bild?</Label>
+                </div>
+                <div {...styles.layout.actions}>
+                  <FigureToggleButton
+                    node={node}
+                    editor={editor}
+                  />
+                </div>
               </div>
-              <div {...styles.layout.actions}>
-                <FigureSizeButton
-                  name={null}
-                  node={node}
-                  {...styles.buttons.iconButton}
-                  editor={editor}
-                >
-                  <LargeIcon />
-                </FigureSizeButton>
-                <FigureSizeButton
-                  name="M"
-                  node={node}
-                  {...styles.buttons.iconButton}
-                  editor={editor}
-                >
-                  <MediumIcon />
-                </FigureSizeButton>
-                {infoBoxSize !== 'float' && (
-                  <Fragment>
+              {hasFigure && (
+                <div {...styles.layout.container}>
+                  <div
+                    {...styles.layout
+                      .sectionHeader}
+                  >
+                    <Label>Bild-Grösse</Label>
+                  </div>
+                  <div {...styles.layout.actions}>
                     <FigureSizeButton
-                      key="small-button"
-                      name="S"
+                      name={null}
                       node={node}
                       {...styles.buttons
                         .iconButton}
                       editor={editor}
                     >
-                      <SmallIcon />
+                      <LargeIcon />
                     </FigureSizeButton>
                     <FigureSizeButton
-                      key="tiny-button"
-                      name="XS"
+                      name="M"
                       node={node}
                       {...styles.buttons
                         .iconButton}
                       editor={editor}
                     >
-                      <TinyIcon />
+                      <MediumIcon />
                     </FigureSizeButton>
-                  </Fragment>
-                )}
-              </div>
-            </div>
-          )}
-        </SidebarBottom>
+                    {infoBoxSize !== 'float' && (
+                      <Fragment>
+                        <FigureSizeButton
+                          key="small-button"
+                          name="S"
+                          node={node}
+                          {...styles.buttons
+                            .iconButton}
+                          editor={editor}
+                        >
+                          <SmallIcon />
+                        </FigureSizeButton>
+                        <FigureSizeButton
+                          key="tiny-button"
+                          name="XS"
+                          node={node}
+                          {...styles.buttons
+                            .iconButton}
+                          editor={editor}
+                        >
+                          <TinyIcon />
+                        </FigureSizeButton>
+                      </Fragment>
+                    )}
+                  </div>
+                </div>
+              )}
+            </SidebarBottom>
+          )
+        }}
       </Selected>
     )
   }
 )
 
-export const InfoBoxTitleUI = ({
-  node,
-  editor,
-}) => {
+export const InfoBoxTitleUI = () => {
   return (
-    <Selected node={node}>
-      <SidebarTextOptions>
-        <TextButtons editor={editor} />
-      </SidebarTextOptions>
+    <Selected block="infoBoxTitle">
+      {({ editor }) => (
+        <SidebarTextOptions>
+          <TextButtons editor={editor} />
+        </SidebarTextOptions>
+      )}
     </Selected>
   )
 }
 
 export const InfoBoxTextUI = withTheme()(
-  ({ node, editor, styles }) => {
+  ({ styles }) => {
     return (
-      <Selected offset={1} node={node}>
-        <SidebarFormatOptions>
-          <div {...styles.layout.container}>
-            <div {...styles.layout.sectionHeader}>
-              <Label>Format</Label>
-            </div>
-            <div {...styles.layout.actions}>
-              <BoldButton editor={editor} />
-              <LinkButton editor={editor} />
-            </div>
-          </div>
-        </SidebarFormatOptions>
-        <SidebarTextOptions>
-          <TextButtons editor={editor} />
-        </SidebarTextOptions>
+      <Selected block="infoBoxText">
+        {({ editor }) => (
+          <Fragment>
+            <SidebarFormatOptions>
+              <div {...styles.layout.container}>
+                <div
+                  {...styles.layout.sectionHeader}
+                >
+                  <Label>Format</Label>
+                </div>
+                <div {...styles.layout.actions}>
+                  <BoldButton editor={editor} />
+                  <LinkButton editor={editor} />
+                </div>
+              </div>
+            </SidebarFormatOptions>
+            <SidebarTextOptions>
+              <TextButtons editor={editor} />
+            </SidebarTextOptions>
+          </Fragment>
+        )}
       </Selected>
     )
   }
 )
+
+export const renderUI = () => {
+  return (
+    <Fragment>
+      <InfoBoxUI />
+      <InfoBoxTitleUI />
+      <InfoBoxTextUI />
+    </Fragment>
+  )
+}
