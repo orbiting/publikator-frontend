@@ -1,287 +1,218 @@
-import {
-  compose,
-  complement,
-  converge,
-  both,
-  ifElse,
-  either,
-  always,
-} from 'ramda'
-
 import { Block } from 'slate'
 
 import {
   focusNext,
   focusPrevious,
   insertBlockAfter,
-  insertBlockBefore,
   removeBlock,
 } from '../../Editor/lib/changes'
 
-import {
-  isBlock,
-  isExpanded,
-  notIsMixed,
-  isMixed,
-  hasEdgeInSelection,
-  getChange,
-  isCollapsed,
-  getEndBlock,
-  getNextBlockOf,
-  isCollapsedAtStart,
-  isCollapsedAtEnd,
-  getStartBlock,
-  hasEmptyText,
-  getPreviousBlockOf,
-  eventHandler,
-  isEnter,
-  isDelete,
-  isBackspace,
-} from '../../Editor/lib'
+import { isBlock } from '../../Editor/lib'
 
-const onEnter = compose(
-  ifElse(
-    both(
-      isExpanded,
-      hasEdgeInSelection([
-        isBlock('title'),
-        isBlock('subject'),
-        isBlock('lead'),
-        isBlock('credits'),
-      ])
-    ),
-    compose(
-      change => change.moveToEnd(),
-      getChange
+const selectableBlocks = [
+  isBlock('title'),
+  isBlock('subject'),
+  isBlock('lead'),
+  isBlock('credits'),
+]
+
+const onEnter = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (
+    selection.isExpanded &&
+    selectableBlocks.some(
+      f =>
+        f(value.startBlock) || f(value.endBlock)
     )
-  ),
-  ifElse(
-    isCollapsed,
-    compose(
-      ifElse(
-        compose(
-          isBlock('title'),
-          getStartBlock
-        ),
-        ifElse(
-          compose(
-            isBlock('subject'),
-            getNextBlockOf(getEndBlock)
-          ),
-          compose(
-            focusNext,
-            getChange
-          ),
-          compose(
-            focusNext,
-            converge(insertBlockAfter, [
-              getChange,
-              () =>
-                Block.create({
-                  type: 'subject',
-                }),
-              getEndBlock,
-            ])
-          )
-        )
-      ),
-      ifElse(
-        compose(
-          isBlock('subject'),
-          getStartBlock
-        ),
-        ifElse(
-          compose(
-            isBlock('lead'),
-            getNextBlockOf(getEndBlock)
-          ),
-          compose(
-            focusNext,
-            getChange
-          ),
-          compose(
-            focusNext,
-            converge(insertBlockAfter, [
-              getChange,
-              () =>
-                Block.create({
-                  type: 'lead',
-                }),
-              getEndBlock,
-            ])
-          )
-        )
-      ),
-      ifElse(
-        compose(
-          isBlock('lead'),
-          getEndBlock
-        ),
-        compose(
-          focusNext,
-          getChange
-        )
-      ),
-      ifElse(
-        compose(
-          isBlock('credits'),
-          getEndBlock
-        ),
-        ifElse(
-          both(
-            isCollapsedAtStart,
-            compose(
-              complement(isBlock('lead')),
-              getPreviousBlockOf(getStartBlock)
-            )
-          ),
-          compose(
-            focusPrevious,
-            converge(insertBlockBefore, [
-              getChange,
-              () =>
-                Block.create({
-                  type: 'lead',
-                }),
-              getStartBlock,
-            ])
-          ),
-          compose(
-            focusNext,
-            getChange
-          )
-        )
-      )
-    )(always(undefined))
-  )
-)(always(undefined))
+  ) {
+    return change.moveToEnd()
+  }
 
-const onDeleteOrBackspace = compose(
-  ifElse(
-    both(notIsMixed, isExpanded),
-    always(undefined)
-  ),
-  ifElse(
-    both(
-      isMixed,
-      hasEdgeInSelection([
-        isBlock('title'),
-        isBlock('lead'),
-        isBlock('credits'),
-      ])
-    ),
-    compose(
-      change => change.moveToStart(),
-      getChange
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  const nextBlock = document.getNextBlock(
+    value.startBlock.key
+  )
+
+  if (
+    isBlock('title', value.startBlock) &&
+    !isBlock('subject', nextBlock)
+  ) {
+    return focusNext(
+      insertBlockAfter(
+        change,
+        Block.create({
+          type: 'subject',
+        }),
+        value.startBlock
+      )
     )
-  )
-)
-
-const onBackspace = compose(
-  onDeleteOrBackspace,
-  ifElse(
-    isCollapsedAtStart,
-    compose(
-      ifElse(
-        compose(
-          isBlock('title'),
-          getStartBlock
-        ),
-        compose(
-          focusPrevious,
-          getChange
-        )
-      ),
-      ifElse(
-        compose(
-          both(
-            isBlock('lead'),
-            complement(hasEmptyText)
-          ),
-          getStartBlock
-        ),
-        compose(
-          focusPrevious,
-          getChange
-        )
-      ),
-      ifElse(
-        compose(
-          isBlock('credits'),
-          getStartBlock
-        ),
-        compose(
-          ifElse(
-            compose(
-              isBlock('title'),
-              getPreviousBlockOf(getStartBlock)
-            ),
-            compose(
-              focusPrevious,
-              getChange
-            )
-          ),
-          ifElse(
-            compose(
-              both(
-                isBlock('lead'),
-                complement(hasEmptyText)
-              ),
-              getPreviousBlockOf(getStartBlock)
-            ),
-            compose(
-              focusPrevious,
-              getChange
-            )
-          ),
-          ifElse(
-            compose(
-              both(isBlock('lead'), hasEmptyText),
-              getPreviousBlockOf(getStartBlock)
-            ),
-            converge(removeBlock, [
-              getChange,
-              getPreviousBlockOf(getStartBlock),
-            ])
-          )
-        )(always(undefined))
+  }
+  if (
+    isBlock('subject', value.startBlock) &&
+    !isBlock('lead', nextBlock)
+  ) {
+    return focusNext(
+      insertBlockAfter(
+        change,
+        Block.create({
+          type: 'lead',
+        }),
+        value.startBlock
       )
-    )(always(undefined))
-  )
-)(always(undefined))
+    )
+  }
 
-const onDelete = compose(
-  onDeleteOrBackspace,
-  ifElse(
-    isCollapsedAtEnd,
-    compose(
-      ifElse(
-        either(
-          compose(
-            either(
-              isBlock('lead'),
-              isBlock('credits')
-            ),
-            getEndBlock
-          ),
-          compose(
-            both(
-              complement(hasEmptyText),
-              isBlock('lead')
-            ),
-            getNextBlockOf(getEndBlock)
-          )
-        ),
-        getChange
-      )
-    )(always(undefined))
-  )
-)(always(undefined))
+  if (
+    selectableBlocks.some(f =>
+      f(value.startBlock)
+    )
+  ) {
+    return focusNext(change)
+  }
+}
 
-export default eventHandler(
-  compose(
-    ifElse(isEnter, onEnter),
-    ifElse(isBackspace, onBackspace),
-    ifElse(isDelete, onDelete)
-  )(always(undefined))
-)
+const onDeleteOrBackspace = (_, change) => {
+  const {
+    value,
+    value: { selection },
+  } = change
+
+  if (
+    selection.isExpanded &&
+    value.startBlock === value.endBlock
+  ) {
+    return
+  }
+
+  if (
+    selection.isExpanded &&
+    selectableBlocks.some(
+      f =>
+        f(value.startBlock) || f(value.endBlock)
+    )
+  ) {
+    return change.moveToStart()
+  }
+}
+
+const onBackspace = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  if (
+    !selection.start.isAtStartOfNode(
+      value.startBlock
+    )
+  ) {
+    return
+  }
+
+  const previousBlock = document.getPreviousBlock(
+    value.startBlock.key
+  )
+
+  if (isBlock('title', value.startBlock)) {
+    return focusPrevious(change)
+  }
+
+  if (isBlock('subject', value.startBlock)) {
+    if (value.startBlock.text.trim() !== '') {
+      return focusPrevious(change)
+    }
+    return removeBlock(change, value.startBlock)
+  }
+
+  if (isBlock('lead', value.startBlock)) {
+    if (value.startBlock.text.trim() !== '') {
+      return focusPrevious(change)
+    }
+    return removeBlock(change, value.startBlock)
+  }
+
+  if (isBlock('credits', value.startBlock)) {
+    if (isBlock('title', previousBlock)) {
+      return focusPrevious(change)
+    }
+
+    if (
+      isBlock('lead', previousBlock) ||
+      isBlock('subject', previousBlock)
+    ) {
+      if (previousBlock.text.trim() !== '') {
+        return focusPrevious(change)
+      }
+
+      return removeBlock(change, previousBlock)
+    }
+  }
+
+  if (isBlock('credits', previousBlock)) {
+    return focusPrevious(change)
+  }
+}
+
+const onDelete = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  if (
+    !selection.end.isAtEndOfNode(value.endBlock)
+  ) {
+    return
+  }
+
+  if (
+    isBlock('lead', value.endBlock) ||
+    isBlock('credits', value.endBlock)
+  ) {
+    return change
+  }
+
+  const nextBlock = document.getNextBlock(
+    value.endBlock.key
+  )
+
+  if (
+    isBlock('lead', nextBlock) &&
+    nextBlock.text.trim() !== ''
+  ) {
+    return change
+  }
+}
+
+export default (event, change) => {
+  if (event.key === 'Enter') {
+    return onEnter(event, change)
+  }
+  if (event.key === 'Backspace') {
+    return (
+      onDeleteOrBackspace(event, change) ||
+      onBackspace(event, change)
+    )
+  }
+  if (event.key === 'Delete') {
+    return (
+      onDeleteOrBackspace(event, change) ||
+      onDelete(event, change)
+    )
+  }
+}
