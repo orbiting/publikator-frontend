@@ -168,10 +168,11 @@ export const LinkUI = compose(
     startEditing,
     finishEditing,
     styles,
+    editor,
   }) => {
     return (
-      <Selected block="link">
-        {({ node, editor }) => (
+      <Selected node="link">
+        {({ node }) => (
           <SidebarBottom>
             <div {...styles.layout.container}>
               <div {...styles.sectionHeader}>
@@ -206,6 +207,6 @@ export const LinkUI = compose(
   }
 )
 
-export const renderUI = () => {
-  return <LinkUI />
+export const renderUI = ({ editor }) => {
+  return <LinkUI editor={editor} />
 }

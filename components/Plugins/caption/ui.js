@@ -12,10 +12,10 @@ import { BoldButton } from '../bold/ui'
 import { LinkButton } from '../link/ui'
 
 export const CaptionTextUI = withTheme()(
-  ({ styles }) => {
+  ({ styles, editor }) => {
     return (
-      <Selected block="captionText" offset={1}>
-        {({ node, editor }) => (
+      <Selected node="captionText" offset={1}>
+        {({ node }) => (
           <Fragment>
             <SidebarFormatOptions>
               <div {...styles.layout.container}>
@@ -44,9 +44,9 @@ export const CaptionTextUI = withTheme()(
 )
 
 export const CaptionBylineUI = withTheme()(
-  ({ styles }) => (
-    <Selected block="captionByline" offset={1}>
-      {({ node, editor }) => (
+  ({ styles, editor }) => (
+    <Selected node="captionByline" offset={1}>
+      {({ node }) => (
         <Fragment>
           <SidebarFormatOptions>
             <div {...styles.layout.container}>
@@ -72,11 +72,11 @@ export const CaptionBylineUI = withTheme()(
   )
 )
 
-export const renderUI = () => {
+export const renderUI = ({ editor }) => {
   return (
     <Fragment>
-      <CaptionTextUI />
-      <CaptionBylineUI />
+      <CaptionTextUI editor={editor} />
+      <CaptionBylineUI editor={editor} />
     </Fragment>
   )
 }

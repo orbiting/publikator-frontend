@@ -33,9 +33,9 @@ export const ParagraphButton = withTheme()(
 )
 
 export const ParagraphUI = withTheme()(
-  ({ styles }) => (
-    <Selected block="paragraph" offset={1}>
-      {({ node, editor }) => (
+  ({ styles, editor }) => (
+    <Selected node="paragraph" offset={1}>
+      {({ node }) => (
         <Fragment>
           <SidebarInsertOptions>
             <InsertButtons
@@ -84,6 +84,6 @@ export const ParagraphUI = withTheme()(
   )
 )
 
-export const renderUI = () => {
-  return <ParagraphUI />
+export const renderUI = ({ editor }) => {
+  return <ParagraphUI editor={editor} />
 }

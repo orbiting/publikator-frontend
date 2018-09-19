@@ -12,10 +12,10 @@ import { TextButtons } from '../common/ui'
 import { LinkButton } from '../link/ui'
 
 export const CreditsUI = withTheme()(
-  ({ styles }) => {
+  ({ styles, editor }) => {
     return (
-      <Selected block="credits" offset={1}>
-        {({ node, editor }) => (
+      <Selected node="credits" offset={1}>
+        {({ node }) => (
           <Fragment>
             <SidebarFormatOptions>
               <div {...styles.layout.container}>
@@ -42,6 +42,6 @@ export const CreditsUI = withTheme()(
   }
 )
 
-export const renderUI = () => {
-  return <CreditsUI />
+export const renderUI = ({ editor }) => {
+  return <CreditsUI editor={editor} />
 }

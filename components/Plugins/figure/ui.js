@@ -30,9 +30,9 @@ export const InsertFigureButton = withTheme()(
 )
 
 export const FigureUI = withTheme()(
-  ({ styles }) => (
-    <Selected block="figure" offset={2}>
-      {({ node, editor }) => (
+  ({ styles, editor }) => (
+    <Selected node="figure" offset={2}>
+      {({ node }) => (
         <SidebarTop>
           <div {...styles.layout.container}>
             <div {...styles.layout.headerSection}>
@@ -68,6 +68,6 @@ export const FigureUI = withTheme()(
   )
 )
 
-export const renderUI = () => {
-  return <FigureUI />
+export const renderUI = ({ editor }) => {
+  return <FigureUI editor={editor} />
 }

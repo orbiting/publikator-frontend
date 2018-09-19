@@ -11,10 +11,10 @@ import {
 } from '../common/breakouts.js'
 
 export const CoverUI = withTheme()(
-  ({ styles }) => {
+  ({ styles, editor }) => {
     return (
-      <Selected block="cover" offset={2}>
-        {({ node, editor }) => (
+      <Selected node="cover" offset={2}>
+        {({ node }) => (
           <SidebarBottom>
             <div {...styles.layout.container}>
               <div
@@ -59,6 +59,6 @@ export const CoverUI = withTheme()(
   }
 )
 
-export const renderUI = () => {
-  return <CoverUI />
+export const renderUI = ({ editor }) => {
+  return <CoverUI editor={editor} />
 }
