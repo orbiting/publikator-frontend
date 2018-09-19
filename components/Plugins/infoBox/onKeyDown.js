@@ -29,6 +29,12 @@ const onEnter = (_, change) => {
         f(value.startBlock) || f(value.endBlock)
     )
   ) {
+    if (
+      value.blocks.every(isBlock('infoBoxText'))
+    ) {
+      return
+    }
+
     return change.moveToEnd()
   }
 
@@ -113,6 +119,14 @@ const onDeleteOrBackspace = (_, change) => {
         f(value.startBlock) || f(value.endBlock)
     )
   ) {
+    if (
+      value.blocks.every(
+        isBlock('infoBoxText')
+      ) ||
+      value.startBlock === value.endBlock
+    ) {
+      return
+    }
     return change.moveToStart()
   }
 
