@@ -28,9 +28,9 @@ export const SubheadButton = withTheme()(
   )
 )
 
-export const SubheadUI = (
+export const SubheadUI = ({ editor }) => (
   <Selected node="subhead" offset={1}>
-    {({ node, editor }) => (
+    {({ node }) => (
       <Fragment>
         <SidebarInsertOptions>
           <InsertButtons
@@ -54,3 +54,7 @@ export const SubheadUI = (
     )}
   </Selected>
 )
+
+export const renderUI = ({ editor }) => {
+  return <SubheadUI editor={editor} />
+}

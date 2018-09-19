@@ -19,6 +19,7 @@ const mapFromFactory = factory => (
   state,
   { editor }
 ) =>
+  editor.value &&
   factory(editor.value.document.data, value => {
     editor.change(updateMeta, value)
   })

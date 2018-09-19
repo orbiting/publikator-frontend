@@ -6,17 +6,17 @@ export default ({ node }) => {
   if (node.text.trim() !== '') {
     return
   }
-  if (isBlock('title')) {
+  if (isBlock('title', node)) {
     return <Placeholder>Titel</Placeholder>
   }
 
-  if (isBlock('subject')) {
+  if (isBlock('subject', node)) {
     return <Placeholder>Spitzmarke</Placeholder>
   }
-  if (isBlock('lead')) {
+  if (isBlock('lead', node)) {
     return <Placeholder>Lead</Placeholder>
   }
-  if (isBlock('credits')) {
+  if (isBlock('credits', node)) {
     return (
       <Placeholder>Autoren, Datum</Placeholder>
     )

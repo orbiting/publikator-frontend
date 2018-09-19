@@ -6,7 +6,7 @@ export default ({
   attributes,
   node,
 }) => {
-  if (isBlock('figureGroup')) {
+  if (isBlock('figureGroup', node)) {
     return (
       <SchemaComponent
         name="figureGroup"
@@ -20,7 +20,7 @@ export default ({
     )
   }
 
-  if (isBlock('figureGroupFigure')) {
+  if (isBlock('figureGroupFigure', node)) {
     return (
       <SchemaComponent
         name="figureGroupFigure"

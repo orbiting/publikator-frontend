@@ -1,11 +1,11 @@
 import { SchemaComponent } from '../../Editor/components/Schema'
 import { isBlock } from '../../Editor/lib'
-import { renderUi } from './ui'
+import { renderUI } from './ui'
 
 export default {
-  renderUi,
+  renderUI,
   renderNode({ node, children, attributes }) {
-    if ((isBlock('subhead'), node)) {
+    if (isBlock('subhead', node)) {
       return (
         <SchemaComponent
           name="subhead"

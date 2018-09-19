@@ -33,19 +33,21 @@ export default ({
   node,
   children,
   attributes,
+  editor,
 }) => {
-  if (isBlock('titleBlock')) {
+  if (isBlock('titleBlock', node)) {
     return (
       <TitleBlock
         node={node}
         attributes={attributes}
+        editor={editor}
       >
         {children}
       </TitleBlock>
     )
   }
 
-  if (isBlock('title')) {
+  if (isBlock('title', node)) {
     return (
       <SchemaComponent
         name="title"
@@ -56,7 +58,7 @@ export default ({
     )
   }
 
-  if (isBlock('subject')) {
+  if (isBlock('subject', node)) {
     return (
       <SchemaComponent
         name="subject"
@@ -67,7 +69,7 @@ export default ({
     )
   }
 
-  if (isBlock('lead')) {
+  if (isBlock('lead', node)) {
     return (
       <SchemaComponent
         name="lead"
@@ -78,7 +80,7 @@ export default ({
     )
   }
 
-  if (isBlock('credits')) {
+  if (isBlock('credits', node)) {
     return (
       <SchemaComponent
         name="credits"
@@ -88,4 +90,5 @@ export default ({
       </SchemaComponent>
     )
   }
+  console.log('title block passes')
 }

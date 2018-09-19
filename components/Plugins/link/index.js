@@ -1,6 +1,6 @@
 import { SchemaComponent } from '../../Editor/components/Schema'
 import { isInline } from '../../Editor/lib'
-import { renderUI } from '.ui'
+import { renderUI } from './ui'
 
 export default {
   renderUI,

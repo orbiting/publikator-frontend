@@ -8,7 +8,7 @@ export default {
   onKeyDown,
   renderUI,
   renderNode({ node, children, attributes }) {
-    if (isBlock('list')) {
+    if (isBlock('list', node)) {
       return (
         <SchemaComponent
           name="list"
@@ -19,7 +19,7 @@ export default {
         </SchemaComponent>
       )
     }
-    if (isBlock('listItem')) {
+    if (isBlock('listItem', node)) {
       return (
         <SchemaComponent
           name="listItem"

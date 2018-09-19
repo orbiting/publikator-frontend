@@ -1,4 +1,3 @@
-const path = require('path')
 const webpack = require('webpack')
 
 require('dotenv').config({
@@ -23,20 +22,6 @@ module.exports = {
     config.plugins.push(
       new webpack.DefinePlugin(env)
     )
-    config.resolve.alias = {
-      '@orbiting/publikator-editor': path.resolve(
-        __dirname,
-        'components/Editor/'
-      ),
-      '@orbiting/publikator-plugins': path.resolve(
-        __dirname,
-        'components/Plugins/'
-      ),
-      '@orbiting/next-app': path.resolve(
-        __dirname,
-        'packages/next-app/'
-      ),
-    }
     return config
   },
 }
