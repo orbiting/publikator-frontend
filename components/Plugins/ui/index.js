@@ -13,6 +13,7 @@ export default plugins => {
           {renderFunctions.map((F, i) => (
             <F
               key={`plugin-${i}`}
+              value={value}
               editor={editor}
             />
           ))}

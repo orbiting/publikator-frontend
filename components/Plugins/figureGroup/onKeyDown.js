@@ -1,97 +1,145 @@
 import {
-  compose,
-  converge,
-  both,
-  ifElse,
-  always,
-  allPass,
-  either,
-} from 'ramda'
+  removeBlock,
+  insertBlockAfter,
+  focusNext,
+} from '../../Editor/lib/changes'
+import { getChildIndex } from '../../Editor/lib/selection'
 
-import { removeBlock } from '../../Editor/lib/changes'
+import { isBlock } from '../../Editor/lib'
 
-import {
-  getChange,
-  isCollapsed,
-  getParentOf,
-  getStartBlock,
-  hasEmptyText,
-  eventHandler,
-  isDelete,
-  isBackspace,
-  isBlock,
-  getClosestOf,
-} from '../../Editor/lib'
+import Caption from '../caption'
+import { getNewFigureGroupFigure } from './getNew'
 
-const onDeleteOrBackspace = compose(
-  ifElse(
-    allPass([
-      isCollapsed,
-      compose(
-        either(
-          isBlock('figureImage'),
-          isBlock('caption')
-        ),
-        getStartBlock
-      ),
-      compose(
-        both(
-          isBlock('figureGroupFigure'),
-          hasEmptyText
-        ),
-        getParentOf(getStartBlock)
-      ),
-      compose(
-        both(
-          isBlock('figureGroup'),
-          n => n.nodes.size === 1
-        ),
-        getClosestOf(
-          isBlock('figureGroup'),
-          getStartBlock
-        )
-      ),
-    ]),
-    converge(removeBlock, [
-      getChange,
-      getParentOf(getStartBlock),
-      always({ url: '' }),
-    ])
-  ),
-  ifElse(
-    allPass([
-      isCollapsed,
-      compose(
-        isBlock('figureImage'),
-        getStartBlock
-      ),
-      compose(
-        both(
-          isBlock('figureGroupFigure'),
-          hasEmptyText
-        ),
-        getParentOf(getStartBlock)
-      ),
-    ]),
-    converge(removeBlock, [
-      getChange,
-      getParentOf(getStartBlock),
-      always({ url: '' }),
-    ])
+const selectableBlocks = [
+  isBlock('figureImage'),
+  isBlock('captionText'),
+  isBlock('captionByline'),
+]
+
+const isFigureEmpty = node =>
+  node.text.trim() === '' &&
+  !node.nodes.first().data.get('url')
+
+const isFigureGroupEmpty = node =>
+  // Has empty text
+  node.text.trim() === '' &&
+  // Has only one child, which is a figure
+  (!node.nodes.size === 1 ||
+    // Has two children, the second is the caption
+    (node.nodes.size === 2 &&
+      isBlock('caption', node.nodes.last())))
+
+const onDeleteOrBackspace = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  if (
+    !selectableBlocks.some(f =>
+      f(value.startBlock)
+    )
+  ) {
+    return
+  }
+
+  const figureGroup = document.getClosest(
+    value.startBlock.key,
+    isBlock('figureGroup')
   )
-)
 
-const onBackspace = onDeleteOrBackspace(
-  always(undefined)
-)
+  if (!figureGroup) {
+    return
+  }
 
-const onDelete = onDeleteOrBackspace(
-  always(undefined)
-)
+  if (isFigureGroupEmpty(figureGroup)) {
+    return removeBlock(change, figureGroup)
+  }
 
-export default eventHandler(
-  compose(
-    ifElse(isBackspace, onBackspace),
-    ifElse(isDelete, onDelete)
-  )(always(undefined))
-)
+  const figureGroupFigure = document.getClosest(
+    value.startBlock.key,
+    isBlock('figureGroupFigure')
+  )
+
+  if (!figureGroupFigure) {
+    return
+  }
+
+  if (isFigureEmpty(figureGroupFigure)) {
+    return removeBlock(change, figureGroupFigure)
+  }
+}
+
+const onEnter = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  const figureGroup = document.getClosest(
+    value.startBlock.key,
+    isBlock('figureGroup')
+  )
+
+  if (!figureGroup) {
+    return
+  }
+
+  const figureGroupFigure = document.getClosest(
+    value.startBlock.key,
+    isBlock('figureGroupFigure')
+  )
+
+  if (!figureGroupFigure) {
+    return
+  }
+
+  if (
+    !isBlock('captionByline', value.startBlock)
+  ) {
+    return
+  }
+
+  const childIndex = getChildIndex(
+    value,
+    figureGroupFigure
+  )
+
+  if (childIndex === figureGroup.nodes.size - 1) {
+    return focusNext(
+      insertBlockAfter(
+        change,
+        Caption.getNew(),
+        figureGroupFigure
+      )
+    )
+  }
+
+  return focusNext(
+    insertBlockAfter(
+      change,
+      getNewFigureGroupFigure(),
+      figureGroupFigure
+    )
+  )
+}
+
+export default (event, change) => {
+  if (event.key === 'Enter') {
+    return onEnter(event, change)
+  }
+
+  if (
+    event.key === 'Backspace' ||
+    event.key === 'Delete'
+  ) {
+    return onDeleteOrBackspace(event, change)
+  }
+}

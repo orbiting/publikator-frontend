@@ -16,6 +16,7 @@ export default () =>
     type: 'figureGroup',
     nodes: [
       getNewFigureGroupFigure(),
+      getNewFigureGroupFigure(),
       Caption.getNew(),
     ],
   })
