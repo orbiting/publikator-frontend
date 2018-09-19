@@ -14,7 +14,7 @@ import { LinkButton } from '../link/ui'
 export const CreditsUI = withTheme()(
   ({ styles, editor }) => {
     return (
-      <Selected node="credits" offset={1}>
+      <Selected nodeType="credits" offset={1}>
         {({ node }) => (
           <Fragment>
             <SidebarFormatOptions>

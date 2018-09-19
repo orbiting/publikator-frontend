@@ -171,7 +171,7 @@ export const LinkUI = compose(
     editor,
   }) => {
     return (
-      <Selected node="link">
+      <Selected nodeType="link">
         {({ node }) => (
           <SidebarBottom>
             <div {...styles.layout.container}>

@@ -18,18 +18,25 @@ export const selectNode = node => ({
 })
 
 const mapStateToSelectionStatusProps = (
-  state,
-  { offset, node }
+  { selectionPath },
+  { offset, nodeType }
 ) => {
+  let node
+  if (
+    selectionPath.selectedNode &&
+    selectionPath.selectedNode.type === nodeType
+  ) {
+    node = selectionPath.selectedNode
+  } else if (selectionPath.selectionPath) {
+    node = selectionPath.selectionPath
+      .skipLast(1)
+      .takeLast(offset)
+      .find(n => n.type === nodeType)
+  }
+
   return {
-    isSelected:
-      !!state.selectionPath.selectedNode &&
-      (state.selectionPath.selectedNode.key ===
-        node.key ||
-        state.selectionPath.selectionPath
-          .skipLast(1)
-          .takeLast(offset)
-          .some(n => n.key === node.key)),
+    isSelected: !!node,
+    node,
   }
 }
 

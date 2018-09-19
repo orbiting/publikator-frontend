@@ -31,7 +31,7 @@ export const InsertFigureButton = withTheme()(
 
 export const FigureUI = withTheme()(
   ({ styles, editor }) => (
-    <Selected node="figure" offset={2}>
+    <Selected nodeType="figure" offset={2}>
       {({ node }) => (
         <SidebarTop>
           <div {...styles.layout.container}>

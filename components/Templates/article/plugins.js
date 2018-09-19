@@ -17,8 +17,9 @@ import Infobox from '../../Plugins/infoBox'
 import Meta from '../../Plugins/meta'
 
 import Center from '../../Plugins/center'
+import UI from '../../Plugins/ui'
 
-export default [
+const plugins = [
   Bold,
   Center,
   FigureGroup,
@@ -37,3 +38,5 @@ export default [
   Italic,
   Meta,
 ]
+
+export default [...plugins, UI(plugins)]

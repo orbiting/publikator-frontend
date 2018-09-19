@@ -100,7 +100,7 @@ const FigureToggleButton = withTheme()(
 export const InfoBoxUI = withTheme()(
   ({ styles, editor }) => {
     return (
-      <Selected node="infoBox" offset={3}>
+      <Selected nodeType="infoBox" offset={3}>
         {({ node }) => {
           const figure = node.nodes.get(1)
           const hasFigure = isBlock(
@@ -229,7 +229,7 @@ export const InfoBoxUI = withTheme()(
 
 export const InfoBoxTitleUI = ({ editor }) => {
   return (
-    <Selected node="infoBoxTitle">
+    <Selected nodeType="infoBoxTitle">
       {() => (
         <SidebarTextOptions>
           <TextButtons editor={editor} />
@@ -242,7 +242,7 @@ export const InfoBoxTitleUI = ({ editor }) => {
 export const InfoBoxTextUI = withTheme()(
   ({ styles, editor }) => {
     return (
-      <Selected node="infoBoxText">
+      <Selected nodeType="infoBoxText">
         {() => (
           <Fragment>
             <SidebarFormatOptions>
