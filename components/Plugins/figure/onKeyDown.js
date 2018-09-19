@@ -8,20 +8,26 @@ const onDeleteOrBackspace = (_, change) => {
     value: { document, selection },
   } = change
 
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  if (!isBlock('figureImage', value.startBlock)) {
+    return
+  }
+
+  const parent = document.getParent(
+    value.startBlock.key
+  )
+
+  if (!isBlock('figure', parent)) {
+    return
+  }
   if (
-    selection.isCollapsed &&
-    isBlock('figureImage', value.startBlock) &&
-    value.startBlock.data.get('url') === ''
+    value.startBlock.data.get('url') === '' &&
+    parent.text.trim() === ''
   ) {
-    let parent = document.getParent(
-      value.startBlock.key
-    )
-    if (
-      isBlock('figure', parent) &&
-      parent.text.trim() === ''
-    ) {
-      return removeBlock(change, parent)
-    }
+    return removeBlock(change, parent)
   }
 }
 

@@ -10,75 +10,78 @@ import {
 
 import { isBlock } from '../../Editor/lib'
 
+const selectableBlocks = [
+  isBlock('captionText'),
+  isBlock('captionByline'),
+]
+
 const onEnter = (_, change) => {
   const {
     value,
     value: { selection, document },
   } = change
-  let c
 
   if (
     selection.isExpanded &&
-    (isBlock('captionText', value.startBlock) ||
-      isBlock(
-        'captionByline',
-        value.startBlock
-      ) ||
-      isBlock('captionText', value.endBlock) ||
-      isBlock('captionByline', value.endBlock))
+    selectableBlocks.some(
+      f =>
+        f(value.startBlock) || f(value.endBlock)
+    )
   ) {
     return change.moveToStart()
   }
 
-  if (selection.isCollapsed) {
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  if (isBlock('captionText', value.startBlock)) {
     if (
-      isBlock('captionText', value.startBlock)
-    ) {
-      if (
-        isBlock(
-          'captionByline',
-          document.getNextBlock(
-            value.startBlock.key
-          )
+      isBlock(
+        'captionByline',
+        document.getNextBlock(
+          value.startBlock.key
         )
-      ) {
-        return focusNext(change)
-      } else {
-        c = insertBlockAfter(
+      )
+    ) {
+      return focusNext(change)
+    } else {
+      return focusNext(
+        insertBlockAfter(
           change,
           Block.create({
             type: 'captionByline',
           }),
           value.startBlock
         )
-        return focusNext(c)
-      }
+      )
     }
+  }
+  if (
+    isBlock('captionByline', value.startBlock)
+  ) {
     if (
-      isBlock('captionByline', value.startBlock)
-    ) {
-      if (
-        selection.start.isAtStartOfNode(
-          value.startBlock
-        ) &&
-        !isBlock(
-          'captionText',
-          document.getPreviousBlock(
-            value.startBlock.key
-          )
+      selection.start.isAtStartOfNode(
+        value.startBlock
+      ) &&
+      !isBlock(
+        'captionText',
+        document.getPreviousBlock(
+          value.startBlock.key
         )
-      ) {
-        c = insertBlockBefore(
+      )
+    ) {
+      return focusPrevious(
+        insertBlockBefore(
           change,
           Block.create({
             type: 'captionText',
           }),
           value.startBlock
         )
-        return focusPrevious(c)
-      }
-      return focusNext(change)
+      )
     }
+    return focusNext(change)
   }
 }
 
@@ -101,13 +104,10 @@ export const onDeleteOrBackspace = (
 
   if (
     selection.isExpanded &&
-    (isBlock('captionText', value.startBlock) ||
-      isBlock(
-        'captionByline',
-        value.startBlock
-      ) ||
-      isBlock('captionText', value.endBlock) ||
-      isBlock('captionByline', value.endBlock))
+    selectableBlocks.some(
+      f =>
+        f(value.startBlock) || f(value.endBlock)
+    )
   ) {
     return change.moveToStart()
   }
@@ -123,11 +123,6 @@ export const onDeleteOrBackspace = (
 }
 
 export const onBackspace = (_, change) => {
-  let handled = onDeleteOrBackspace(_, change)
-  if (handled) {
-    return handled
-  }
-
   const {
     value,
     value: { selection, document },
@@ -176,11 +171,6 @@ export const onBackspace = (_, change) => {
 }
 
 export const onDelete = (_, change) => {
-  let handled = onDeleteOrBackspace(_, change)
-  if (handled) {
-    return handled
-  }
-
   const {
     value,
     value: { selection, document },
@@ -204,9 +194,15 @@ export default (event, change) => {
     return onEnter(event, change)
   }
   if (event.key === 'Backspace') {
-    return onBackspace(event, change)
+    return (
+      onDeleteOrBackspace(event, change) ||
+      onBackspace(event, change)
+    )
   }
   if (event.key === 'Delete') {
-    return onDelete(event, change)
+    return (
+      onDeleteOrBackspace(event, change) ||
+      onDelete(event, change)
+    )
   }
 }

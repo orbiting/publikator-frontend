@@ -1,132 +1,100 @@
 import {
-  compose,
-  equals,
-  complement,
-  converge,
-  both,
-  ifElse,
-  either,
-  always
-} from 'ramda'
-
-import {
   focusNext,
   focusPrevious,
   insertBlockAfter,
-  updateData
+  updateData,
 } from '../../Editor/lib/changes'
 
-import {
-  isMixed,
-  hasEdgeInSelection,
-  getChange,
-  isCollapsed,
-  getEndBlock,
-  getNextBlockOf,
-  getStartBlock,
-  eventHandler,
-  isEnter,
-  isDelete,
-  isBackspace,
-  iSafePath,
-  isBlock
-} from '../../Editor/lib'
+import { isBlock } from '../../Editor/lib'
 
-import getNewCaption from '../caption/getNew'
+import Caption from '../caption'
 
-const onEnter = compose(
-  ifElse(
-    both(
-      isMixed,
-      hasEdgeInSelection([isBlock('figureImage')])
-    ),
-    compose(
-      change => change.moveToEnd(),
-      getChange
-    )
-  ),
-  ifElse(
-    both(
-      isCollapsed,
-      compose(
-        isBlock('figureImage'),
-        getStartBlock
-      )
-    ),
-    ifElse(
-      compose(
-        either(
-          isBlock('captionText'),
-          isBlock('captionByline')
-        ),
-        getNextBlockOf(getStartBlock)
-      ),
-      compose(
-        focusNext,
-        getChange
-      ),
-      compose(
-        focusNext,
-        converge(insertBlockAfter, [
-          getChange,
-          getNewCaption,
-          getEndBlock
-        ])
-      )
+const onEnter = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (
+    selection.isExpanded &&
+    (isBlock('figureImage', value.startBlock) ||
+      isBlock('figureImage', value.endBlock))
+  ) {
+    return change.moveToEnd()
+  }
+
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  if (!isBlock('figureImage', value.startBlock)) {
+    return
+  }
+
+  const nextBlock = document.getNextBlock(
+    value.startBlock.key
+  )
+
+  const delta =
+    document.getDepth(value.startBlock.key) -
+    document.getDepth(nextBlock.key)
+
+  if (
+    (isBlock('captionText', nextBlock) ||
+      isBlock('captionByline', nextBlock)) &&
+    delta <= 1
+  ) {
+    return focusNext(change)
+  }
+
+  return focusNext(
+    insertBlockAfter(
+      change,
+      Caption.getNew(),
+      value.startBlock
     )
   )
-)(always(undefined))
+}
 
-const onDeleteOrBackspace = compose(
-  ifElse(
-    both(
-      isMixed,
-      hasEdgeInSelection([isBlock('figureImage')])
-    ),
-    compose(
-      change => change.moveToStart(),
-      getChange
-    )
-  ),
-  ifElse(
-    both(
-      isCollapsed,
-      compose(
-        isBlock('figureImage'),
-        getStartBlock
-      )
-    ),
-    ifElse(
-      compose(
-        complement(equals('')),
-        iSafePath(['data', 'url']),
-        getStartBlock
-      ),
-      converge(updateData, [
-        getChange,
-        getStartBlock,
-        always({ url: '' })
-      ]),
-      compose(
-        focusPrevious,
-        getChange
-      )
-    )()
-  )
-)
+const onDeleteOrBackspace = (_, change) => {
+  const {
+    value,
+    value: { selection },
+  } = change
 
-const onBackspace = onDeleteOrBackspace(
-  always(undefined)
-)
+  if (
+    selection.isExpanded &&
+    (isBlock('figureImage', value.startBlock) ||
+      isBlock('figureImage', value.endBlock))
+  ) {
+    return change.moveToStart()
+  }
 
-const onDelete = onDeleteOrBackspace(
-  always(undefined)
-)
+  if (!selection.isCollapsed) {
+    return
+  }
 
-export default eventHandler(
-  compose(
-    ifElse(isEnter, onEnter),
-    ifElse(isBackspace, onBackspace),
-    ifElse(isDelete, onDelete)
-  )(always(undefined))
-)
+  if (!isBlock('figureImage', value.startBlock)) {
+    return
+  }
+
+  if (value.startBlock.data.get('url') !== '') {
+    return updateData(change, value.startBlock, {
+      url: '',
+    })
+  }
+
+  return focusPrevious(change)
+}
+
+export default (event, change) => {
+  if (event.key === 'Enter') {
+    return onEnter(event, change)
+  }
+  if (
+    event.key === 'Delete' ||
+    event.key === 'Backspace'
+  ) {
+    return onDeleteOrBackspace(event, change)
+  }
+}
