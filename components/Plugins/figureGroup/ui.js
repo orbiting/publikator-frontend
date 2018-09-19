@@ -13,7 +13,7 @@ import {
 
 import getNew from './getNew'
 
-export const InsertFigureButton = withTheme()(
+export const InsertFigureGroupButton = withTheme()(
   props => {
     return (
       <InsertBlockButton

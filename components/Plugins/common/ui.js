@@ -3,6 +3,7 @@ import { withTheme } from '../../Editor/apps/theme'
 import { ParagraphButton } from '../paragraph/ui'
 import { SubheadButton } from '../subhead/ui'
 import { InsertFigureButton } from '../figure/ui'
+import { InsertFigureGroupButton } from '../figureGroup/ui'
 import { InsertInfoBoxButton } from '../infoBox/ui'
 import { SubButton } from '../subscript/ui'
 import { SupButton } from '../superscript/ui'
@@ -53,6 +54,10 @@ export const InsertButtons = withTheme()(
           editor={editor}
         />
         <InsertInfoBoxButton
+          node={node}
+          editor={editor}
+        />
+        <InsertFigureGroupButton
           node={node}
           editor={editor}
         />

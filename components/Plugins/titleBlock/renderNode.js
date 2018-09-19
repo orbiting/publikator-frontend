@@ -53,7 +53,14 @@ export default ({
         name="title"
         {...attributes}
       >
-        {children}
+        <span
+          style={{
+            position: 'relative',
+            display: 'block',
+          }}
+        >
+          {children}
+        </span>
       </SchemaComponent>
     )
   }
@@ -64,7 +71,14 @@ export default ({
         name="subject"
         {...attributes}
       >
-        {children}
+        <span
+          style={{
+            position: 'relative',
+            display: 'block',
+          }}
+        >
+          {children}
+        </span>
       </SchemaComponent>
     )
   }
@@ -75,7 +89,14 @@ export default ({
         name="lead"
         {...attributes}
       >
-        {children}
+        <span
+          style={{
+            position: 'relative',
+            display: 'block',
+          }}
+        >
+          {children}
+        </span>
       </SchemaComponent>
     )
   }
@@ -86,7 +107,14 @@ export default ({
         name="credits"
         {...attributes}
       >
-        {children}
+        <span
+          style={{
+            position: 'relative',
+            display: 'block',
+          }}
+        >
+          {children}
+        </span>
       </SchemaComponent>
     )
   }

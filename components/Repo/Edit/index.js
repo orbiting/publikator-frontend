@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import gql from 'graphql-tag'
 import { Query, Mutation } from 'react-apollo'
 import { Value, KeyUtils } from 'slate'
-import debounce from 'lodash.debounce'
+// import debounce from 'lodash.debounce'
 
 import {
   Editor,
@@ -82,35 +82,7 @@ export default class EditPage extends Component {
       hasUncommittedChanges: false,
     }
 
-    this.changeHandler = debounce(
-      (serialize, change) => {
-        const nextSlateDocument =
-          change.value.document
-        if (
-          this.state.slateDocument ===
-          nextSlateDocument
-        ) {
-          return
-        }
-        const nextMdastDocument = serialize(
-          nextSlateDocument.toJSON()
-        )
-
-        const hasUncommittedChanges =
-          this.state.mdastDocument &&
-          JSON.stringify(nextMdastDocument) !==
-            JSON.stringify(
-              this.state.mdastDocument
-            )
-
-        this.setState({
-          hasUncommittedChanges,
-          mdastDocument: nextMdastDocument,
-          slateDocument: nextSlateDocument,
-        }),
-          1000
-      }
-    )
+    this.changeHandler = () => {}
   }
 
   render() {
@@ -161,7 +133,9 @@ export default class EditPage extends Component {
                     <Mutation mutation={COMMIT}>
                       {(
                         commit,
-                        { loading, data, error }
+                        {
+                          /*loading, data, error*/
+                        }
                       ) => {
                         return (
                           <CommitButton
