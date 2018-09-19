@@ -90,5 +90,4 @@ export default ({
       </SchemaComponent>
     )
   }
-  console.log('title block passes')
 }

@@ -19,7 +19,6 @@ export const SchemaComponent = ({
 }) => (
   <SchemaContext.Consumer>
     {schema => {
-      console.log(name)
       const rule = schema.get(name)
       const Comp = rule && rule.component
       return Comp ? (

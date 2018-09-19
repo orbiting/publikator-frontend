@@ -34,18 +34,18 @@ export default ({
         </span>
       </SchemaComponent>
     )
-    if (isBlock('infoBoxText', node)) {
-      return (
-        <SchemaComponent
-          name="infoBoxText"
-          attributes={{
-            ...attributes,
-            style: { position: 'relative' },
-          }}
-        >
-          {children}
-        </SchemaComponent>
-      )
-    }
+  }
+  if (isBlock('infoBoxText', node)) {
+    return (
+      <SchemaComponent
+        name="infoBoxText"
+        attributes={{
+          ...attributes,
+          style: { position: 'relative' },
+        }}
+      >
+        {children}
+      </SchemaComponent>
+    )
   }
 }
