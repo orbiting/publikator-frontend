@@ -1,15 +1,3 @@
-import {
-  compose,
-  equals,
-  converge,
-  both,
-  ifElse,
-  either,
-  add,
-  always,
-  allPass,
-} from 'ramda'
-
 import { Block } from 'slate'
 
 import {
@@ -19,291 +7,249 @@ import {
   removeBlock,
 } from '../../Editor/lib/changes'
 
-import {
-  isMixed,
-  isExpanded,
-  hasEdgeInSelection,
-  getChange,
-  isCollapsed,
-  getEndBlock,
-  getNextBlockOf,
-  getParentOf,
-  getStartBlock,
-  hasEmptyText,
-  eventHandler,
-  isEnter,
-  isDelete,
-  isBackspace,
-  isBlock,
-  getNthAncestorOf,
-  getNumNodes,
-  getChildIndexOf,
-  getClosestOf,
-  notIsNil,
-  isCollapsedAtStart,
-  isCollapsedAtEnd,
-  getPreviousBlockOf,
-} from '../../Editor/lib'
+import { isBlock } from '../../Editor/lib'
 
 import { getNewInfoboxFigure } from './getNew'
 
-const onEnter = compose(
-  ifElse(
-    both(
-      isExpanded,
-      hasEdgeInSelection([
-        isBlock('infoBoxTitle'),
-      ])
-    ),
-    compose(
-      change => change.moveToEnd(),
-      getChange
-    )
-  ),
-  ifElse(
-    both(
-      isMixed,
-      hasEdgeInSelection([isBlock('infoBoxText')])
-    ),
-    compose(
-      change => change.moveToEnd(),
-      getChange
-    )
-  ),
-  ifElse(
-    both(
-      isCollapsed,
-      compose(
-        isBlock('infoBoxTitle'),
-        getStartBlock
-      )
-    ),
-    ifElse(
-      compose(
-        isBlock('figureImage'),
-        getNextBlockOf(getStartBlock)
-      ),
-      compose(
-        focusNext,
-        getChange
-      ),
-      compose(
-        focusNext,
-        converge(insertBlockAfter, [
-          getChange,
-          getNewInfoboxFigure,
-          getStartBlock,
-        ])
-      )
-    )
-  ),
-  ifElse(
-    allPass([
-      isCollapsed,
-      compose(
-        isBlock('captionByline'),
-        getStartBlock
-      ),
-      compose(
-        isBlock('infoBox'),
-        getNthAncestorOf(3, getStartBlock)
-      ),
-    ]),
-    ifElse(
-      compose(
-        isBlock('infoBoxText'),
-        getNextBlockOf(getStartBlock)
-      ),
-      compose(
-        focusNext,
-        getChange
-      ),
-      compose(
-        focusNext,
-        converge(insertBlockAfter, [
-          getChange,
-          () =>
-            Block.create({
-              type: 'infoBoxText',
-            }),
-          getStartBlock,
-        ])
-      )
-    )
-  ),
-  ifElse(
-    allPass([
-      isCollapsedAtStart,
-      compose(
-        both(
-          isBlock('infoBoxText'),
-          hasEmptyText
-        ),
-        getStartBlock
-      ),
-      converge(equals, [
-        getChildIndexOf(getStartBlock),
-        compose(
-          add(-1),
-          getNumNodes,
-          getParentOf(getStartBlock)
-        ),
-      ]),
-    ]),
-    compose(
-      focusNext,
-      converge(removeBlock, [
-        getChange,
-        getStartBlock,
-      ])
-    )
-  )
-)(always(undefined))
+const selectableBlocks = [
+  isBlock('infoBoxTitle'),
+  isBlock('infoBoxText'),
+]
 
-const onDeleteOrBackspace = compose(
-  ifElse(
-    allPass([
-      isCollapsed,
-      compose(
-        isBlock('figureImage'),
-        getStartBlock
-      ),
-      compose(
-        both(
-          isBlock('infoBoxFigure'),
-          hasEmptyText
-        ),
-        getParentOf(getStartBlock)
-      ),
-    ]),
-    converge(removeBlock, [
-      getChange,
-      getParentOf(getStartBlock),
-      always({ url: '' }),
-    ])
-  ),
-  ifElse(
-    both(
-      isMixed,
-      hasEdgeInSelection([
-        isBlock('infoBoxText'),
-        isBlock('infoBoxTitle'),
-      ])
-    ),
-    compose(
-      change => change.moveToStart(),
-      getChange
+const onEnter = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (
+    selection.isExpanded &&
+    selectableBlocks.some(
+      f =>
+        f(value.startBlock) || f(value.endBlock)
     )
-  ),
-  ifElse(
-    both(
-      isCollapsedAtStart,
-      compose(
-        allPass([
-          notIsNil,
-          hasEmptyText,
-          compose(
-            equals(1),
-            getNumNodes
-          ),
-        ]),
-        getClosestOf(
-          isBlock('infoBox'),
-          getStartBlock
-        )
-      )
-    ),
-    converge(removeBlock, [
-      getChange,
-      getClosestOf(
-        isBlock('infoBox'),
-        getStartBlock
-      ),
-    ])
-  )
-)
+  ) {
+    return change.moveToEnd()
+  }
 
-const onBackspace = compose(
-  onDeleteOrBackspace,
-  ifElse(
-    both(
-      isCollapsedAtStart,
-      compose(
-        isBlock('infoBoxTitle'),
-        getStartBlock
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  const infoBox = document.getClosest(
+    value.startBlock.key,
+    isBlock('infoBox')
+  )
+
+  if (!infoBox) {
+    return
+  }
+
+  const nextBlock = document.getNextBlock(
+    value.startBlock.key
+  )
+
+  if (isBlock('infoBoxTitle', value.startBlock)) {
+    if (isBlock('figureImage', nextBlock)) {
+      return focusNext(change)
+    }
+    return focusNext(
+      insertBlockAfter(
+        change,
+        getNewInfoboxFigure(),
+        value.startBlock
       )
-    ),
-    compose(
-      focusPrevious,
-      getChange
     )
-  ),
-  ifElse(
-    allPass([
-      isCollapsedAtStart,
-      compose(
-        both(
-          isBlock('infoBoxText'),
-          hasEmptyText
-        ),
-        getStartBlock
-      ),
-      compose(
-        either(
-          isBlock('captionText'),
-          isBlock('captionByline')
-        ),
-        getPreviousBlockOf(getStartBlock)
-      ),
-    ]),
-    converge(removeBlock, [
-      getChange,
-      getStartBlock,
-    ])
-  )
-)(always(undefined))
+  }
 
-const onDelete = compose(
-  onDeleteOrBackspace,
-  ifElse(
-    both(
-      isCollapsedAtEnd,
-      compose(
-        isBlock('infoBoxTitle'),
-        getEndBlock
+  if (
+    isBlock('captionByline', value.startBlock)
+  ) {
+    if (isBlock('infoBoxText', nextBlock)) {
+      return focusNext(change)
+    }
+
+    return focusNext(
+      insertBlockAfter(
+        change,
+        Block.create({
+          type: 'infoBoxText',
+        }),
+        infoBox.nodes.last()
       )
-    ),
-    getChange
-  ),
-  ifElse(
-    allPass([
-      isCollapsedAtEnd,
-      compose(
-        both(
-          isBlock('infoBoxText'),
-          hasEmptyText
-        ),
-        getNextBlockOf(getEndBlock)
-      ),
-      compose(
-        either(
-          isBlock('captionText'),
-          isBlock('captionByline')
-        ),
-        getStartBlock
-      ),
-    ]),
-    converge(removeBlock, [
-      getChange,
-      getStartBlock,
-    ])
-  )
-)(always(undefined))
+    )
+  }
 
-export default eventHandler(
-  compose(
-    ifElse(isEnter, onEnter),
-    ifElse(isBackspace, onBackspace),
-    ifElse(isDelete, onDelete)
-  )(always(undefined))
-)
+  if (!isBlock('infoBoxText', value.startBlock)) {
+    return
+  }
+
+  if (
+    !selection.start.isAtStartOfNode(
+      value.startBlock
+    ) ||
+    value.startBlock.text.trim() !== ''
+  ) {
+    return
+  }
+
+  if (infoBox.nodes.last() === value.startBlock) {
+    return focusNext(
+      removeBlock(change, value.startBlock)
+    )
+  }
+}
+
+const onDeleteOrBackspace = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (
+    selection.isExpanded &&
+    selectableBlocks.some(
+      f =>
+        f(value.startBlock) || f(value.endBlock)
+    )
+  ) {
+    return change.moveToStart()
+  }
+
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  const infoBox = document.getClosest(
+    value.startBlock.key,
+    isBlock('infoBox')
+  )
+
+  if (!infoBox) {
+    return
+  }
+
+  const parent = document.getParent(
+    value.startBlock.key
+  )
+
+  if (
+    isBlock('figureImage', value.startBlock) &&
+    isBlock('infoBoxFigure', parent) &&
+    parent.text.trim() === ''
+  ) {
+    return removeBlock(change, parent)
+  }
+
+  if (
+    !selection.start.isAtStartOfNode(
+      value.startBlock
+    )
+  ) {
+    return
+  }
+
+  if (
+    infoBox.text.trim() === '' &&
+    infoBox.nodes.size === 1
+  ) {
+    return removeBlock(change, infoBox)
+  }
+}
+
+const onBackspace = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  if (
+    !selection.start.isAtStartOfNode(
+      value.startBlock
+    )
+  ) {
+    return
+  }
+
+  if (isBlock('infoBoxTitle', value.startBlock)) {
+    return focusPrevious(change)
+  }
+
+  if (
+    !isBlock('infoBoxText', value.startBlock) ||
+    value.startBlock.text.trim() !== ''
+  ) {
+    return
+  }
+
+  const previousBlock = document.getPreviousBlock(
+    value.startBlock.key
+  )
+  if (
+    isBlock('captionText', previousBlock) ||
+    isBlock('captionByline', previousBlock)
+  ) {
+    return removeBlock(change, value.startBlock)
+  }
+}
+
+const onDelete = (_, change) => {
+  const {
+    value,
+    value: { selection, document },
+  } = change
+
+  if (!selection.isCollapsed) {
+    return
+  }
+
+  if (
+    !selection.end.isAtEndOfNode(value.endBlock)
+  ) {
+    return
+  }
+
+  if (isBlock('infoBoxTitle', value.endBlock)) {
+    return change
+  }
+
+  if (
+    !isBlock('captionText', value.endBlock) &&
+    !isBlock('captionByline', value.endBlock)
+  ) {
+    return
+  }
+
+  const nextBlock = document.getNextBlock(
+    value.endBlock.key
+  )
+
+  if (
+    isBlock('infoBoxText', nextBlock) &&
+    nextBlock.text.trim() === ''
+  ) {
+    return removeBlock(change, nextBlock)
+  }
+}
+
+export default (event, change) => {
+  if (event.key === 'Enter') {
+    return onEnter(event, change)
+  }
+  if (event.key === 'Backspace') {
+    return (
+      onDeleteOrBackspace(event, change) ||
+      onBackspace(event, change)
+    )
+  }
+  if (event.key === 'Delete') {
+    return (
+      onDeleteOrBackspace(event, change) ||
+      onDelete(event, change)
+    )
+  }
+}

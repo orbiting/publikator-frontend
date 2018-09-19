@@ -28,7 +28,7 @@ const onEnter = (_, change) => {
         f(value.startBlock) || f(value.endBlock)
     )
   ) {
-    return change.moveToStart()
+    return change.moveToEnd()
   }
 
   if (!selection.isCollapsed) {
