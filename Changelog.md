@@ -72,7 +72,4 @@ There is also a normalization API in `lib/transform/normalize`, which I will exp
 
 ## Roadmap
 
-- Get rid of ramda in Editor. That was a serious mistake and adds to complexity with no real advantage. This should reduce the API surface of the Editor further.
-- Documentation
-- Refactor `pages/repo/edit` into smaller chunks. Use other local storage than localStorage (e.g. IndexedDB).
-- Port all modules
+https://trello.com/b/ABTSZMVw/publikator-sidebar
