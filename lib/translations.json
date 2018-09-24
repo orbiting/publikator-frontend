@@ -1,5 +1,5 @@
 {
-  "updated": "2018-07-17T10:13:16.747Z",
+  "updated": "2018-09-24T22:49:15.797Z",
   "title": "live",
   "data": [
     {
@@ -36,7 +36,7 @@
     },
     {
       "key": "signIn/polling/APP/text",
-      "value": "Wir haben Ihnen auf Ihre Republik-App <b>eine Push-Nachricht</b> geschickt, mit der Sie diesen Zugriff freischalten können."
+      "value": "Wir haben Ihnen auf Ihre Republik-App <b>eine Benachrichtigung</b> geschickt. Bitte prüfen Sie Ihr Smartphone oder Tablet."
     },
     {
       "key": "signIn/polling/EMAIL_TOKEN/title",
@@ -85,6 +85,14 @@
     {
       "key": "signIn/email/error/invalid",
       "value": "E-Mail-Adresse ungültig"
+    },
+    {
+      "key": "cookies/disabled/error",
+      "value": "Cookies nicht erlaubt"
+    },
+    {
+      "key": "cookies/disabled/error/explanation",
+      "value": "Es scheint, als könnten wir Ihnen keinen Keks (Cookie) unterjubeln. Bitte erlauben Sie uns in Ihrem Browser ein Cookie zu hinterlegen. Nur damit gestatten Sie uns, Sie wiederzuerkennen und entsprechenden Zugriff auf Artikel und Diskussionen zu ermöglichen.<br />\n<ul>\n<li><a href=\"https://wiki.selfhtml.org/wiki/Sicherheit/Cookies_erlauben\" target=\"_blank\">Cookies für republik.ch erlauben?</a></li>\n<li><a href=\"/datenschutz\" target=\"_blank\">Mehr über Datenschutz bei der Republik AG erfahren?</a></li>\n</ul>\nWir helfen Ihnen per E-Mail unter <a href=\"mailto:kontakt@republik.ch\">kontakt@republik.ch</a> gerne weiter."
     },
     {
       "key": "signOut/label",
