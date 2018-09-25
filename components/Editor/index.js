@@ -9,6 +9,9 @@ import EditorStateProvider from './base/StateProvider'
 
 import Loader from '../Loader'
 
+import articleSettings from './settings/article'
+import frontSettings from './settings/front'
+
 export { EditorUI, EditorStateProvider }
 
 const styles = {
@@ -34,9 +37,13 @@ const Document = ({ children, readOnly }) => (
   </div>
 )
 
-export const getEditorConfig = (schema) => {
+export const getEditorSettings = (schema) => {
+  const { plugins } =
+    schema.template === 'front' ? frontSettings : articleSettings
+
   const { serializer, newDocument, editorSchema } = getSerializer(schema)
   return {
+    plugins,
     serializer,
     newDocument,
     editorSchema

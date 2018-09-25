@@ -18,7 +18,7 @@ import {
   Editor,
   EditorStateProvider,
   EditorUI,
-  getEditorConfig
+  getEditorSettings
 } from '../../components/Editor'
 
 import VersionControl from '../../components/VersionControl'
@@ -434,10 +434,11 @@ export class EditorPage extends Component {
         router.query.template
       )
       const schema = getSchema(template)
-      const { serializer, newDocument, editorSchema } = getEditorConfig(schema)
+      const { serializer, plugins, newDocument, editorSchema } = getEditorSettings(schema)
       this.serializer = serializer
       this.newDocument = newDocument
       this.editorSchema = editorSchema
+      this.plugins = plugins
       this.setState({
         schema
       }, () => {
@@ -703,6 +704,7 @@ export class EditorPage extends Component {
                   schema={this.editorSchema}
                   meta={repo ? repo.meta : {}}
                   value={editorState}
+                  plugins={this.plugins}
                   onChange={this.changeHandler}
                   onDocumentChange={this.documentChangeHandler}
                   readOnly={readOnly}
