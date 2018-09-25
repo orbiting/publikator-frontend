@@ -66,7 +66,7 @@ export default {
   LOGBOOK: false,
   LOGBOOK_CREDIT: false,
   LOGBOOK_TITLE: false,
-  META: false,
+  META: 'meta',
   NOTEP: false,
   PARAGRAPH: false,
   QUOTE: false,
