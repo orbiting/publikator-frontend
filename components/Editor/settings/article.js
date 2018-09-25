@@ -1,11 +1,45 @@
 import slugify from '../../../lib/utils/slug'
 import { isBlock } from '../base/lib'
 
+import Link from '../plugins/link'
+import FigureGroup from '../plugins/figureGroup'
+import Figure from '../plugins/figure'
+import FigureImage from '../plugins/figureImage'
+import Cover from '../plugins/cover'
+import Caption from '../plugins/caption'
+import Bold from '../plugins/bold'
+import List from '../plugins/list'
+import Superscript from '../plugins/superscript'
+import InfoBox from '../plugins/infoBox'
+import Subscript from '../plugins/subscript'
+import Italic from '../plugins/italic'
+import Paragraph from '../plugins/paragraph'
+import Subhead from '../plugins/subhead'
+import TitleBlock from '../plugins/titleBlock'
+import Center from '../plugins/center'
+
 import Meta from '../plugins/meta'
 import AutoMeta from '../plugins/autoMeta'
 import UI from '../plugins/ui'
 
-const contentPlugins = []
+const contentPlugins = [
+  Bold,
+  Center,
+  FigureGroup,
+  InfoBox,
+  TitleBlock,
+  Cover,
+  Figure,
+  FigureImage,
+  Caption,
+  Paragraph,
+  Subhead,
+  List,
+  Link,
+  Superscript,
+  Subscript,
+  Italic
+]
 
 const documentAutoMeta = change => {
   const documentNode = change.value.document
