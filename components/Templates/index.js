@@ -16,20 +16,20 @@ const schemas = {
   newsletter: newsletterSchema,
   editorialNewsletter: editorialNewsletterSchema(),
   neutrum: neutrumSchema,
-  article: createArticleSchema({t}),
-  front: createFrontSchema({t}),
-  format: createFormatSchema({t}),
-  discussion: createDiscussionSchema({t}),
-  dossier: createDossierSchema({t})
+  article: createArticleSchema({ t }),
+  front: createFrontSchema({ t }),
+  format: createFormatSchema({ t }),
+  discussion: createDiscussionSchema({ t }),
+  dossier: createDossierSchema({ t })
 }
 
 export const getSchema = template => {
   const key = template || Object.keys(schemas)[0]
   const schema = schemas[key] || (key === 'editorial' && schemas.article)
-
   if (!schema) {
     throw new Error(`Unkown Schema ${key}`)
   }
+  schema.template = key
   return schema
 }
 
