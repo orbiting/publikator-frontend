@@ -37,11 +37,11 @@ const Document = ({ children, readOnly }) => (
   </div>
 )
 
-export const getEditorSettings = (schema) => {
-  const { plugins } =
-    schema.template === 'front' ? frontSettings : articleSettings
-
+export const getEditorSettings = schema => {
   const { serializer, newDocument, editorSchema } = getSerializer(schema)
+  const { plugins } = schema.template === 'front'
+    ? frontSettings({ schema: editorSchema })
+    : articleSettings({ schema: editorSchema })
   return {
     plugins,
     serializer,
