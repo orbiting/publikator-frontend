@@ -35,3 +35,15 @@ export const SchemaComponent = ({
     }}
   </SchemaContext.Consumer>
 )
+
+export const SchemaValue = ({
+  name,
+  children
+}) => (
+  <SchemaContext.Consumer>
+    {schema => {
+      const rule = schema.get(name)
+      return children({ rule, [name]: rule })
+    }}
+  </SchemaContext.Consumer>
+)

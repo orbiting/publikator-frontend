@@ -120,6 +120,7 @@ export const getSerializer = schema => {
     editorSchema
   })
   editorSchema.document = rootModule
+  editorSchema.schema = schema
   return {
     serializer: rootModule.helpers.serializer,
     newDocument: rootModule.helpers.newDocument,
