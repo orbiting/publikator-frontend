@@ -54,7 +54,7 @@ export default options => {
       )
 
       return {
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         data: {
           float: node.data.float,
@@ -69,11 +69,11 @@ export default options => {
     },
     toMdast: (object, index, parent, rest) => {
       const image = findOrCreate(object.nodes, {
-        kind: 'block',
+        object: 'block',
         type: FIGURE_IMAGE
       }, { isVoid: true, data: {} })
       const caption = findOrCreate(object.nodes, {
-        kind: 'block',
+        object: 'block',
         type: FIGURE_CAPTION
       }, { nodes: [], data: {} })
 

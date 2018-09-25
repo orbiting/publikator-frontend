@@ -47,7 +47,7 @@ export default ({ rule, subModules, TYPE }) => {
       }
 
       return {
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         data: {
           ...node.data,

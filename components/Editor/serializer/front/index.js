@@ -15,7 +15,7 @@ export default ({ rule, subModules, TYPE }) => {
   let invisibleNodes
 
   const documentRule = {
-    match: object => object.kind === 'document',
+    match: object => object.object === 'document',
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
       const visibleNodes = node.children.slice(0, 100)
@@ -23,10 +23,10 @@ export default ({ rule, subModules, TYPE }) => {
       const res = {
         document: {
           data: node.meta,
-          kind: 'document',
+          object: 'document',
           nodes: childSerializer.fromMdast(visibleNodes)
         },
-        kind: 'value'
+        object: 'value'
       }
       return res
     },

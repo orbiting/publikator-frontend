@@ -15,7 +15,7 @@ export default ({ rule, subModules, TYPE }) => {
     match: matchMark(TYPE),
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, { visitChildren }) => ({
-      kind: 'mark',
+      object: 'mark',
       type: TYPE,
       nodes: visitChildren(node)
     }),

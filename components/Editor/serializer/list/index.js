@@ -12,7 +12,7 @@ export default ({ rule, subModules, TYPE }) => {
     match: matchBlock(TYPE),
     matchMdast: (node) => node.type === 'list',
     fromMdast: (node, index, parent, rest) => ({
-      kind: 'block',
+      object: 'block',
       type: TYPE,
       data: {
         ordered: node.ordered,

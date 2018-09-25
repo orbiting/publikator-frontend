@@ -26,7 +26,7 @@ export const fromMdast = ({
   const { module, ...data } = getData(node.data)
 
   const result = {
-    kind: 'block',
+    object: 'block',
     type: TYPE,
     data: {
       ...data,

@@ -52,7 +52,7 @@ export default ({ rule, subModules, TYPE }) => {
       )
 
       return {
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         data: {
           src: image.url,
@@ -76,7 +76,7 @@ export default ({ rule, subModules, TYPE }) => {
           },
           titleSerializer.toMdast(
             findOrCreate(object.nodes, {
-              kind: 'block',
+              object: 'block',
               type: titleModule.TYPE
             }, { nodes: [] }),
             1,
@@ -84,7 +84,7 @@ export default ({ rule, subModules, TYPE }) => {
           ),
           leadSerializer.toMdast(
             findOrCreate(object.nodes, {
-              kind: 'block',
+              object: 'block',
               type: leadModule.TYPE
             }, { nodes: [] }),
             2,

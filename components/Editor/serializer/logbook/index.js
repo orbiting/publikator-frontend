@@ -17,18 +17,18 @@ const fromMdast = options => {
 
     const deserializedTitle = (title && titleModule.helpers.serializer.fromMdast(title)) ||
       [{
-        kind: 'block',
+        object: 'block',
         type: titleModule.TYPE
       }]
 
     const deserializedCredits = (credits && creditsModule.helpers.serializer.fromMdast(credits)) ||
       [{
-        kind: 'block',
+        object: 'block',
         type: creditsModule.TYPE
       }]
 
     return {
-      kind: 'block',
+      object: 'block',
       type: options.TYPE,
       data: node.data,
       nodes: [

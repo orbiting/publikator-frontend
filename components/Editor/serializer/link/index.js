@@ -6,7 +6,7 @@ export default ({ rule, subModules, TYPE }) => {
     match: matchInline(TYPE),
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, { visitChildren, context }) => ({
-      kind: 'inline',
+      object: 'inline',
       type: TYPE,
       data: {
         title: node.title,

@@ -7,7 +7,7 @@ export default ({ rule, subModules, TYPE }) => {
     matchMdast: rule.matchMdast,
     fromMdast: () => {
       return ({
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         isVoid: true,
         nodes: []

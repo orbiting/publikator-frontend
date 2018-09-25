@@ -13,7 +13,7 @@ export default ({ rule, subModules, TYPE }) => {
       const html = node.children.find(c => c.type === 'code' && c.lang === 'html')
 
       return ({
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         data: {
           ...node.data,

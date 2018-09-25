@@ -21,8 +21,8 @@ const getSerializer = options => {
           matchMdast: node =>
             node.type === 'break',
           fromMdast: () => ({
-            kind: 'text',
-            leaves: [{ kind: 'leaf', text: '\n', marks: [] }]
+            object: 'text',
+            leaves: [{ object: 'leaf', text: '\n', marks: [] }]
           })
         })
     }
@@ -40,11 +40,11 @@ const getSerializer = options => {
     const bylineNodes = byline.children
 
     const res = {
-      kind: 'block',
+      object: 'block',
       type: options.TYPE,
       nodes: [
         {
-          kind: 'block',
+          object: 'block',
           type: 'CAPTION_TEXT',
           nodes: inlineSerializer.fromMdast(
             captionNodes,
@@ -54,7 +54,7 @@ const getSerializer = options => {
           )
         },
         {
-          kind: 'block',
+          object: 'block',
           type: bylineModule.TYPE,
           nodes: bylineModule.helpers.serializer.fromMdast(
             bylineNodes,

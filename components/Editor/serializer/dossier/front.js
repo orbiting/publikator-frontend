@@ -36,7 +36,7 @@ export const fromMdast = options => {
 
   return (node, index, parent, rest) => {
     return ({
-      kind: 'block',
+      object: 'block',
       type: TYPE,
       data: getData(node.data),
       nodes: [

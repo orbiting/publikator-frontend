@@ -28,7 +28,7 @@ export default ({ rule, subModules, TYPE }) => {
       const code = node.children.find(c => c.type === 'code')
 
       return ({
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         data: {
           images,

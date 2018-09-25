@@ -24,7 +24,7 @@ export const fromMdast = options => {
             value: ''
           }]
       })))
-      : [{ kind: 'block', type: paragraphModule.TYPE }]
+      : [{ object: 'block', type: paragraphModule.TYPE }]
 
     const serializedCaption = captionModule.helpers.serializer.fromMdast(caption.length ? caption : ([{
       type: 'paragraph',
@@ -40,7 +40,7 @@ export const fromMdast = options => {
     }]))
 
     return {
-      kind: 'block',
+      object: 'block',
       type: options.TYPE,
       data: node.data,
       nodes: [

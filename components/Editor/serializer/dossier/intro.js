@@ -62,7 +62,7 @@ export const fromMdast = options => {
     // enhance all immediate children with data
       .map(node => ({ ...node, data: { ...node.data, ...data } }))
     const result = {
-      kind: 'block',
+      object: 'block',
       type: TYPE,
       data: {
         ...getData(data),

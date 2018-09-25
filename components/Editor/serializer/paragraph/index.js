@@ -34,8 +34,8 @@ export default ({ rule, subModules, TYPE }) => {
     ).filter(Boolean).concat({
       matchMdast: (node) => node.type === 'break',
       fromMdast: () => ({
-        kind: 'text',
-        leaves: [{ kind: 'leaf', text: '\n', marks: [] }]
+        object: 'text',
+        leaves: [{ object: 'leaf', text: '\n', marks: [] }]
       })
     })
   })
@@ -57,7 +57,7 @@ export default ({ rule, subModules, TYPE }) => {
       }
 
       return {
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         nodes: inlineSerializer.fromMdast(children, 0, node, rest)
       }

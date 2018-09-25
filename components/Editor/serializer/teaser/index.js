@@ -109,7 +109,7 @@ export const fromMdast = ({
     .map(node => ({ ...node, data: { ...node.data, ...data } }))
 
   const result = {
-    kind: 'block',
+    object: 'block',
     type: data.onlyImage ? `${TYPE}_VOID` : TYPE,
     data: {
       ...data,

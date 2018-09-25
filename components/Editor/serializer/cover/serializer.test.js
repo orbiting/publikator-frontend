@@ -50,7 +50,7 @@ Lead
   const value = serializer.deserialize(parse(md))
   const node = value.document.nodes.first()
 
-  assert.equal(node.kind, 'block')
+  assert.equal(node.object, 'block')
   assert.equal(node.type, TYPE)
 
   assert.equal(stringify(serializer.serialize(value)).trimRight(), md)

@@ -32,7 +32,7 @@ export default ({ rule, subModules, TYPE }) => {
       rest
     ) => {
       return ({
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         nodes: inlineSerializer.fromMdast(node.children, 0, node, rest)
       })

@@ -16,7 +16,7 @@ const fromMdast = ({ TYPE }) => (
     type: 'link'
   })
   return {
-    kind: 'block',
+    object: 'block',
     type: TYPE,
     isVoid: true,
     data: {

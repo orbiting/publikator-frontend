@@ -59,7 +59,7 @@ export const fromMdast = ({
     : figures
 
   const result = {
-    kind: 'block',
+    object: 'block',
     type: TYPE,
     data,
     nodes

@@ -12,7 +12,7 @@ export default ({ rule, subModules, TYPE }) => {
     match: matchBlock(TYPE),
     matchMdast: (node) => node.type === 'listItem',
     fromMdast: (node, index, parent, rest) => ({
-      kind: 'block',
+      object: 'block',
       type: TYPE,
       nodes: paragraphSerializer.fromMdast(node.children, 0, node, rest)
     }),

@@ -17,7 +17,7 @@ export default ({ rule, subModules, TYPE }) => {
     match: matchBlock(TYPE),
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => ({
-      kind: 'block',
+      object: 'block',
       type: TYPE,
       data: node.data,
       nodes: paragraphSerializer.fromMdast(node.children, 0, node, rest)

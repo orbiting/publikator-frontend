@@ -23,7 +23,7 @@ export default ({ rule, subModules, TYPE }) => {
   })
 
   const documentRule = {
-    match: object => object.kind === 'document',
+    match: object => object.object === 'document',
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
       node.children.forEach((child, index) => {
@@ -32,7 +32,7 @@ export default ({ rule, subModules, TYPE }) => {
 
       const documentNode = {
         data: node.meta,
-        kind: 'document',
+        object: 'document',
         nodes: childSerializer.fromMdast(node.children, 0, node, {
           context: {
             ...rest.context,
@@ -44,7 +44,7 @@ export default ({ rule, subModules, TYPE }) => {
 
       return {
         document: documentNode,
-        kind: 'value'
+        object: 'value'
       }
     },
     toMdast: (object, index, parent, rest) => {

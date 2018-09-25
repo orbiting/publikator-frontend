@@ -28,7 +28,7 @@ test('link serialization', assert => {
   const value = serializer.deserialize(parse('[Test](example.com)'))
   const node = value.document.nodes.first()
 
-  assert.equal(node.kind, 'block')
+  assert.equal(node.object, 'block')
   assert.equal(node.type, 'PARAGRAPH')
   assert.equal(node.text, 'Test')
 

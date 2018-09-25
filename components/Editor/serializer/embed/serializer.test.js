@@ -61,7 +61,7 @@ test('embedVideo serialization', assert => {
   const value = embedVideoSerializer.deserialize(parse(md))
   const embed = value.document.nodes.first()
 
-  assert.equal(embed.kind, 'block')
+  assert.equal(embed.object, 'block')
   assert.equal(embed.type, 'EMBEDVIDEO')
 
   assert.deepEqual(embed.data.toJS(), {
@@ -98,7 +98,7 @@ test('embedTwitter serialization', assert => {
   const value = embedTwitterSerializer.deserialize(parse(md))
   const embed = value.document.nodes.first()
 
-  assert.equal(embed.kind, 'block')
+  assert.equal(embed.object, 'block')
   assert.equal(embed.type, 'EMBEDTWITTER')
 
   assert.deepEqual(embed.data.toJS(), {

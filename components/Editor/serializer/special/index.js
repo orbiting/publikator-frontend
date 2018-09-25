@@ -7,7 +7,7 @@ export default ({ rule, subModules, TYPE }) => {
     matchMdast: (node) => node.type === 'zone',
     fromMdast: (node) => {
       return {
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         data: {
           identifier: node.identifier,

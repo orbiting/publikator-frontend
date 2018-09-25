@@ -36,7 +36,7 @@ export default ({ rule, subModules, TYPE }) => {
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
       return {
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         data: node.data,
         nodes: childSerializer.fromMdast(node.children, 0, node, rest)

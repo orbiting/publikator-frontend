@@ -18,7 +18,7 @@ test('h1 serialization', assert => {
   const value = serializer.deserialize(parse('# Test'))
   const node = value.document.nodes.first()
 
-  assert.equal(node.kind, 'block')
+  assert.equal(node.object, 'block')
   assert.equal(node.type, 'H1')
   assert.equal(node.text, 'Test')
 
@@ -42,7 +42,7 @@ test('h2 serialization', assert => {
   const value = serializer.deserialize(parse('## Test'))
   const node = value.document.nodes.first()
 
-  assert.equal(node.kind, 'block')
+  assert.equal(node.object, 'block')
   assert.equal(node.type, 'H2')
   assert.equal(node.text, 'Test')
 
@@ -66,7 +66,7 @@ test('h3 serialization', assert => {
   const value = serializer.deserialize(parse('### Test'))
   const node = value.document.nodes.first()
 
-  assert.equal(node.kind, 'block')
+  assert.equal(node.object, 'block')
   assert.equal(node.type, 'H3')
   assert.equal(node.text, 'Test')
 

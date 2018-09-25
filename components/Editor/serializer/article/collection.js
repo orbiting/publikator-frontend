@@ -23,7 +23,7 @@ export const fromMdast = options => {
   const { headerModule, articleGroupModule } = getSubmodules(options)
 
   return (node, index, parent, rest) => ({
-    kind: 'block',
+    object: 'block',
     type: TYPE,
     data: getData(node.data),
     nodes: [

@@ -13,7 +13,7 @@ export const fromMdast = ({
     parent,
     rest
   ) => ({
-    kind: 'block',
+    object: 'block',
     type: TYPE,
     nodes: node.children.map(
       (v, i) => teaserSerializer.fromMdast(v, i, node, rest)

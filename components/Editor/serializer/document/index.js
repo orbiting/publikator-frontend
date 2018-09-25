@@ -16,7 +16,7 @@ export default ({ rule, subModules, TYPE }) => {
   const centerSerializer = centerModule.helpers.serializer
 
   const documentRule = {
-    match: object => object.kind === 'document',
+    match: object => object.object === 'document',
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
       const cover = findOrCreate(node.children, {
@@ -56,7 +56,7 @@ export default ({ rule, subModules, TYPE }) => {
 
       const documentNode = {
         data: node.meta,
-        kind: 'document',
+        object: 'document',
         nodes: [
           coverSerializer.fromMdast(cover, 0, node, rest),
           centerSerializer.fromMdast(center, 1, node, rest)
@@ -65,14 +65,14 @@ export default ({ rule, subModules, TYPE }) => {
 
       return {
         document: documentNode,
-        kind: 'value'
+        object: 'value'
       }
     },
     toMdast: (object, index, parent, rest) => {
-      const cover = findOrCreate(object.nodes, { kind: 'block', type: coverModule.TYPE })
+      const cover = findOrCreate(object.nodes, { object: 'block', type: coverModule.TYPE })
       const center = findOrCreate(
         object.nodes,
-        { kind: 'block', type: centerModule.TYPE },
+        { object: 'block', type: centerModule.TYPE },
         { nodes: [] }
       )
       const centerIndex = object.nodes.indexOf(center)

@@ -9,7 +9,7 @@ test('mark serialization', assert => {
   const value = serializer.deserialize(parse(md))
   const node = value.document.nodes.first()
 
-  assert.equal(node.kind, 'block')
+  assert.equal(node.object, 'block')
   assert.equal(node.type, 'P')
 
   assert.equal(node.text, 'Hello WorldYou')
@@ -18,10 +18,14 @@ test('mark serialization', assert => {
   const helloMarks = value
     .change()
     .select({
-      anchorKey: textKey,
-      anchorOffset: 0,
-      focusKey: textKey,
-      focusOffset: 4
+      anchor: {
+        key: textKey,
+        offset: 0
+      },
+      focus: {
+        key: textKey,
+        offset: 4
+      }
     })
     .value
     .marks
@@ -31,10 +35,14 @@ test('mark serialization', assert => {
   const worldMarks = value
     .change()
     .select({
-      anchorKey: textKey,
-      anchorOffset: 5,
-      focusKey: textKey,
-      focusOffset: 10
+      anchor: {
+        key: textKey,
+        offset: 5
+      },
+      focus: {
+        key: textKey,
+        offset: 10
+      }
     })
     .value
     .marks
@@ -44,10 +52,14 @@ test('mark serialization', assert => {
   const youMarks = value
     .change()
     .select({
-      anchorKey: textKey,
-      anchorOffset: 11,
-      focusKey: textKey,
-      focusOffset: 13
+      anchor: {
+        key: textKey,
+        offset: 11
+      },
+      focus: {
+        key: textKey,
+        offset: 13
+      }
     })
     .value
     .marks

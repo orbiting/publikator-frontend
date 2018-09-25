@@ -28,7 +28,7 @@ test('blockquote serialization', assert => {
   const value = serializer.deserialize(parse('> A test'))
   const node = value.document.nodes.first()
 
-  assert.equal(node.kind, 'block')
+  assert.equal(node.object, 'block')
   assert.equal(node.type, 'BLOCKQUOTE')
   assert.equal(node.text, 'A test')
 

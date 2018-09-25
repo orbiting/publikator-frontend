@@ -5,19 +5,19 @@ test('utils.match', assert => {
   assert.plan(3)
 
   assert.equal(
-    match('foo')('bar')({ kind: 'foo', type: 'bar' }),
+    match('foo')('bar')({ object: 'foo', type: 'bar' }),
     true,
-    'returns true if both kind and type of the passed object match the premise'
+    'returns true if both object and type of the passed object match the premise'
   )
 
   assert.equal(
-    match('foo')('bar')({ kind: 'bar', type: 'bar' }),
+    match('foo')('bar')({ object: 'bar', type: 'bar' }),
     false,
-    'returns false if kind doesn\'t match the premise'
+    'returns false if object doesn\'t match the premise'
   )
 
   assert.equal(
-    match('foo')('bar')({ kind: 'foo', type: 'foo' }),
+    match('foo')('bar')({ object: 'foo', type: 'foo' }),
     false,
     'returns false if type doesn\'t match the premise'
   )
@@ -27,14 +27,14 @@ test('utils.matchDocument', assert => {
   assert.plan(2)
 
   assert.equal(
-    matchDocument({ kind: 'document' }),
+    matchDocument({ object: 'document' }),
     true,
-    'returns true if kind is `document`'
+    'returns true if object is `document`'
   )
 
   assert.equal(
-    matchDocument({ kind: 'foo' }),
+    matchDocument({ object: 'foo' }),
     false,
-    'returns false if kind is not `document`'
+    'returns false if object is not `document`'
   )
 })

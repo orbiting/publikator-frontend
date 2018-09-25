@@ -73,14 +73,14 @@ Caption_Byline_
   assert.equal(node.getIn(['data', 'excludeFromGallery']), false)
 
   const image = node.nodes.first()
-  assert.equal(image.kind, 'block')
+  assert.equal(image.object, 'block')
   assert.equal(image.type, 'FIGURE_IMAGE')
 
   assert.equal(image.getIn(['data', 'src']), 'example.com/img.jpg')
   assert.equal(image.getIn(['data', 'alt']), 'Alt')
 
   const caption = node.nodes.get(1)
-  assert.equal(caption.kind, 'block')
+  assert.equal(caption.object, 'block')
   assert.equal(caption.type, 'FIGURE_CAPTION')
   assert.equal(caption.text, 'CaptionByline')
 
@@ -97,7 +97,7 @@ B**_Caption_
   const value = serializer.deserialize(parse(md))
   const node = value.document.nodes.first()
 
-  assert.equal(node.kind, 'block')
+  assert.equal(node.object, 'block')
   assert.equal(node.type, 'FIGURE_CAPTION')
   assert.equal(node.text, 'A\nBCaption')
 

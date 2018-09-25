@@ -8,7 +8,7 @@ export default ({ rule, subModules, TYPE }) => {
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent) => {
       return ({
-        kind: 'block',
+        object: 'block',
         type: TYPE,
         data: {
           config: parent.data,

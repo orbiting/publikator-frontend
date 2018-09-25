@@ -5,7 +5,7 @@ import { compose } from 'redux'
 import { Router } from '../../lib/routes'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
-import { Value, resetKeyGenerator } from 'slate'
+import { Value, KeyUtils } from 'slate'
 import debounce from 'lodash.debounce'
 
 import withAuthorization from '../../components/Auth/withAuthorization'
@@ -382,7 +382,7 @@ export class EditorPage extends Component {
     }
   }
   componentDidMount () {
-    resetKeyGenerator()
+    KeyUtils.resetGenerator()
     this.loadState(this.props)
     window.addEventListener('beforeunload', this.beforeunload)
   }
