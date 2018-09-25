@@ -434,11 +434,12 @@ export class EditorPage extends Component {
         router.query.template
       )
       const schema = getSchema(template)
-      const { serializer, newDocument } = getEditorConfig(schema)
+      const { serializer, newDocument, editorSchema } = getEditorConfig(schema)
       this.serializer = serializer
       this.newDocument = newDocument
+      this.editorSchema = editorSchema
       this.setState({
-        schema: getSchema(template)
+        schema
       }, () => {
         this.loadState(this.props)
       })
@@ -699,7 +700,7 @@ export class EditorPage extends Component {
                   })}
                 />}
                 <Editor
-                  schema={schema}
+                  schema={this.editorSchema}
                   meta={repo ? repo.meta : {}}
                   value={editorState}
                   onChange={this.changeHandler}

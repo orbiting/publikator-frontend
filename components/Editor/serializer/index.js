@@ -1,3 +1,4 @@
+import { Map } from 'immutable'
 import createDocumentModule from './document'
 import createDocumentPlainModule from './document/plain'
 import createCoverModule from './cover'
@@ -35,6 +36,8 @@ import createArticleGroup from './article/group'
 import createChartModule from './chart'
 import createChartCanvasModule from './chart/canvas'
 import createDynamicComponentModule from './dynamiccomponent'
+
+import compatKeys from './compatKeys'
 
 const moduleCreators = {
   embedVideo: createEmbedVideoModule,
@@ -77,6 +80,12 @@ const moduleCreators = {
   chartCanvas: createChartCanvasModule,
   dynamiccomponent: createDynamicComponentModule
 }
+
+const getKey = key =>
+  typeof compatKeys[key] === 'string'
+    ? compatKeys[key]
+    : key
+
 const initModule = (rule, context = {}) => {
   const { editorModule, editorOptions = {} } = rule
   if (editorModule) {
@@ -84,7 +93,7 @@ const initModule = (rule, context = {}) => {
     if (!create) {
       throw new Error(`Missing editorModule ${editorModule}`)
     }
-    const TYPE = (editorOptions.type || editorModule).toUpperCase()
+    const TYPE = getKey((editorOptions.type || editorModule).toUpperCase())
     const subModules = (rule.rules || [])
       .map(r => initModule(r, context))
       .filter(Boolean)
@@ -94,7 +103,7 @@ const initModule = (rule, context = {}) => {
       subModules: subModules,
       context
     })
-
+    context.editorSchema[TYPE] = rule
     module.TYPE = TYPE
     module.name = editorModule
     module.subModules = subModules
@@ -105,12 +114,15 @@ const initModule = (rule, context = {}) => {
 
 export const getSerializer = schema => {
   const rootRule = schema.rules[0]
+  const editorSchema = {}
   const rootModule = initModule(rootRule, {
-    mdastSchema: schema
+    mdastSchema: schema,
+    editorSchema
   })
 
   return {
     serializer: rootModule.helpers.serializer,
-    newDocument: rootModule.helpers.newDocument
+    newDocument: rootModule.helpers.newDocument,
+    editorSchema: Map(editorSchema)
   }
 }

@@ -35,10 +35,11 @@ const Document = ({ children, readOnly }) => (
 )
 
 export const getEditorConfig = (schema) => {
-  const { serializer, newDocument } = getSerializer(schema)
+  const { serializer, newDocument, editorSchema } = getSerializer(schema)
   return {
     serializer,
-    newDocument
+    newDocument,
+    editorSchema
   }
 }
 
