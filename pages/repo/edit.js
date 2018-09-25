@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import {withRouter} from 'next/router'
+import { withRouter } from 'next/router'
 
 import { compose } from 'redux'
 import { Router } from '../../lib/routes'
@@ -14,8 +14,7 @@ import Frame from '../../components/Frame'
 import { HEADER_HEIGHT } from '../../components/Frame/constants'
 import RepoNav from '../../components/Repo/Nav'
 
-import Editor from '../../components/editor'
-import EditorUI from '../../components/editor/UI'
+import { Editor, getEditorConfig } from '../../components/Editor'
 
 import VersionControl from '../../components/VersionControl'
 import CommitButton from '../../components/VersionControl/CommitButton'
@@ -179,13 +178,6 @@ export class EditorPage extends Component {
       this.loadState(this.props)
     }
 
-    this.editorRef = ref => {
-      this.editor = ref
-      if (ref) {
-        this.forceUpdate()
-      }
-    }
-
     this.state = {
       committing: false,
       editorState: null,
@@ -195,7 +187,8 @@ export class EditorPage extends Component {
       acknowledgedUsers: [],
       activeUsers: [],
       showSidebar: true,
-      readOnly: true
+      readOnly: true,
+      schema: null
     }
 
     this.lock = (state) => {
@@ -369,7 +362,7 @@ export class EditorPage extends Component {
         }
       }
 
-      debug('updateActiveUsers', addToState, {activeUsers, acknowledgedUsers})
+      debug('updateActiveUsers', addToState, { activeUsers, acknowledgedUsers })
       return {
         ...addToState,
         activeUsers,
@@ -429,15 +422,16 @@ export class EditorPage extends Component {
       return
     }
 
-    const { schema } = this.state
-    if (!schema) {
+    if (!this.state.schema) {
       const commit = repo && repo.commit
-
       const template = (
         (commit && commit.document.meta.template) ||
         router.query.template
       )
-      debug('loadState', 'loadSchema', template)
+      const schema = getSchema(template)
+      const { serializer, newDocument } = getEditorConfig(schema)
+      this.serializer = serializer
+      this.newDocument = newDocument
       this.setState({
         schema: getSchema(template)
       }, () => {
@@ -445,21 +439,17 @@ export class EditorPage extends Component {
       })
       return
     }
-    if (!this.editor || !this.editor.slate) {
-      debug('loadState', 'waiting for slate')
-      return
-    }
 
     const isNew = commitId === 'new'
     let committedEditorState
     if (isNew) {
-      committedEditorState = this.editor.newDocument(router.query, this.props.me)
+      committedEditorState = this.newDocument(router.query, this.props.me)
       debug('loadState', 'new document', committedEditorState)
     } else {
       const commit = repo.commit
       if (!commit) {
         this.setState({
-          error: t('commit/warn/missing', {commitId})
+          error: t('commit/warn/missing', { commitId })
         })
         return
       }
@@ -470,20 +460,7 @@ export class EditorPage extends Component {
         format: commit.document.meta.format
       }
 
-      committedEditorState = this.editor.serializer.deserialize(json)
-
-      // normalize
-      const normalizedState = committedEditorState
-        .change()
-        .setValue({ schema: this.editor.slate.schema })
-        .normalize()
-        .value
-
-      if (normalizedState.document !== committedEditorState.document) {
-        debug('loadState', 'normalize committed document', committedEditorState)
-        committedEditorState = normalizedState
-      }
-
+      committedEditorState = this.serializer.deserialize(json)
       debug('loadState', 'edit document', committedEditorState)
     }
     const committedRawDocString = JSON.stringify(
@@ -504,7 +481,7 @@ export class EditorPage extends Component {
           localEditorState = Value.fromJSON(localState)
           debug('loadState', 'using local slate document', localEditorState)
         } else {
-          localEditorState = this.editor.serializer.deserialize(localState)
+          localEditorState = this.serializer.deserialize(localState)
           debug('loadState', 'using local mdast document', localEditorState)
         }
       } catch (e) {
@@ -528,17 +505,17 @@ export class EditorPage extends Component {
     })
   }
 
-  changeHandler ({value}) {
+  changeHandler ({ value }) {
     this.setState({ editorState: value })
   }
 
-  documentChangeHandler (_, {value: newEditorState}) {
+  documentChangeHandler (_, { value: newEditorState }) {
     const { committedRawDocString, hasUncommittedChanges } = this.state
 
     if (
       JSON.stringify(newEditorState.document.toJSON()) !== committedRawDocString
     ) {
-      this.store.set('editorState', this.editor.serializer.serialize(newEditorState))
+      this.store.set('editorState', this.serializer.serialize(newEditorState))
       debug('loadState', 'documentChangeHandler', 'edited document', newEditorState)
       if (process.env.NODE_ENV !== 'production') {
         debug(
@@ -598,10 +575,10 @@ export class EditorPage extends Component {
         : commitId,
       message: message,
       document: {
-        content: this.editor.serializer.serialize(editorState)
+        content: this.serializer.serialize(editorState)
       }
     })
-      .then(({data}) => {
+      .then(({ data }) => {
         this.store.clear()
         this.concludeChanges()
 
@@ -646,7 +623,8 @@ export class EditorPage extends Component {
     const showLoading = (
       committing ||
       loading ||
-      (!schema && !error)
+      (!schema && !error) ||
+      !editorState
     )
 
     const nav = [
@@ -715,7 +693,6 @@ export class EditorPage extends Component {
                 })}
               />}
               <Editor
-                ref={this.editorRef}
                 schema={schema}
                 meta={repo ? repo.meta : {}}
                 value={editorState}
@@ -734,14 +711,7 @@ export class EditorPage extends Component {
             {
               !readOnly &&
               <Sidebar.Tab tabId='edit' label='Editieren'>
-                {
-                  !!this.editor &&
-                  <EditorUI
-                    editorRef={this.editor}
-                    onChange={this.uiChangeHandler}
-                    value={editorState}
-                  />
-                }
+                Hello UI
               </Sidebar.Tab>
             }
             <Sidebar.Tab tabId='workflow' label='Workflow'>
