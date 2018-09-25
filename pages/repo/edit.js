@@ -14,7 +14,12 @@ import Frame from '../../components/Frame'
 import { HEADER_HEIGHT } from '../../components/Frame/constants'
 import RepoNav from '../../components/Repo/Nav'
 
-import { Editor, getEditorConfig } from '../../components/Editor'
+import {
+  Editor,
+  EditorStateProvider,
+  EditorUI,
+  getEditorConfig
+} from '../../components/Editor'
 
 import VersionControl from '../../components/VersionControl'
 import CommitButton from '../../components/VersionControl/CommitButton'
@@ -680,53 +685,55 @@ export class EditorPage extends Component {
             <Frame.Me />
           </Frame.Header.Section>
         </Frame.Header>
-        <Frame.Body raw>
-          <Loader loading={showLoading} error={error} render={() => (
-            <div>
-              {interruptingUsers && <ActiveInterruptionOverlay
-                uncommittedChanges={uncommittedChanges}
-                interruptingUsers={interruptingUsers}
-                onRevert={this.revertHandler}
-                onAcknowledged={() => this.setState({
-                  acknowledgedUsers: this.state.activeUsers,
-                  interruptingUsers: undefined
-                })}
-              />}
-              <Editor
-                schema={schema}
-                meta={repo ? repo.meta : {}}
-                value={editorState}
-                onChange={this.changeHandler}
-                onDocumentChange={this.documentChangeHandler}
-                readOnly={readOnly}
-              />
-            </div>
-          )} />
-          <Sidebar warnings={warnings}
-            isDisabled={Boolean(showLoading || error)}
-            selectedTabId={(readOnly && 'workflow') || undefined}
-            isOpen={showSidebar}
-          >
+        <EditorStateProvider>
+          <Frame.Body raw>
+            <Loader loading={showLoading} error={error} render={() => (
+              <div>
+                {interruptingUsers && <ActiveInterruptionOverlay
+                  uncommittedChanges={uncommittedChanges}
+                  interruptingUsers={interruptingUsers}
+                  onRevert={this.revertHandler}
+                  onAcknowledged={() => this.setState({
+                    acknowledgedUsers: this.state.activeUsers,
+                    interruptingUsers: undefined
+                  })}
+                />}
+                <Editor
+                  schema={schema}
+                  meta={repo ? repo.meta : {}}
+                  value={editorState}
+                  onChange={this.changeHandler}
+                  onDocumentChange={this.documentChangeHandler}
+                  readOnly={readOnly}
+                />
+              </div>
+            )} />
+            <Sidebar warnings={warnings}
+              isDisabled={Boolean(showLoading || error)}
+              selectedTabId={(readOnly && 'workflow') || undefined}
+              isOpen={showSidebar}
+            >
 
-            {
-              !readOnly &&
-              <Sidebar.Tab tabId='edit' label='Editieren'>
-                Hello UI
+              {
+                !readOnly &&
+                <Sidebar.Tab tabId='edit' label='Editieren'>
+                  <EditorUI />
+                </Sidebar.Tab>
+              }
+              <Sidebar.Tab tabId='workflow' label='Workflow'>
+                <VersionControl
+                  repoId={repoId}
+                  commit={repo && (repo.commit || repo.latestCommit)}
+                  isNew={isNew}
+                  hasUncommittedChanges={hasUncommittedChanges}
+                />
               </Sidebar.Tab>
-            }
-            <Sidebar.Tab tabId='workflow' label='Workflow'>
-              <VersionControl
-                repoId={repoId}
-                commit={repo && (repo.commit || repo.latestCommit)}
-                isNew={isNew}
-                hasUncommittedChanges={hasUncommittedChanges}
-              />
-            </Sidebar.Tab>
-            <Sidebar.Tab tabId='analytics' label='Info'>
-              <CharCount value={editorState} />
-            </Sidebar.Tab>
-          </Sidebar>
-        </Frame.Body>
+              <Sidebar.Tab tabId='analytics' label='Info'>
+                <CharCount value={editorState} />
+              </Sidebar.Tab>
+            </Sidebar>
+          </Frame.Body>
+        </EditorStateProvider>
       </Frame>
     )
   }

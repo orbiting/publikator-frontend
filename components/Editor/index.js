@@ -1,10 +1,15 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Editor as SlateEditor } from 'slate-react'
-import { getSerializer } from './serializer'
 import { css } from 'glamor'
 
+import { getSerializer } from './serializer'
+import BaseEditor from './base/components/Editor'
+import EditorUI from './base/components/UI'
+import EditorStateProvider from './base/StateProvider'
+
 import Loader from '../Loader'
+
+export { EditorUI, EditorStateProvider }
 
 const styles = {
   container: css({
@@ -52,27 +57,19 @@ export class Editor extends Component {
     }
   }
   render () {
-    const { value, plugins, readOnly } = this.props
+    const { value, plugins, schema, readOnly } = this.props
     return (
       <Container>
         <Loader loading={!value} render={() =>
           <Document readOnly={readOnly}>
-            <SlateEditor
+            <BaseEditor
+              schema={schema}
               value={value}
-              onChange={this.onChange}
               plugins={plugins}
-              readOnly={readOnly} />
+              readOnly={readOnly}
+              onChange={this.onChange} />
           </Document>
         } />
-        { /* A full slate instance to normalize
-               initially loaded docs but ignoring
-               change events from it */ }
-        {!value && (
-          <SlateEditor
-            value={value}
-            plugins={this.plugins}
-            readOnly />
-        )}
       </Container>
     )
   }
