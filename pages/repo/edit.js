@@ -40,7 +40,7 @@ import { API_UNCOMMITTED_CHANGES_URL } from '../../lib/settings'
 import * as fragments from '../../lib/graphql/fragments'
 
 import { colors } from '@project-r/styleguide'
-import SettingsIcon from 'react-icons/lib/fa/cogs'
+import { FaCogs as SettingsIcon } from 'react-icons/fa'
 
 import createDebug from 'debug'
 

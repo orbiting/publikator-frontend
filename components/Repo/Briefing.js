@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { css } from 'glamor'
 
-import BriefingIcon from 'react-icons/lib/md/work'
+import { MdWork as BriefingIcon } from 'react-icons/md'
 
 import {
   colors
@@ -47,9 +47,9 @@ class Briefing extends Component {
             // cancel
             return
           }
-          this.setState({editing: true})
+          this.setState({ editing: true })
           const finishEditing = () =>
-            this.setState({editing: undefined})
+            this.setState({ editing: undefined })
           onChange(next || null)
             .then(finishEditing)
             .catch(finishEditing)

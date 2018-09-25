@@ -5,8 +5,10 @@ import {
   fontStyles, colors
 } from '@project-r/styleguide'
 
-import DownIcon from 'react-icons/lib/md/arrow-drop-down'
-import UpIcon from 'react-icons/lib/md/arrow-drop-up'
+import {
+  MdArrowDropDown as DownIcon,
+  MdArrowDropUp as UpIcon
+} from 'react-icons/md'
 
 import { Link } from '../../lib/routes'
 
