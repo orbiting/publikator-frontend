@@ -1,33 +1,30 @@
-import { Fragment } from 'react'
 import { compose } from 'ramda'
-import { Label, A } from '@project-r/styleguide'
-import { css } from 'glamor'
+import { Text, Inline } from 'slate'
+import {
+  Label,
+  Field,
+  Overlay,
+  OverlayToolbar,
+  OverlayToolbarClose,
+  OverlayBody,
+  Button
+} from '@project-r/styleguide'
+import { css, merge } from 'glamor'
 
 import { FaLink as LinkIcon } from 'react-icons/fa'
+import RepoCard, { getRepoId } from '../../../Search/RepoCard'
+import UserCard, { getUserId } from '../../../Search/UserCard'
+import URLCard from '../../../Search/URLCard'
+import RepoSearch from '../../../Search/RepoSearch'
+import UserSearch from '../../../Search/UserSearch'
+import withT from '../../../../lib/withT'
 
 import ToggleInlineButton from '../../base/components/ToggleInlineButton'
-import Button from '../../base/components/Button'
 import Selected from '../../base/components/Selected'
 import { SidebarBottom } from '../../base/components/UI'
 import { withEditMode } from '../../base/apps/editMode'
 import { withTheme } from '../../base/apps/theme'
-
-const shortString = (threshold, str) =>
-  str && str.length > threshold
-    ? str.substr(0, threshold - 3).concat('...')
-    : str
-
-const shortUrl = str =>
-  (str &&
-    str.replace(/^http(s?):\/\/(www.)?/g, '')) ||
-  ''
-
-const getUrlType = str =>
-  /^\/~/.test(str)
-    ? 'User'
-    : /github\.com/.test(str)
-      ? 'Dokument'
-      : 'Link'
+import { updateData } from '../../base/lib/changes'
 
 export const LinkButton = withTheme()(props => {
   return (
@@ -41,85 +38,130 @@ export const LinkButton = withTheme()(props => {
   )
 })
 
-const withCardStyles = withTheme(({ theme }) => ({
-  card: css({
-    marginBottom: '15px'
-  }),
-  cardLink: css({
-    ...theme.fontStyles.sansSerifRegular16,
-    display: 'block'
-  }),
-  cardLabel: css({
-    ...theme.fontStyles.sansSerifRegular12
-  })
+const LinkCard = ({ value }) => {
+  if (getRepoId(value)) {
+    return <RepoCard value={value} label='Dokument' />
+  }
+  if (getUserId(value)) {
+    return <UserCard value={value} label='Verlinkter User' />
+  }
+  return <URLCard value={value} label='URL' />
+}
+
+const LinkForm = withT(({ t, node, editor, onClose }) => {
+  const title = node.data.get('title')
+  const href = node.data.get('href')
+  return (
+    <Overlay onClose={onClose}>
+      <OverlayToolbar>
+        <OverlayToolbarClose onClick={onClose} />
+      </OverlayToolbar>
+      {href}
+      <OverlayBody>
+        <Field
+          label={t(`metaData/field/href`, undefined, 'href')}
+          value={href}
+          onChange={(_, v) => {
+            editor.change(updateData, node, {
+              href: v
+            })
+          }}
+        />
+        <Field
+          label={t(`metaData/field/title`, undefined, 'title')}
+          value={title}
+          onChange={(_, v) => {
+            editor.change(updateData, node, {
+              title: v
+            })
+          }}
+        />
+        <RepoSearch
+          label={'Dokument'}
+          value={''}
+          onChange={repo => {
+            editor.change(updateData, node, {
+              title: repo.text,
+              href: `https://github.com/${repo.value.id}?autoSlug`
+            })
+            onClose()
+          }}
+        />
+        <UserSearch
+          label={'Autor, Benutzer'}
+          value={''}
+          onChange={({ value: user }) => {
+            editor.change(change => {
+              return change.replaceNodeByKey(
+                node.key,
+                Inline.create({
+                  type: 'link',
+                  data: node.data.merge({
+                    title: `${user.firstName} ${user.lastName}`,
+                    href: `/~${user.id}`
+                  }),
+                  nodes: [
+                    Text.create(`${user.firstName} ${user.lastName}`)
+                  ]
+                })
+              )
+            })
+            onClose()
+          }}
+        />
+        <Button primary onClick={onClose}>
+          OK
+        </Button>
+      </OverlayBody>
+    </Overlay>
+  )
+})
+
+const withLinkUIStyles = withTheme(({ theme }) => ({
+  cardSection: merge(
+    theme.layout.section,
+    css({
+      minWidth: '120px',
+      transition: 'background-color 0.2s',
+      '&:hover': {
+        backgroundColor: '#fff',
+        cursor: 'pointer'
+      }
+    })
+  )
 }))
 
-export const LinkCard = withCardStyles(
-  ({ data, styles }) => (
-    <div>
-      <span {...styles.cardLink}>
-        <span>
-          {shortString(
-            60,
-            data.get('title') ||
-              shortUrl(data.get('url'))
-          )}
-        </span>
-      </span>
-      <Label>
-        {getUrlType(data.get('url'))}
-        {' | '}
-        <A target='_blank' href={data.get('url')}>
-          In neuem Tab öffnen
-        </A>
-      </Label>
-    </div>
-  )
-)
-
 export const LinkUI = compose(
-  withTheme(),
+  withLinkUIStyles,
   withEditMode({
     namespace: 'link'
   })
-)(
-  ({
-    isInEditMode,
-    startEditing,
-    finishEditing,
-    styles,
-    editor
-  }) => {
-    return (
-      <Selected nodeType='link'>
-        {({ node }) => (
-          <SidebarBottom>
-            <div {...styles.layout.container}>
-              <div {...styles.sectionHeader}>
-                <Label>Link</Label>
-              </div>
-              <hr {...styles.layout.hairline} />
-              {!isInEditMode ? (
-                <Fragment>
-                  <LinkCard data={node.data} />
-                  <Button
-                    {...styles.buttons
-                      .labelButton}
-                    onClick={startEditing}
-                  >
-                    Bearbeiten
-                  </Button>
-                </Fragment>
-              ) : (
-                <h4>Hello Edit</h4>
-              )}
+)(({ isInEditMode, startEditing, finishEditing, styles, editor }) => {
+  return (
+    <Selected nodeType='link'>
+      {({ node }) => (
+        <SidebarBottom>
+          <div {...styles.layout.container}>
+            <div {...styles.sectionHeader}>
+              <Label>Link</Label>
             </div>
-          </SidebarBottom>
-        )}
-      </Selected>
-    )
-  }
-)
+            <hr {...styles.layout.hairline} />
+            <div {...styles.cardSection} onClick={startEditing}>
+              <LinkCard value={node.data.get('href')} />
+            </div>
+            {isInEditMode && (
+              <LinkForm
+                node={node}
+                editor={editor}
+                onClose={finishEditing}
+              />
+            )}
+          </div>
+        </SidebarBottom>
+      )}
+    </Selected>
+  )
+})
 
 export const renderUI = ({ editor }) => {
   return <LinkUI editor={editor} />

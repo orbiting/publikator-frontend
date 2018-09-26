@@ -8,8 +8,7 @@ import {
 import layoutFactory from './layout'
 import buttonsFactory from './buttons'
 
-export const SET_THEME_CONFIG =
-  'THEME_SET_CONFIG_VALUE'
+export const SET_THEME_CONFIG = 'THEME_SET_CONFIG_VALUE'
 
 export const setThemeConfig = values => ({
   type: SET_THEME_CONFIG,
@@ -36,37 +35,25 @@ const api = {
 
 const initialConfig = {
   isVisible: true,
-  align: 'right',
+  align: 'left',
   style: 'fluid',
   maxWidth: '245px'
 }
 
 const initialState = {
   config: initialConfig,
-  theme: applyFactories(
-    defaultFactories,
-    initialConfig
-  )
+  theme: applyFactories(defaultFactories, initialConfig)
 }
 
-export const reducer = (
-  state = initialState,
-  { type, payload }
-) => {
+export const reducer = (state = initialState, { type, payload }) => {
   switch (type) {
     case SET_THEME_CONFIG:
       const newConfig = {
         ...state.config,
-        ...pick(
-          Object.keys(initialConfig),
-          payload
-        )
+        ...pick(Object.keys(initialConfig), payload)
       }
       return {
-        theme: applyFactories(
-          defaultFactories,
-          newConfig
-        ),
+        theme: applyFactories(defaultFactories, newConfig),
         config: newConfig
       }
     default:
@@ -79,8 +66,7 @@ export const withThemeConfig = connect(
     themeConfig: state.config
   }),
   dispatch => ({
-    setThemeConfig: v =>
-      dispatch(setThemeConfig(v))
+    setThemeConfig: v => dispatch(setThemeConfig(v))
   })
 )
 
