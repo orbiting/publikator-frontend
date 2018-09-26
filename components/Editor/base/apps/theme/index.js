@@ -37,8 +37,8 @@ const api = {
 const initialConfig = {
   isVisible: true,
   align: 'right',
-  style: 'block',
-  maxWidth: 270
+  style: 'fluid',
+  maxWidth: '245px'
 }
 
 const initialState = {
@@ -63,7 +63,10 @@ export const reducer = (
         )
       }
       return {
-        theme: applyFactories(newConfig),
+        theme: applyFactories(
+          defaultFactories,
+          newConfig
+        ),
         config: newConfig
       }
     default:

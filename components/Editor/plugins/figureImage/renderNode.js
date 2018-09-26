@@ -37,7 +37,7 @@ const FigureImage = withTheme()(
       ) : (
         <SchemaComponent
           name='figureImage'
-          src='/static/images/placeholder.png'
+          src='/static/placeholder.png'
           {...attributes}
         />
       )}

@@ -1,29 +1,47 @@
-import React from 'react'
+import { Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { css, merge } from 'glamor'
-import { FaAngleRight as ArrowIcon } from 'react-icons/fa'
+import {
+  MdChevronRight as ArrowIcon,
+  MdArrowBack as AlignLeftIcon,
+  MdArrowForward as AlignRightIcon
+} from 'react-icons/md'
 import { compose } from 'ramda'
-import { Label } from '@project-r/styleguide'
-import { withApp } from '../apps/selectionPath'
-import { withTheme } from '../apps/theme'
 
-const withStyles = withTheme(({ theme }) => {
+import { withApp } from '../apps/selectionPath'
+import { withTheme, withThemeConfig } from '../apps/theme'
+
+const withStyles = withTheme(({
+  theme,
+  config: {
+    style,
+    align,
+    maxWidth
+  }
+}) => {
   return {
     container: merge(
       theme.layout.container,
-      css({
-        maxWidth: `none`,
+      style === 'fluid' && css({
         display: 'flex',
-        alignItems: 'flex-start',
-        flexDirection: 'column',
-        lineHeight: '16px'
+        flexDirection: align === 'right' ? 'row-reverse' : 'row'
+      }),
+      css({
+        maxWidth: style === 'fluid' ? 'none' : maxWidth
       })
     ),
+    linkSection: css({
+      display: 'flex',
+      alignItems: 'flex-start',
+      flexDirection: style === 'block' ? 'column' : 'row',
+      lineHeight: '16px'
+    }),
     item: css({
       display: 'flex',
-      marginTop: '6px',
       alignItems: 'center',
-      flexDirection: 'row'
+      justifyContent: 'space-between',
+      flexDirection: 'row',
+      margin: '0 2px'
     }),
     nodeLink: merge(
       theme.buttons.labelButton,
@@ -33,7 +51,8 @@ const withStyles = withTheme(({ theme }) => {
           color: theme.colors.primary,
           cursor: 'default',
           textDecoration: 'underline'
-        }
+        },
+        margin: '0 8px'
       })
     )
   }
@@ -51,7 +70,9 @@ const SelectionPathMenu = ({
   selectedNode,
   selectionPath,
   onSelect,
-  styles
+  styles,
+  themeConfig,
+  setThemeConfig
 }) => {
   if (!selectionPath) {
     return (
@@ -60,27 +81,48 @@ const SelectionPathMenu = ({
       </div>
     )
   }
+  const icon = themeConfig.align === 'right'
+    ? <AlignLeftIcon size={22} />
+    : <AlignRightIcon size={22} />
+
   return (
-    <div {...styles.container}>
-      <div {...styles.layout.headerSection}>
-        <Label>Auswahl</Label>
+    <Fragment>
+      <div {...styles.container}>
+        <div {...styles.linkSection}>
+          {selectionPath.map((n, i) => (
+            <span key={n.key} {...styles.item}>
+              {i > 0 && <ArrowIcon />}
+              <a
+                {...styles.nodeLink}
+                onMouseDown={mouseDownHandler(
+                  n,
+                  onSelect
+                )}
+                data-active={n === selectedNode}
+              >
+                {n.type || n.object}
+              </a>
+            </span>
+          ))}
+        </div>
       </div>
-      {selectionPath.map((n, i) => (
-        <span key={n.key} {...styles.item}>
-          {i > 0 && <ArrowIcon />}
-          <a
-            {...styles.nodeLink}
-            onMouseDown={mouseDownHandler(
-              n,
-              onSelect
-            )}
-            data-active={n === selectedNode}
+      <div {...styles.layout.container}>
+        <div {...styles.layout.section}>
+          <button
+            {...styles.buttons.iconButton}
+            onClick={() => {
+              setThemeConfig({
+                align: themeConfig.align === 'left'
+                  ? 'right'
+                  : 'left'
+              })
+            }}
           >
-            {n.type || n.object}
-          </a>
-        </span>
-      ))}
-    </div>
+            {icon}
+          </button>
+        </div>
+      </div>
+    </Fragment>
   )
 }
 
@@ -92,5 +134,6 @@ SelectionPathMenu.propTypes = {
 
 export default compose(
   withApp,
+  withThemeConfig,
   withStyles
 )(SelectionPathMenu)

@@ -1,17 +1,19 @@
-import { css } from 'glamor'
+import { css, merge } from 'glamor'
 import {
   colors
   // mediaQueries,
 } from '@project-r/styleguide'
 
-export const ui = ({ align }) =>
+export const ui = ({ isVisible, align, style }) =>
   css({
-    // display: !isVisible ? 'none' : 'flex',
-    // // position: 'fixed',
-    // width: '0',
-    // top: '80px',
-    // right: align === 'right' ? '0' : 'auto',
-    // zIndex: 9999,
+    ...((style !== 'block' && {
+      display: !isVisible ? 'none' : 'flex',
+      position: 'fixed',
+      width: '0',
+      top: '80px',
+      right: align === 'right' ? '0' : 'auto',
+      zIndex: 9999
+    }) || {}),
     flexDirection: 'column',
     flexWrap: 'noWrap',
     alignItems:
@@ -33,6 +35,7 @@ export const container = ({
   maxWidth
 }) =>
   css({
+    backgroundColor: style === 'fluid' ? colors.secondaryBg : '#fff',
     maxWidth: `245px`,
     width:
       style === 'block'
@@ -50,21 +53,24 @@ export const container = ({
         ? '1px'
         : '0',
     right: align === 'right' ? 0 : 'auto',
-    marginBottom: '20px'
+    padding: '7px 10px 12px 10px'
   })
 
 export const section = css({
-  marginTop: '12px'
+  marginBottom: '12px'
 })
 
-export const heading = css({
+export const heading = ({ align }) => css({
   display: 'flex',
-  justifyContent: 'space-between'
+  flexDirection: 'row',
+  justifyContent: align === 'right'
+    ? 'flex-end'
+    : 'flex-start'
 })
 
-export const sectionHeading = css(
-  section,
-  heading
+export const sectionHeader = config => merge(
+  heading(config),
+  section
 )
 
 export const outline = css({
@@ -95,7 +101,7 @@ export const horizontalGroup = css({
   }
 })
 
-export const actions = css(
+export const actions = merge(
   horizontalGroup,
   section
 )
@@ -104,9 +110,9 @@ export default config => ({
   ui: ui(config),
   container: container(config),
   section,
-  heading,
+  heading: heading(config),
   outline,
-  sectionHeading,
+  sectionHeader: sectionHeader(config),
   hairline,
   horizontalGroup,
   actions
