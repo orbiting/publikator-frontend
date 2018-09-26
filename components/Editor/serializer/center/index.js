@@ -27,7 +27,7 @@ export default ({ rule, subModules, TYPE }) => {
     }),
     toMdast: (object, index, parent, rest) => ({
       type: 'zone',
-      identifier: TYPE,
+      identifier: 'CENTER',
       children: childSerializer.toMdast(object.nodes, 0, object, rest)
     })
   }

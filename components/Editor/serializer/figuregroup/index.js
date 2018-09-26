@@ -46,7 +46,7 @@ export const fromMdast = ({
   const data = getData(node.data)
 
   const caption = node.children[ node.children.length - 1 ]
-  const hasCaption = caption.type === 'paragraph'
+  const hasCaption = caption.type === captionModule.TYPE
   const figures = (hasCaption
     ? node.children.slice(0, -1)
     : node.children).map(
