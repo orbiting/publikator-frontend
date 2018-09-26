@@ -29,7 +29,7 @@ export const SubheadButton = withTheme()(
 )
 
 export const SubheadUI = ({ editor }) => (
-  <Selected nodeType='subhead' offset={1}>
+  <Selected isNode='subhead' offset={1}>
     {({ node }) => (
       <Fragment>
         <SidebarInsertOptions>

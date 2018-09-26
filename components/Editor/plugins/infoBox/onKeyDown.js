@@ -9,7 +9,7 @@ import {
 
 import { isBlock } from '../../base/lib'
 
-import { getNewInfoboxFigure } from './getNew'
+import { getNewInfoboxFigure } from './lib'
 
 const selectableBlocks = [
   isBlock('infoBoxTitle'),

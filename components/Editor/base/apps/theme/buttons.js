@@ -1,5 +1,5 @@
 import { css, merge } from 'glamor'
-import { colors } from '@project-r/styleguide'
+import { colors, fontStyles } from '@project-r/styleguide'
 
 export const button = css({
   border: 'none',
@@ -26,22 +26,20 @@ export const iconButton = merge(
       cursor: 'default',
       color: colors.disabled
     },
-    '&[data-active="true"]': {
+    '&[data-active="true"]:not([disabled])': {
       color: colors.primary
     }
   })
 )
 
-export const labelButton = merge(
+export const textButton = merge(
   button,
   css({
     color: colors.textColor,
+    ...fontStyles.sansSerifRegular16,
     display: 'inline-flex',
     flexDirection: 'row',
-    fontSize: '14px',
-    lineHeight: '28px',
     padding: 0,
-    marginRight: '14px',
     backgroundColor: 'transparent',
     transition: 'color .2s, background-color 2s',
     '&[disabled]': {
@@ -49,11 +47,14 @@ export const labelButton = merge(
     },
     '&:hover:not([disabled])': {
       color: colors.primary
+    },
+    '&[data-active="true"]:not([disabled])': {
+      color: colors.primary
     }
   })
 )
 
 export default () => ({
   iconButton,
-  labelButton
+  textButton
 })

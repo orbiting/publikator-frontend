@@ -11,7 +11,7 @@ export const getNewFigureGroupFigure = () =>
     ]
   })
 
-export default () =>
+export const getNew = () =>
   Block.create({
     type: 'figureGroup',
     nodes: [

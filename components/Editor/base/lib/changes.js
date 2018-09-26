@@ -3,9 +3,7 @@ import { getChildIndex } from './selection'
 
 export const focusNextBlock = (change, node) => {
   const { value } = change
-  const nextBlock = value.document.getNextBlock(
-    node.key
-  )
+  const nextBlock = value.document.getNextBlock(node.key)
   if (nextBlock) {
     return change.moveToStartOfNode(nextBlock)
   }
@@ -14,9 +12,7 @@ export const focusNextBlock = (change, node) => {
 
 export const focusNext = change => {
   const { value } = change
-  const nextBlock = value.document.getNextBlock(
-    value.endBlock.key
-  )
+  const nextBlock = value.document.getNextBlock(value.endBlock.key)
   if (nextBlock) {
     return change.moveToStartOfNode(nextBlock)
   }
@@ -34,14 +30,9 @@ export const focusPrevious = change => {
   return change
 }
 
-export const focusPreviousBlock = (
-  change,
-  node
-) => {
+export const focusPreviousBlock = (change, node) => {
   const { value } = change
-  const nextBlock = value.document.getPreviousBlock(
-    node.key
-  )
+  const nextBlock = value.document.getPreviousBlock(node.key)
   if (nextBlock) {
     return change.moveToEndOfNode(nextBlock)
   }
@@ -87,29 +78,20 @@ export const removeMark = (change, mark) => {
     const key = value.selection.start.key
     const offset = value.selection.start.offset
     const text = value.texts.first()
-    const {
-      endOffset,
-      startOffset
-    } = text.searchLeafAtOffset(offset)
+    const { endOffset, startOffset } = text.searchLeafAtOffset(offset)
 
     return change.removeMarkByKey(
       key,
       startOffset,
       endOffset - startOffset,
-      typeof mark === 'string'
-        ? Mark.create({ type: mark })
-        : mark
+      typeof mark === 'string' ? Mark.create({ type: mark }) : mark
     )
   } else {
     return change.removeMark(mark)
   }
 }
 
-export const updateData = (
-  change,
-  node,
-  data
-) => {
+export const updateData = (change, node, data) => {
   return change.setNodeByKey(node.key, {
     data: node.data.merge(data)
   })
@@ -130,28 +112,46 @@ export const removeBlock = (change, block) => {
   return change.removeNodeByKey(block.key)
 }
 
-export const insertBlockAfter = (
-  change,
-  block,
-  target
-) => {
+export const insertBlockAfter = (change, block, target) => {
   return change.insertNodeByKey(
-    change.value.document.getParent(target.key)
-      .key,
+    change.value.document.getParent(target.key).key,
     getChildIndex(change.value, target) + 1,
     block
   )
 }
 
-export const insertBlockBefore = (
-  change,
-  block,
-  target
-) => {
+export const insertBlockBefore = (change, block, target) => {
   return change.insertNodeByKey(
-    change.value.document.getParent(target.key)
-      .key,
+    change.value.document.getParent(target.key).key,
     getChildIndex(change.value, target),
     block
   )
+}
+
+export const moveUp = (change, node) => {
+  const parent = change.value.document.getParent(node.key)
+  if (!parent) {
+    return
+  }
+
+  const index = getChildIndex(change.value, node)
+  if (!index || index < 1) {
+    return
+  }
+
+  return change.moveNodeByKey(node.key, parent.key, index - 1)
+}
+
+export const moveDown = (change, node) => {
+  const parent = change.value.document.getParent(node.key)
+  if (!parent) {
+    return
+  }
+
+  const index = getChildIndex(change.value, node)
+  if (index >= parent.nodes.size) {
+    return
+  }
+
+  return change.moveNodeByKey(node.key, parent.key, index + 1)
 }

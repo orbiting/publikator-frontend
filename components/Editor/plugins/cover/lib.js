@@ -2,9 +2,9 @@ import Caption from '../caption'
 import FigureImage from '../figureImage'
 import { Block } from 'slate'
 
-export default () =>
+export const getNew = () =>
   Block.create({
-    type: 'figure',
+    type: 'cover',
     nodes: [
       FigureImage.getNew(),
       Caption.getNew()

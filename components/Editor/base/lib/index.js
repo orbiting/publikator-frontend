@@ -1,6 +1,8 @@
 import { curry, propEq, uncurryN, both } from 'ramda'
 
-const safePropEq = curry((prop, node) => node && propEq(prop, node))
+const safePropEq = curry(
+  (prop, val, node) => node && propEq(prop, val, node)
+)
 
 export const isType = safePropEq('type')
 

@@ -13,7 +13,7 @@ import {
 export const CoverUI = withTheme()(
   ({ styles, editor }) => {
     return (
-      <Selected nodeType='cover' offset={2}>
+      <Selected isNode='cover' offset={2}>
         {({ node }) => (
           <SidebarBottom>
             <div {...styles.layout.container}>

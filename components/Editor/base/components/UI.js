@@ -2,44 +2,29 @@ import SelectionPathMenu from './SelectionPathMenu'
 import Slot from './Slot'
 import { withTheme } from '../apps/theme'
 
-const SIDEBAR_BLOCK_OPTIONS =
-  'SIDEBAR_BLOCK_OPTIONS'
-export const SidebarBlockOptions = ({
-  children
-}) => (
-  <Slot id={SIDEBAR_BLOCK_OPTIONS}>
-    {children}
-  </Slot>
+const SIDEBAR_BLOCK_OPTIONS = 'SIDEBAR_BLOCK_OPTIONS'
+export const SidebarBlockOptions = ({ children }) => (
+  <Slot id={SIDEBAR_BLOCK_OPTIONS}>{children}</Slot>
 )
 
-const SIDEBAR_FORMAT_OPTIONS =
-  'SIDEBAR_FORMAT_OPTIONS'
-export const SidebarFormatOptions = ({
-  children
-}) => (
-  <Slot id={SIDEBAR_FORMAT_OPTIONS}>
-    {children}
-  </Slot>
+const SIDEBAR_FORMAT_OPTIONS = 'SIDEBAR_FORMAT_OPTIONS'
+export const SidebarFormatOptions = ({ children }) => (
+  <Slot id={SIDEBAR_FORMAT_OPTIONS}>{children}</Slot>
 )
 
-const SIDEBAR_INSERT_OPTIONS =
-  'SIDEBAR_INSERT_OPTIONS'
-export const SidebarInsertOptions = ({
-  children
-}) => (
-  <Slot id={SIDEBAR_INSERT_OPTIONS}>
-    {children}
-  </Slot>
+const SIDEBAR_INSERT_OPTIONS = 'SIDEBAR_INSERT_OPTIONS'
+export const SidebarInsertOptions = ({ children }) => (
+  <Slot id={SIDEBAR_INSERT_OPTIONS}>{children}</Slot>
 )
 
-const SIDEBAR_TEXT_OPTIONS =
-  'SIDEBAR_TEXT_OPTIONS'
-export const SidebarTextOptions = ({
-  children
-}) => (
-  <Slot id={SIDEBAR_TEXT_OPTIONS}>
-    {children}
-  </Slot>
+const SIDEBAR_TEXT_OPTIONS = 'SIDEBAR_TEXT_OPTIONS'
+export const SidebarTextOptions = ({ children }) => (
+  <Slot id={SIDEBAR_TEXT_OPTIONS}>{children}</Slot>
+)
+
+const SIDEBAR_EDIT_OPTIONS = 'SIDEBAR_EDIT_OPTIONS'
+export const SidebarEditOptions = ({ children }) => (
+  <Slot id={SIDEBAR_EDIT_OPTIONS}>{children}</Slot>
 )
 
 const SIDEBAR_BOTTOM = 'SIDEBAR_BOTTOM'
@@ -56,6 +41,7 @@ export default withTheme()(({ styles }) => (
   <div {...styles.layout.ui}>
     <SelectionPathMenu />
     <div id={SIDEBAR_TOP} />
+    <div id={SIDEBAR_EDIT_OPTIONS} />
     <div id={SIDEBAR_TEXT_OPTIONS} />
     <div id={SIDEBAR_FORMAT_OPTIONS} />
     <div id={SIDEBAR_BLOCK_OPTIONS} />

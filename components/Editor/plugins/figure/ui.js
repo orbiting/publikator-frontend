@@ -13,7 +13,7 @@ import {
   EdgeToEdgeIcon
 } from '../common/breakouts.js'
 
-import getNew from './getNew'
+import { getNew } from './lib'
 
 export const InsertFigureButton = withTheme()(
   props => {
@@ -31,7 +31,7 @@ export const InsertFigureButton = withTheme()(
 
 export const FigureUI = withTheme()(
   ({ styles, editor }) => (
-    <Selected nodeType='figure' offset={2}>
+    <Selected isNode='figure' offset={2}>
       {({ node }) => (
         <SidebarTop>
           <div {...styles.layout.container}>

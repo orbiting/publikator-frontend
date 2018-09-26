@@ -1,3 +1,4 @@
+import { anyPass } from 'ramda'
 import slugify from '../../../lib/utils/slug'
 import { isBlock } from '../base/lib'
 
@@ -17,10 +18,29 @@ import Paragraph from '../plugins/paragraph'
 import Subhead from '../plugins/subhead'
 import TitleBlock from '../plugins/titleBlock'
 import Center from '../plugins/center'
+import Toolbar from '../plugins/toolbar'
 
 import Meta from '../plugins/meta'
 import AutoMeta from '../plugins/autoMeta'
 import UI from '../plugins/ui'
+
+const CenterToolbar = Toolbar({
+  isNode: isBlock('center'),
+  offset: 4,
+  isChildNode: anyPass([
+    isBlock('paragraph'),
+    isBlock('infoBox'),
+    isBlock('figure'),
+    isBlock('subhead'),
+    isBlock('list'),
+    isBlock('figureGroup')
+  ]),
+  insertItems: [
+    { text: 'Infobox', value: InfoBox.getNew },
+    { text: 'Figure', value: Figure.getNew },
+    { text: 'Figure Group', value: Figure.getNew }
+  ]
+})
 
 const contentPlugins = [
   Bold,
@@ -38,7 +58,8 @@ const contentPlugins = [
   Link,
   Superscript,
   Subscript,
-  Italic
+  Italic,
+  CenterToolbar
 ]
 
 const documentAutoMeta = change => {
@@ -64,15 +85,14 @@ const documentAutoMeta = change => {
     .set('description', lead ? lead.text : '')
     .set('image', cover.data.get('src'))
 
-  return data.equals(newData)
-    ? null
-    : newData
+  return data.equals(newData) ? null : newData
 }
 
 const documentPlainAutoMeta = change => {
   const documentNode = change.value.document
   const data = documentNode.data
-  const autoMeta = !data || !data.delete('template').size || data.get('auto')
+  const autoMeta =
+    !data || !data.delete('template').size || data.get('auto')
   if (!autoMeta) {
     return null
   }
@@ -96,9 +116,7 @@ const documentPlainAutoMeta = change => {
       .set('slug', slugify(headlineText))
   }
 
-  return data.equals(newData)
-    ? null
-    : newData
+  return data.equals(newData) ? null : newData
 }
 
 const getAutoMeta = schema => {

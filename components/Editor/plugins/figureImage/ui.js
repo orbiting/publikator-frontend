@@ -13,7 +13,7 @@ export const SelectImageButton = withNodeData({
 
 export const FigureImageUI = withTheme()(
   ({ styles, editor }) => (
-    <Selected nodeType='figureImage' offset={3}>
+    <Selected isNode='figureImage' offset={3}>
       {({ node }) => (
         <SidebarBottom>
           <div {...styles.layout.container}>

@@ -14,7 +14,7 @@ import { LinkButton } from '../link/ui'
 export const CaptionTextUI = withTheme()(
   ({ styles, editor }) => {
     return (
-      <Selected nodeType='captionText' offset={1}>
+      <Selected isNode='captionText' offset={1}>
         {({ node }) => (
           <Fragment>
             <SidebarFormatOptions>
@@ -45,7 +45,7 @@ export const CaptionTextUI = withTheme()(
 
 export const CaptionBylineUI = withTheme()(
   ({ styles, editor }) => (
-    <Selected nodeType='captionByline' offset={1}>
+    <Selected isNode='captionByline' offset={1}>
       {({ node }) => (
         <Fragment>
           <SidebarFormatOptions>

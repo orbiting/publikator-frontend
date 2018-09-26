@@ -8,7 +8,7 @@ import { getChildIndex } from '../../base/lib/selection'
 import { isBlock } from '../../base/lib'
 
 import Caption from '../caption'
-import { getNewFigureGroupFigure } from './getNew'
+import { getNewFigureGroupFigure } from './lib'
 
 const selectableBlocks = [
   isBlock('figureImage'),

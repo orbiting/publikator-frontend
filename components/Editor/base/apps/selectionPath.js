@@ -4,11 +4,11 @@ import {
   getSelectionPath,
   isCompleteBlockSelected
 } from '../lib/selection'
+import { isType } from '../lib'
 
 import { CHANGE } from './document'
 
-export const DOM_NODE_ID =
-  'PUBLIKATOR_SELECTION_PATH'
+export const DOM_NODE_ID = 'PUBLIKATOR_SELECTION_PATH'
 export const SELECT_NODE = 'SELECT_NODE'
 
 export const selectNode = node => ({
@@ -18,22 +18,19 @@ export const selectNode = node => ({
 
 const mapStateToSelectionStatusProps = (
   { selectionPath },
-  { offset, nodeType }
+  { offset, isNode: typeOrFn }
 ) => {
+  const isNode =
+    typeof typeOrFn === 'string' ? isType(typeOrFn) : typeOrFn
+
   let node
-  if (
-    selectionPath.selectedNode &&
-    selectionPath.selectedNode.type === nodeType
-  ) {
+  if (isNode(selectionPath.selectedNode)) {
     node = selectionPath.selectedNode
-  } else if (
-    offset &&
-    selectionPath.selectionPath
-  ) {
+  } else if (offset && selectionPath.selectionPath) {
     node = selectionPath.selectionPath
       .skipLast(1)
       .takeLast(offset)
-      .find(n => n.type === nodeType)
+      .find(isNode)
   }
 
   return {
@@ -44,26 +41,21 @@ const mapStateToSelectionStatusProps = (
 
 const cleanProps = dissoc('offset')
 
-export const withSelectionStatus = ({
-  passProps = false
-} = {}) => {
+export const withSelectionStatus = ({ passProps = false } = {}) => {
   return connect(
     mapStateToSelectionStatusProps,
     null,
     (stateProps, dispatchProps, ownProps) => ({
       ...stateProps,
-      ...((passProps && ownProps) ||
-        cleanProps(ownProps))
+      ...((passProps && ownProps) || cleanProps(ownProps))
     })
   )
 }
 
 export const withApp = connect(
   state => ({
-    selectionPath:
-      state.selectionPath.selectionPath,
-    selectedNode:
-      state.selectionPath.selectedNode
+    selectionPath: state.selectionPath.selectionPath,
+    selectedNode: state.selectionPath.selectedNode
   }),
   dispatch => ({
     onSelect: node => dispatch(selectNode(node))
@@ -75,10 +67,7 @@ const initialState = {
   selectionPath: null
 }
 
-export const reducer = (
-  state = initialState,
-  { type, payload }
-) => {
+export const reducer = (state = initialState, { type, payload }) => {
   let value
   switch (type) {
     case CHANGE:
@@ -87,9 +76,7 @@ export const reducer = (
         return state
       }
       if (isCompleteBlockSelected(value)) {
-        const selectionPath = getSelectionPath(
-          value
-        )
+        const selectionPath = getSelectionPath(value)
 
         return {
           selectionPath,

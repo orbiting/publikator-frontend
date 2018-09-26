@@ -138,7 +138,7 @@ export const LinkUI = compose(
   })
 )(({ isInEditMode, startEditing, finishEditing, styles, editor }) => {
   return (
-    <Selected nodeType='link'>
+    <Selected isNode='link'>
       {({ node }) => (
         <SidebarBottom>
           <div {...styles.layout.container}>

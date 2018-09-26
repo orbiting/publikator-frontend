@@ -11,7 +11,7 @@ import {
   DefaultIcon
 } from '../common/breakouts.js'
 
-import getNew from './getNew'
+import { getNew } from './lib'
 
 export const InsertFigureGroupButton = withTheme()(
   props => {
@@ -29,7 +29,7 @@ export const InsertFigureGroupButton = withTheme()(
 
 export const FigureGroupUI = withTheme()(
   ({ styles, editor }) => (
-    <Selected nodeType='figureGroup' offset={3}>
+    <Selected isNode='figureGroup' offset={3}>
       {({ node }) => (
         <SidebarTop>
           <div {...styles.layout.container}>

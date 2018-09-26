@@ -11,7 +11,7 @@ export const getNewInfoboxFigure = () =>
     ]
   })
 
-export default () =>
+export const getNew = () =>
   Block.create({
     type: 'infoBox',
     nodes: [
