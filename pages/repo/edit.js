@@ -711,6 +711,7 @@ export class EditorPage extends Component {
                 />
               </div>
             )} />
+            <EditorUI />
             <Sidebar warnings={warnings}
               isDisabled={Boolean(showLoading || error)}
               selectedTabId={(readOnly && 'workflow') || undefined}
@@ -719,9 +720,7 @@ export class EditorPage extends Component {
 
               {
                 !readOnly &&
-                <Sidebar.Tab tabId='edit' label='Editieren'>
-                  <EditorUI />
-                </Sidebar.Tab>
+                <Sidebar.Tab tabId='edit' label='Editieren' />
               }
               <Sidebar.Tab tabId='workflow' label='Workflow'>
                 <VersionControl
