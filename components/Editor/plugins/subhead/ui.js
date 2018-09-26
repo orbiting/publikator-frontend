@@ -6,49 +6,30 @@ import { withTheme } from '../../base/apps/theme'
 import Selected from '../../base/components/Selected'
 import {
   SidebarTextOptions,
-  SidebarInsertOptions,
   SidebarBlockOptions
 } from '../../base/components/UI'
 
-import {
-  BlockButtons,
-  TextButtons,
-  InsertButtons
-} from '../common/ui'
+import { BlockButtons, TextButtons } from '../common/ui'
 
-export const SubheadButton = withTheme()(
-  props => (
-    <FormatBlockButton
-      block={'subhead'}
-      {...props}
-      {...props.styles.buttons.iconButton}
-    >
-      <SubheadIcon size={22} />
-    </FormatBlockButton>
-  )
-)
+export const SubheadButton = withTheme()(props => (
+  <FormatBlockButton
+    block={'subhead'}
+    {...props}
+    {...props.styles.buttons.iconButton}
+  >
+    <SubheadIcon size={22} />
+  </FormatBlockButton>
+))
 
 export const SubheadUI = ({ editor }) => (
   <Selected isNode='subhead' offset={1}>
     {({ node }) => (
       <Fragment>
-        <SidebarInsertOptions>
-          <InsertButtons
-            node={node}
-            editor={editor}
-          />
-        </SidebarInsertOptions>
         <SidebarBlockOptions>
-          <BlockButtons
-            node={node}
-            editor={editor}
-          />
+          <BlockButtons node={node} editor={editor} />
         </SidebarBlockOptions>
         <SidebarTextOptions>
-          <TextButtons
-            node={node}
-            editor={editor}
-          />
+          <TextButtons node={node} editor={editor} />
         </SidebarTextOptions>
       </Fragment>
     )}

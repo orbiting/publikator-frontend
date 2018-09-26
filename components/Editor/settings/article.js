@@ -1,4 +1,3 @@
-import { anyPass } from 'ramda'
 import slugify from '../../../lib/utils/slug'
 import { isBlock } from '../base/lib'
 
@@ -18,29 +17,10 @@ import Paragraph from '../plugins/paragraph'
 import Subhead from '../plugins/subhead'
 import TitleBlock from '../plugins/titleBlock'
 import Center from '../plugins/center'
-import Toolbar from '../plugins/toolbar'
 
 import Meta from '../plugins/meta'
 import AutoMeta from '../plugins/autoMeta'
 import UI from '../plugins/ui'
-
-const CenterToolbar = Toolbar({
-  isNode: isBlock('center'),
-  offset: 4,
-  isChildNode: anyPass([
-    isBlock('paragraph'),
-    isBlock('infoBox'),
-    isBlock('figure'),
-    isBlock('subhead'),
-    isBlock('list'),
-    isBlock('figureGroup')
-  ]),
-  insertItems: [
-    { text: 'Infobox', value: InfoBox.getNew },
-    { text: 'Figure', value: Figure.getNew },
-    { text: 'Figure Group', value: Figure.getNew }
-  ]
-})
 
 const contentPlugins = [
   Bold,
@@ -58,8 +38,7 @@ const contentPlugins = [
   Link,
   Superscript,
   Subscript,
-  Italic,
-  CenterToolbar
+  Italic
 ]
 
 const documentAutoMeta = change => {

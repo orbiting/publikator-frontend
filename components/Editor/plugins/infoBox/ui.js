@@ -1,12 +1,8 @@
 import React, { Fragment } from 'react'
-import {
-  FaInfo as InfoBoxIcon,
-  FaCheck as HasImageIcon
-} from 'react-icons/fa'
+import { FaCheck as HasImageIcon } from 'react-icons/fa'
 import { MdClose as NoImageIcon } from 'react-icons/md'
 
 import { Label } from '@project-r/styleguide'
-import InsertBlockButton from '../../base/components/InsertBlockButton'
 
 import { isBlock } from '../../base/lib'
 import SetValueButton from '../../base/components/SetValueButton'
@@ -24,7 +20,7 @@ import { withTheme } from '../../base/apps/theme'
 
 import { removeBlock, insertBlockAfter } from '../../base/lib/changes'
 
-import { getNew, getNewInfoboxFigure } from './lib'
+import { getNewInfoboxFigure } from './lib'
 
 import {
   BreakoutLeftIcon,
@@ -42,16 +38,6 @@ import {
 import { BoldButton } from '../bold/ui'
 import { LinkButton } from '../link/ui'
 import { TextButtons } from '../common/ui'
-
-export const InsertInfoBoxButton = withTheme()(props => (
-  <InsertBlockButton
-    block={getNew}
-    {...props}
-    {...props.styles.buttons.iconButton}
-  >
-    <InfoBoxIcon size={22} />
-  </InsertBlockButton>
-))
 
 const BreakoutButton = withNodeData({
   fieldName: 'size'
