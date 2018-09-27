@@ -17,18 +17,19 @@ export const selectNode = node => ({
 })
 
 const mapStateToSelectionStatusProps = (
-  { selectionPath },
+  { selectionPath: { selectionPath, selectedNode } },
   { offset, isNode: typeOrFn }
 ) => {
   const isNode =
     typeof typeOrFn === 'string' ? isType(typeOrFn) : typeOrFn
 
   let node
-  if (isNode(selectionPath.selectedNode)) {
-    node = selectionPath.selectedNode
-  } else if (offset && selectionPath.selectionPath) {
-    node = selectionPath.selectionPath
-      .skipLast(1)
+  if (isNode(selectedNode)) {
+    node = selectedNode
+  } else if (offset && selectedNode) {
+    const index = selectionPath.findIndex(n => n === selectedNode)
+    node = selectionPath
+      .take(index)
       .takeLast(offset)
       .find(isNode)
   }
@@ -64,7 +65,8 @@ export const withApp = connect(
 
 const initialState = {
   selectedNode: null,
-  selectionPath: null
+  selectionPath: null,
+  previousKeys: null
 }
 
 export const reducer = (state = initialState, { type, payload }) => {
@@ -78,9 +80,18 @@ export const reducer = (state = initialState, { type, payload }) => {
       if (isCompleteBlockSelected(value)) {
         const selectionPath = getSelectionPath(value)
 
+        const nextKeys = selectionPath.map(n => n.key).valueSeq()
+        const haveKeysChanged = !nextKeys.equals(state.previousKeys)
+
+        const selectedNode = haveKeysChanged
+          ? selectionPath.last()
+          : state.selectedNode &&
+            value.document.getNode(state.selectedNode.key)
+
         return {
           selectionPath,
-          selectedNode: selectionPath.last()
+          selectedNode,
+          previousKeys: nextKeys
         }
       }
       return state

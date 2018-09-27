@@ -80,7 +80,7 @@ export default ({ isNode, isChildNode, insertItems, offset }) => {
         finishEditing
       }) => {
         return (
-          <Selected isNode={isChildNode} offset={offset}>
+          <Selected isNode={isChildNode}>
             {({ node }) => {
               const parent = editor.value.document.getParent(node.key)
               if (!parent || !isNode(parent)) {

@@ -40,8 +40,8 @@ export const SidebarTop = ({ children }) => (
 export default withTheme()(({ styles }) => (
   <div {...styles.layout.ui}>
     <SelectionPathMenu />
-    <div id={SIDEBAR_TOP} />
     <div id={SIDEBAR_EDIT_OPTIONS} />
+    <div id={SIDEBAR_TOP} />
     <div id={SIDEBAR_TEXT_OPTIONS} />
     <div id={SIDEBAR_FORMAT_OPTIONS} />
     <div id={SIDEBAR_BLOCK_OPTIONS} />

@@ -22,13 +22,17 @@ export default ({ rule, subModules, TYPE }) => {
   ].filter(Boolean)
 
   const childSerializer = new MarkdownSerializer({
-    rules: orderedSubModules.reduce(
-      (a, m) => a.concat(
-        m.helpers && m.helpers.serializer &&
-        m.helpers.serializer.rules
-      ),
-      []
-    ).filter(Boolean)
+    rules: orderedSubModules
+      .reduce(
+        (a, m) =>
+          a.concat(
+            m.helpers &&
+              m.helpers.serializer &&
+              m.helpers.serializer.rules
+          ),
+        []
+      )
+      .filter(Boolean)
   })
 
   const serializerRule = {
@@ -45,17 +49,20 @@ export default ({ rule, subModules, TYPE }) => {
     toMdast: (object, index, parent, rest) => {
       return {
         type: 'zone',
-        identifier: TYPE,
+        identifier: 'INFOBOX',
         data: object.data,
-        children: childSerializer.toMdast(object.nodes, 0, object, rest)
+        children: childSerializer.toMdast(
+          object.nodes,
+          0,
+          object,
+          rest
+        )
       }
     }
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      serializerRule
-    ]
+    rules: [serializerRule]
   })
 
   return {

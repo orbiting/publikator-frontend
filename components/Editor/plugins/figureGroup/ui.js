@@ -15,6 +15,7 @@ import {
 import { getNewFigureGroupFigure } from './lib'
 
 const FigureGroupToolbar = Toolbar({
+  offset: 2,
   isNode: isBlock('figureGroup'),
   isChildNode: isBlock('figureGroupFigure'),
   insertItems: [

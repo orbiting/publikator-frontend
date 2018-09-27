@@ -9,7 +9,7 @@ import Toolbar from '../toolbar'
 
 const CenterToolbar = Toolbar({
   isNode: isBlock('center'),
-  offset: 4,
+  offset: 1,
   isChildNode: anyPass([
     isBlock('paragraph'),
     isBlock('infoBox'),

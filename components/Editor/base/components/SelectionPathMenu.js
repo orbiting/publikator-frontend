@@ -11,57 +11,50 @@ import { compose } from 'ramda'
 import { withApp } from '../apps/selectionPath'
 import { withTheme, withThemeConfig } from '../apps/theme'
 
-const withStyles = withTheme(({
-  theme,
-  config: {
-    style,
-    align,
-    maxWidth
-  }
-}) => {
-  return {
-    container: merge(
-      theme.layout.container,
-      style === 'fluid' && css({
+const withStyles = withTheme(
+  ({ theme, config: { style, align, maxWidth } }) => {
+    return {
+      container: merge(
+        theme.layout.container,
+        style === 'fluid' &&
+          css({
+            display: 'flex',
+            flexDirection: align === 'right' ? 'row-reverse' : 'row'
+          }),
+        css({
+          maxWidth: style === 'fluid' ? 'none' : maxWidth
+        })
+      ),
+      linkSection: css({
         display: 'flex',
-        flexDirection: align === 'right' ? 'row-reverse' : 'row'
+        alignItems: 'flex-start',
+        flexDirection: style === 'block' ? 'column' : 'row',
+        lineHeight: '16px'
       }),
-      css({
-        maxWidth: style === 'fluid' ? 'none' : maxWidth
-      })
-    ),
-    linkSection: css({
-      display: 'flex',
-      alignItems: 'flex-start',
-      flexDirection: style === 'block' ? 'column' : 'row',
-      lineHeight: '16px'
-    }),
-    item: css({
-      display: 'flex',
-      alignItems: 'center',
-      justifyContent: 'space-between',
-      flexDirection: 'row',
-      margin: '0 2px'
-    }),
-    nodeLink: merge(
-      theme.buttons.labelButton,
-      css({
-        ...theme.fontStyles.sansSerifRegular16,
-        '&[data-active="true"]': {
-          color: theme.colors.primary,
-          cursor: 'default',
-          textDecoration: 'underline'
-        },
-        margin: '0 8px'
-      })
-    )
+      item: css({
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        flexDirection: 'row',
+        margin: '0 2px'
+      }),
+      nodeLink: merge(
+        theme.buttons.labelButton,
+        css({
+          ...theme.fontStyles.sansSerifRegular16,
+          '&[data-active="true"]': {
+            color: theme.colors.primary,
+            cursor: 'default',
+            textDecoration: 'underline'
+          },
+          margin: '0 8px'
+        })
+      )
+    }
   }
-})
+)
 
-const mouseDownHandler = (
-  node,
-  onSelect
-) => event => {
+const mouseDownHandler = (node, onSelect) => event => {
   event.preventDefault()
   onSelect(node)
 }
@@ -75,15 +68,14 @@ const SelectionPathMenu = ({
   setThemeConfig
 }) => {
   if (!selectionPath) {
-    return (
-      <div {...styles.container}>
-        Multiple nodes selected
-      </div>
-    )
+    return <div {...styles.container}>Multiple nodes selected</div>
   }
-  const icon = themeConfig.align === 'right'
-    ? <AlignLeftIcon size={22} />
-    : <AlignRightIcon size={22} />
+  const icon =
+    themeConfig.align === 'right' ? (
+      <AlignLeftIcon size={22} />
+    ) : (
+      <AlignRightIcon size={22} />
+    )
 
   return (
     <Fragment>
@@ -94,10 +86,7 @@ const SelectionPathMenu = ({
               {i > 0 && <ArrowIcon />}
               <a
                 {...styles.nodeLink}
-                onMouseDown={mouseDownHandler(
-                  n,
-                  onSelect
-                )}
+                onMouseDown={mouseDownHandler(n, onSelect)}
                 data-active={n === selectedNode}
               >
                 {n.type || n.object}
@@ -112,9 +101,7 @@ const SelectionPathMenu = ({
             {...styles.buttons.iconButton}
             onClick={() => {
               setThemeConfig({
-                align: themeConfig.align === 'left'
-                  ? 'right'
-                  : 'left'
+                align: themeConfig.align === 'left' ? 'right' : 'left'
               })
             }}
           >

@@ -5,14 +5,11 @@ import { matchBlock } from '../utils'
 export const getData = data => ({
   columns: 2,
   module: 'figuregroup',
-  ...data || {}
+  ...(data || {})
 })
 
 export const getNewBlock = options => () => {
-  const [
-    figureModule,
-    captionModule
-  ] = options.subModules
+  const [figureModule, captionModule] = options.subModules
 
   return Block.create({
     type: options.TYPE,
@@ -25,66 +22,38 @@ export const getNewBlock = options => () => {
   })
 }
 
-export const fromMdast = ({
-  TYPE,
-  subModules
-}) => (node,
-  index,
-  parent,
-  {
-    visitChildren,
-    context
-  }
-) => {
-  const [
-    figureModule,
-    captionModule
-  ] = subModules
+export const fromMdast = ({ TYPE, subModules }) => node => {
+  const [figureModule, captionModule] = subModules
 
   const figureSerializer = figureModule.helpers.serializer
 
   const data = getData(node.data)
 
-  const caption = node.children[ node.children.length - 1 ]
-  const hasCaption = caption.type === captionModule.TYPE
-  const figures = (hasCaption
-    ? node.children.slice(0, -1)
-    : node.children).map(
-    v => figureSerializer.fromMdast(v)
+  const caption = captionModule.helpers.serializer.fromMdast(
+    node.children[node.children.length - 1]
   )
-  const nodes = hasCaption
-    ? figures.concat(
-      captionModule.helpers.serializer.fromMdast(caption)
-    )
-    : figures
 
+  const figures = node.children.map(v =>
+    figureSerializer.fromMdast(v)
+  )
+  const nodes = figures.concat(caption)
   const result = {
     object: 'block',
     type: TYPE,
     data,
     nodes
   }
+  console.log(result)
   return result
 }
 
-export const toMdast = ({
-  TYPE,
-  subModules
-}) => (
-  node,
-  index,
-  parent,
-  {
-    visitChildren,
-    context
-  }
-) => {
-  const [ figureModule, captionModule ] = subModules
+export const toMdast = ({ subModules }) => node => {
+  const [figureModule, captionModule] = subModules
 
   const mdastChildren = node.nodes
-    .slice(0, -1).map(v =>
-      figureModule.helpers.serializer.toMdast(v)
-    )
+    .slice(0, -1)
+    .map(v => ({ ...v, type: figureModule.TYPE }))
+    .map(v => figureModule.helpers.serializer.toMdast(v))
     .concat(
       captionModule.helpers.serializer.toMdast(
         node.nodes[node.nodes.length - 1]
@@ -104,8 +73,7 @@ const getSerializer = options =>
     rules: [
       {
         match: matchBlock(options.TYPE),
-        matchMdast:
-          options.rule.matchMdast,
+        matchMdast: options.rule.matchMdast,
         fromMdast: fromMdast(options),
         toMdast: toMdast(options)
       }
