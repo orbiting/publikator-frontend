@@ -40,12 +40,13 @@ export const container = ({
       style === 'block' && align === 'left' ? '1px' : '0',
     borderLeftWidth:
       style === 'block' && align === 'right' ? '1px' : '0',
-    right: align === 'right' ? 0 : 'auto',
-    padding: '7px 10px 12px 10px'
+    padding: '7px 5px 12px 5px',
+    float: align === 'right' ? 'right' : 'none'
   })
 
 export const section = css({
-  marginBottom: '12px'
+  marginBottom: '12px',
+  padding: '2px 5px 5px 5px'
 })
 
 export const backdrop = css({
@@ -60,7 +61,7 @@ export const heading = ({ align }) =>
   css({
     display: 'flex',
     flexDirection: 'row',
-    justifyContent: align === 'right' ? 'flex-end' : 'flex-start'
+    justifyContent: 'flex-start'
   })
 
 export const sectionHeader = config => merge(heading(config), section)

@@ -27,7 +27,7 @@ export const GET_USER = gql`
   }
 `
 
-export default ({ label, value, ...props }) => {
+export default ({ placeholder, label, value, ...props }) => {
   const userId = getUserId(value)
   return (
     <div {...props}>
@@ -68,7 +68,7 @@ export default ({ label, value, ...props }) => {
                       {fullName ||
                         email || (
                         <span {...styles.cardSelect}>
-                            Auswählen
+                          {placeholder}
                         </span>
                       )}
                     </div>

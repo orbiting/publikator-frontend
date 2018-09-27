@@ -45,7 +45,7 @@ const LinkCard = ({ value }) => {
   if (getUserId(value)) {
     return <UserCard value={value} label='Verlinkter User' />
   }
-  return <URLCard value={value} label='URL' />
+  return <URLCard value={value} label='URL' placeholder='Auswählen' />
 }
 
 const LinkForm = withT(({ t, node, editor, onClose }) => {

@@ -13,7 +13,7 @@ const shortUrl = str =>
 
 export const getUrl = str => (exp.test(str) ? str : null)
 
-export default ({ label, value, ...props }) => {
+export default ({ placeholder, label, value, ...props }) => {
   const url = getUrl(value)
   return (
     <div {...props}>
@@ -24,7 +24,7 @@ export default ({ label, value, ...props }) => {
         <div {...styles.card}>
           <div {...styles.cardTitle}>
             {shortString(30, shortUrl(url)) || (
-              <span {...styles.cardSelect}>Auswählen</span>
+              <span {...styles.cardSelect}>{placeholder}</span>
             )}
           </div>
           {url && (

@@ -65,7 +65,7 @@ const getMetaFromData = data => {
   }
 }
 
-export default ({ label, value, ...props }) => {
+export default ({ placeholder, label, value, ...props }) => {
   const repoId = getRepoId(value)
   return (
     <div {...props}>
@@ -103,7 +103,9 @@ export default ({ label, value, ...props }) => {
                   <Fragment>
                     <div {...styles.cardTitle}>
                       {title || (
-                        <span {...styles.cardSelect}>Auswählen</span>
+                        <span {...styles.cardSelect}>
+                          {placeholder}
+                        </span>
                       )}
                     </div>
                     {repoId && (

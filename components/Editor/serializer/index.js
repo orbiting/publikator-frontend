@@ -82,9 +82,7 @@ const moduleCreators = {
 }
 
 const getKey = key =>
-  typeof compatKeys[key] === 'string'
-    ? compatKeys[key]
-    : key
+  typeof compatKeys[key] === 'string' ? compatKeys[key] : key
 
 const initModule = (rule, context = {}) => {
   const { editorModule, editorOptions = {} } = rule
@@ -93,7 +91,9 @@ const initModule = (rule, context = {}) => {
     if (!create) {
       throw new Error(`Missing editorModule ${editorModule}`)
     }
-    const TYPE = getKey((editorOptions.type || editorModule).toUpperCase())
+    const TYPE = getKey(
+      (editorOptions.type || editorModule).toUpperCase()
+    )
     const subModules = (rule.rules || [])
       .map(r => initModule(r, context))
       .filter(Boolean)
