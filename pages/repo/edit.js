@@ -21,7 +21,7 @@ import {
   getEditorSettings
 } from '../../components/Editor'
 
-import VersionControl from '../../components/VersionControl'
+// import VersionControl from '../../components/VersionControl'
 import CommitButton from '../../components/VersionControl/CommitButton'
 import {
   UncommittedChanges,
@@ -30,10 +30,10 @@ import {
   warningColor,
   joinUsers
 } from '../../components/VersionControl/UncommittedChanges'
-import Sidebar from '../../components/Sidebar'
+// import Sidebar from '../../components/Sidebar'
 
 import Loader from '../../components/Loader'
-import CharCount from '../../components/CharCount'
+// import CharCount from '../../components/CharCount'
 import withT from '../../lib/withT'
 import withMe from '../../lib/withMe'
 
@@ -79,17 +79,17 @@ export const uncommittedChangesMutation = gql`
 `
 
 export const getCommitById = gql`
-    query getCommitById($repoId: ID!, $commitId: ID!) {
-      repo(id: $repoId) {
-        ...EditPageRepo
-        commit(id: $commitId) {
-          ...CommitWithDocument
-        }
+  query getCommitById($repoId: ID!, $commitId: ID!) {
+    repo(id: $repoId) {
+      ...EditPageRepo
+      commit(id: $commitId) {
+        ...CommitWithDocument
       }
     }
-    ${fragments.EditPageRepo}
-    ${fragments.CommitWithDocument}
-  `
+  }
+  ${fragments.EditPageRepo}
+  ${fragments.CommitWithDocument}
+`
 
 export const getLatestCommit = gql`
   query getLatestCommit($repoId: ID!) {
@@ -104,11 +104,7 @@ export const getLatestCommit = gql`
 `
 
 export const getRepoHistory = gql`
-  query repoWithHistory(
-    $repoId: ID!
-    $first: Int!
-    $after: String
-  ) {
+  query repoWithHistory($repoId: ID!, $first: Int!, $after: String) {
     repo(id: $repoId) {
       id
       commits(first: $first, after: $after) {
@@ -134,17 +130,14 @@ const TEST = process.env.NODE_ENV === 'test'
 
 const addWarning = message => state => ({
   showSidebar: true,
-  warnings: [
-    message,
-    ...state.warnings
-  ].filter( // de-dup
+  warnings: [message, ...state.warnings].filter(
+    // de-dup
     (message, i, all) => all.indexOf(message) === i
   )
 })
 
 const rmWarning = message => state => ({
-  warnings: state.warnings
-    .filter(warning => warning !== message)
+  warnings: state.warnings.filter(warning => warning !== message)
 })
 
 const SIDEBAR_ICON_SIZE = 30
@@ -169,7 +162,7 @@ export class EditorPage extends Component {
       this.changeHandler(change)
       this.documentChangeHandler(null, change)
     }
-    this.revertHandler = (e) => {
+    this.revertHandler = e => {
       e.preventDefault()
       const { t } = this.props
       if (!window.confirm(t('revert/confirm'))) {
@@ -196,7 +189,7 @@ export class EditorPage extends Component {
       schema: null
     }
 
-    this.lock = (state) => {
+    this.lock = state => {
       const { t } = this.props
       const warning = t('commit/warn/canNotLock')
       if (state.hasUncommittedChanges) {
@@ -219,7 +212,9 @@ export class EditorPage extends Component {
         didUnlock: false
       })
       if (this.state.hasUncommittedChanges) {
-        console.warn('lockHandler should not be called when user has uncommitted changes')
+        console.warn(
+          'lockHandler should not be called when user has uncommitted changes'
+        )
         return
       }
       this.notifyChanges('delete')
@@ -229,32 +224,38 @@ export class EditorPage extends Component {
       event && event.preventDefault()
       const { t } = this.props
 
-      const {
-        activeUsers
-      } = this.state
+      const { activeUsers } = this.state
 
-      if (!window.confirm(t.pluralize('uncommittedChanges/unlock/confirm', {
-        count: activeUsers.length,
-        activeUsers: joinUsers(activeUsers, t)
-      }))) {
+      if (
+        !window.confirm(
+          t.pluralize('uncommittedChanges/unlock/confirm', {
+            count: activeUsers.length,
+            activeUsers: joinUsers(activeUsers, t)
+          })
+        )
+      ) {
         return
       }
 
-      this.setState({
-        didUnlock: true,
-        acknowledgedUsers: this.state.activeUsers,
-        readOnly: false
-      }, () => {
-        this.notifyChanges('create')
-      })
+      this.setState(
+        {
+          didUnlock: true,
+          acknowledgedUsers: this.state.activeUsers,
+          readOnly: false
+        },
+        () => {
+          this.notifyChanges('create')
+        }
+      )
       this.setState(this.unlock)
     }
     this.beforeunload = event => {
-      const { router: { query: { repoId } } } = this.props
       const {
-        hasUncommittedChanges,
-        didUnlock
-      } = this.state
+        router: {
+          query: { repoId }
+        }
+      } = this.props
+      const { hasUncommittedChanges, didUnlock } = this.state
       if (!hasUncommittedChanges && didUnlock) {
         this.notifyChanges('delete')
         if (event) {
@@ -274,13 +275,19 @@ export class EditorPage extends Component {
 
   notifyChanges (action) {
     debug('notifyChanges', action)
-    const { router: { query: { repoId } }, t } = this.props
+    const {
+      router: {
+        query: { repoId }
+      },
+      t
+    } = this.props
 
     const warning = t('commit/warn/uncommittedChangesError')
-    this.props.hasUncommitedChanges({
-      repoId,
-      action
-    })
+    this.props
+      .hasUncommitedChanges({
+        repoId,
+        action
+      })
       .then(() => {
         this.setState(rmWarning(warning))
       })
@@ -312,7 +319,8 @@ export class EditorPage extends Component {
 
   componentWillReceiveProps (nextProps) {
     const { repo = {}, loading } = this.props.data || {}
-    const { repo: nextRepo = {}, loading: nextLoading } = nextProps.data || {}
+    const { repo: nextRepo = {}, loading: nextLoading } =
+      nextProps.data || {}
 
     const shouldLoad =
       repo !== nextRepo ||
@@ -324,8 +332,13 @@ export class EditorPage extends Component {
     } else {
       const { uncommittedChanges } = this.props
       const { uncommittedChanges: nextUncommittedChanges } = nextProps
-      const shouldUpdateActiveUsers = uncommittedChanges.users !== nextUncommittedChanges.users
-      debug('componentWillReceiveProps', 'shouldUpdateActiveUsers', shouldUpdateActiveUsers)
+      const shouldUpdateActiveUsers =
+        uncommittedChanges.users !== nextUncommittedChanges.users
+      debug(
+        'componentWillReceiveProps',
+        'shouldUpdateActiveUsers',
+        shouldUpdateActiveUsers
+      )
       if (shouldUpdateActiveUsers) {
         this.updateActiveUsers(nextProps)
       }
@@ -334,9 +347,7 @@ export class EditorPage extends Component {
 
   updateActiveUsers (props) {
     const {
-      uncommittedChanges: {
-        users
-      },
+      uncommittedChanges: { users },
       me
     } = props
 
@@ -345,8 +356,9 @@ export class EditorPage extends Component {
       const acknowledgedUsers = state.acknowledgedUsers
 
       let addToState = {}
-      const newUsers = activeUsers
-        .filter(user => !acknowledgedUsers.find(ack => ack.id === user.id))
+      const newUsers = activeUsers.filter(
+        user => !acknowledgedUsers.find(ack => ack.id === user.id)
+      )
       if (newUsers.length) {
         if (state.hasUncommittedChanges || state.didUnlock) {
           addToState = {
@@ -367,7 +379,10 @@ export class EditorPage extends Component {
         }
       }
 
-      debug('updateActiveUsers', addToState, { activeUsers, acknowledgedUsers })
+      debug('updateActiveUsers', addToState, {
+        activeUsers,
+        acknowledgedUsers
+      })
       return {
         ...addToState,
         activeUsers,
@@ -378,11 +393,7 @@ export class EditorPage extends Component {
 
   checkLocalStorageSupport () {
     const { t } = this.props
-    if (
-      process.browser &&
-      this.store &&
-      !this.store.supported
-    ) {
+    if (process.browser && this.store && !this.store.supported) {
       this.setState(addWarning(t('commit/warn/noStorage')))
     }
   }
@@ -397,11 +408,7 @@ export class EditorPage extends Component {
   }
 
   loadState (props) {
-    const {
-      t,
-      data: { loading, error, repo } = {},
-      router
-    } = props
+    const { t, data: { loading, error, repo } = {}, router } = props
 
     if (!process.browser && !TEST) {
       // running without local storage doesn't make sense
@@ -429,28 +436,38 @@ export class EditorPage extends Component {
 
     if (!this.state.schema) {
       const commit = repo && repo.commit
-      const template = (
+      const template =
         (commit && commit.document.meta.template) ||
         router.query.template
-      )
       const schema = getSchema(template)
-      const { serializer, plugins, newDocument, editorSchema } = getEditorSettings(schema)
+      const {
+        serializer,
+        plugins,
+        newDocument,
+        editorSchema
+      } = getEditorSettings(schema)
       this.serializer = serializer
       this.newDocument = newDocument
       this.editorSchema = editorSchema
       this.plugins = plugins
-      this.setState({
-        schema
-      }, () => {
-        this.loadState(this.props)
-      })
+      this.setState(
+        {
+          schema
+        },
+        () => {
+          this.loadState(this.props)
+        }
+      )
       return
     }
 
     const isNew = commitId === 'new'
     let committedEditorState
     if (isNew) {
-      committedEditorState = this.newDocument(router.query, this.props.me)
+      committedEditorState = this.newDocument(
+        router.query,
+        this.props.me
+      )
       debug('loadState', 'new document', committedEditorState)
     } else {
       const commit = repo.commit
@@ -486,10 +503,18 @@ export class EditorPage extends Component {
       try {
         if (typeof localState.kind !== 'undefined') {
           localEditorState = Value.fromJSON(localState)
-          debug('loadState', 'using local slate document', localEditorState)
+          debug(
+            'loadState',
+            'using local slate document',
+            localEditorState
+          )
         } else {
           localEditorState = this.serializer.deserialize(localState)
-          debug('loadState', 'using local mdast document', localEditorState)
+          debug(
+            'loadState',
+            'using local mdast document',
+            localEditorState
+          )
         }
       } catch (e) {
         console.error(e)
@@ -517,41 +542,60 @@ export class EditorPage extends Component {
   }
 
   documentChangeHandler (_, { value: newEditorState }) {
-    const { committedRawDocString, hasUncommittedChanges } = this.state
+    const {
+      committedRawDocString,
+      hasUncommittedChanges
+    } = this.state
 
     if (
-      JSON.stringify(newEditorState.document.toJSON()) !== committedRawDocString
+      JSON.stringify(newEditorState.document.toJSON()) !==
+      committedRawDocString
     ) {
-      this.store.set('editorState', this.serializer.serialize(newEditorState))
-      debug('loadState', 'documentChangeHandler', 'edited document', newEditorState)
+      this.store.set(
+        'editorState',
+        this.serializer.serialize(newEditorState)
+      )
+      debug(
+        'loadState',
+        'documentChangeHandler',
+        'edited document',
+        newEditorState
+      )
       if (process.env.NODE_ENV !== 'production') {
         debug(
-          'loadState', 'documentChangeHandler', 'diff',
+          'loadState',
+          'documentChangeHandler',
+          'diff',
           require('diff').createPatch(
             'string',
-            JSON.stringify(JSON.parse(committedRawDocString), null, 2),
+            JSON.stringify(
+              JSON.parse(committedRawDocString),
+              null,
+              2
+            ),
             JSON.stringify(newEditorState.document.toJSON(), null, 2)
           )
         )
       }
 
-      const msSinceBegin = (
+      const msSinceBegin =
         this.state.beginChanges &&
-        (new Date()).getTime() - this.state.beginChanges.getTime()
-      )
+        new Date().getTime() - this.state.beginChanges.getTime()
       const { uncommittedChanges, me } = this.props
       if (
         !hasUncommittedChanges ||
         msSinceBegin > 1000 * 60 * 5 ||
-        (
-          !uncommittedChanges.users.find(user => user.id === me.id) &&
-          (!msSinceBegin || msSinceBegin > 1000)
-        )
+        (!uncommittedChanges.users.find(user => user.id === me.id) &&
+          (!msSinceBegin || msSinceBegin > 1000))
       ) {
         this.beginChanges()
       }
     } else {
-      debug('loadState', 'documentChangeHandler', 'committed document')
+      debug(
+        'loadState',
+        'documentChangeHandler',
+        'committed document'
+      )
       if (hasUncommittedChanges) {
         this.store.clear()
         this.concludeChanges(!this.state.didUnlock)
@@ -561,7 +605,9 @@ export class EditorPage extends Component {
 
   commitHandler () {
     const {
-      router: { query: { repoId, commitId } },
+      router: {
+        query: { repoId, commitId }
+      },
       commitMutation,
       t
     } = this.props
@@ -577,9 +623,7 @@ export class EditorPage extends Component {
 
     commitMutation({
       repoId,
-      parentId: commitId === 'new'
-        ? null
-        : commitId,
+      parentId: commitId === 'new' ? null : commitId,
       message: message,
       document: {
         content: this.serializer.serialize(editorState)
@@ -601,23 +645,25 @@ export class EditorPage extends Component {
         console.error(e)
         this.setState(state => ({
           committing: false,
-          ...addWarning(t('commit/warn/failed', {
-            error: errorToString(e)
-          }))(state)
+          ...addWarning(
+            t('commit/warn/failed', {
+              error: errorToString(e)
+            })
+          )(state)
         }))
       })
   }
 
   render () {
     const { router, data = {}, uncommittedChanges, t } = this.props
-    const { repoId, commitId } = router.query
+    const { commitId } = router.query
     const { loading, repo } = data
     const {
       schema,
       editorState,
       committing,
       hasUncommittedChanges,
-      warnings,
+      // warnings,
       showSidebar,
       readOnly,
       activeUsers,
@@ -627,24 +673,27 @@ export class EditorPage extends Component {
 
     const isNew = commitId === 'new'
     const error = data.error || this.state.error
-    const showLoading = (
-      committing ||
-      loading ||
-      (!schema && !error) ||
-      !editorState
-    )
+    const showLoading =
+      committing || loading || (!schema && !error) || !editorState
 
     const nav = [
-      <RepoNav key='repo-nav' route='repo/edit' url={router} isNew={isNew} />
+      <RepoNav
+        key='repo-nav'
+        route='repo/edit'
+        url={router}
+        isNew={isNew}
+      />
     ]
 
     return (
       <Frame url={router} raw nav={nav}>
-        <Frame.Header barStyle={{
-          borderBottom: activeUsers.length
-            ? `3px solid ${readOnly ? colors.error : warningColor}`
-            : undefined
-        }}>
+        <Frame.Header
+          barStyle={{
+            borderBottom: activeUsers.length
+              ? `3px solid ${readOnly ? colors.error : warningColor}`
+              : undefined
+          }}
+        >
           <Frame.Header.Section align='left'>
             <Frame.Nav url={router}>
               <RepoNav route='repo/edit' url={router} isNew={isNew} />
@@ -655,9 +704,9 @@ export class EditorPage extends Component {
               style={{
                 padding: 25,
                 paddingTop: 30,
-                paddingBottom: (
-                  HEADER_HEIGHT - SIDEBAR_ICON_SIZE - 30 - 1 // 1 px header border
-                ),
+                // 1 px header border
+                paddingBottom:
+                  HEADER_HEIGHT - SIDEBAR_ICON_SIZE - 30 - 1,
                 cursor: 'pointer',
                 color: showSidebar ? colors.primary : undefined
               }}
@@ -671,7 +720,9 @@ export class EditorPage extends Component {
               isNew={isNew}
               readOnly={!showLoading && readOnly}
               didUnlock={didUnlock}
-              hasUncommittedChanges={!showLoading && hasUncommittedChanges}
+              hasUncommittedChanges={
+                !showLoading && hasUncommittedChanges
+              }
               onUnlock={this.unlockHandler}
               onLock={this.lockHandler}
               onCommit={this.commitHandler}
@@ -679,9 +730,12 @@ export class EditorPage extends Component {
             />
           </Frame.Header.Section>
           <Frame.Header.Section align='right'>
-            {!!repo &&
-              <UncommittedChanges uncommittedChanges={uncommittedChanges} t={t} />
-            }
+            {!!repo && (
+              <UncommittedChanges
+                uncommittedChanges={uncommittedChanges}
+                t={t}
+              />
+            )}
           </Frame.Header.Section>
           <Frame.Header.Section align='right'>
             <Frame.Me />
@@ -689,30 +743,38 @@ export class EditorPage extends Component {
         </Frame.Header>
         <EditorStateProvider>
           <Frame.Body raw>
-            <Loader loading={showLoading} error={error} render={() => (
-              <div>
-                {interruptingUsers && <ActiveInterruptionOverlay
-                  uncommittedChanges={uncommittedChanges}
-                  interruptingUsers={interruptingUsers}
-                  onRevert={this.revertHandler}
-                  onAcknowledged={() => this.setState({
-                    acknowledgedUsers: this.state.activeUsers,
-                    interruptingUsers: undefined
-                  })}
-                />}
-                <Editor
-                  schema={this.editorSchema}
-                  meta={repo ? repo.meta : {}}
-                  value={editorState}
-                  plugins={this.plugins}
-                  onChange={this.changeHandler}
-                  onDocumentChange={this.documentChangeHandler}
-                  readOnly={readOnly}
-                />
-              </div>
-            )} />
+            <Loader
+              loading={showLoading}
+              error={error}
+              render={() => (
+                <div>
+                  {interruptingUsers && (
+                    <ActiveInterruptionOverlay
+                      uncommittedChanges={uncommittedChanges}
+                      interruptingUsers={interruptingUsers}
+                      onRevert={this.revertHandler}
+                      onAcknowledged={() =>
+                        this.setState({
+                          acknowledgedUsers: this.state.activeUsers,
+                          interruptingUsers: undefined
+                        })
+                      }
+                    />
+                  )}
+                  <Editor
+                    schema={this.editorSchema}
+                    meta={repo ? repo.meta : {}}
+                    value={editorState}
+                    plugins={this.plugins}
+                    onChange={this.changeHandler}
+                    onDocumentChange={this.documentChangeHandler}
+                    readOnly={readOnly}
+                  />
+                </div>
+              )}
+            />
             <EditorUI />
-            <Sidebar warnings={warnings}
+            {/* <Sidebar warnings={warnings}
               isDisabled={Boolean(showLoading || error)}
               selectedTabId={(readOnly && 'workflow') || undefined}
               isOpen={showSidebar}
@@ -733,7 +795,7 @@ export class EditorPage extends Component {
               <Sidebar.Tab tabId='analytics' label='Info'>
                 <CharCount value={editorState} />
               </Sidebar.Tab>
-            </Sidebar>
+            </Sidebar> */}
           </Frame.Body>
         </EditorStateProvider>
       </Frame>
@@ -747,7 +809,8 @@ export default compose(
   withAuthorization(['editor']),
   withMe,
   graphql(getCommitById, {
-    skip: ({ router }) => router.query.commitId === 'new' || !router.query.commitId,
+    skip: ({ router }) =>
+      router.query.commitId === 'new' || !router.query.commitId,
     options: ({ router }) => ({
       variables: {
         repoId: router.query.repoId,
@@ -756,7 +819,8 @@ export default compose(
     })
   }),
   graphql(getLatestCommit, {
-    skip: ({ router }) => !!router.query.commitId && router.query.commitId !== 'new',
+    skip: ({ router }) =>
+      !!router.query.commitId && router.query.commitId !== 'new',
     options: ({ router }) => ({
       // always the latest
       fetchPolicy: 'network-only',
