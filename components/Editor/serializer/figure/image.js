@@ -1,12 +1,12 @@
 import { matchBlock } from '../utils'
 import MarkdownSerializer from 'slate-mdast-serializer'
 
-export default ({ rule, subModules, TYPE }) => {
+export default ({ TYPE }) => {
   const figureImage = {
     match: matchBlock(TYPE),
-    matchMdast: (node) => node.type === 'image',
-    fromMdast: (node) => {
-      return ({
+    matchMdast: node => node.type === 'image',
+    fromMdast: node => {
+      return {
         object: 'block',
         type: TYPE,
         data: {
@@ -15,9 +15,9 @@ export default ({ rule, subModules, TYPE }) => {
         },
         isVoid: true,
         nodes: []
-      })
+      }
     },
-    toMdast: (object) => ({
+    toMdast: object => ({
       type: 'image',
       alt: object.data.alt,
       url: object.data.src
@@ -25,9 +25,7 @@ export default ({ rule, subModules, TYPE }) => {
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      figureImage
-    ]
+    rules: [figureImage]
   })
 
   return {

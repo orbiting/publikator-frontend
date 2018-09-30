@@ -8,33 +8,31 @@ import Selected from '../../base/components/Selected'
 import { SidebarBottom } from '../../base/components/UI'
 
 export const SelectImageButton = withNodeData({
-  fieldName: 'url'
+  fieldName: 'src'
 })(ImageInput)
 
-export const FigureImageUI = withTheme()(
-  ({ styles, editor }) => (
-    <Selected isNode='figureImage' offset={3}>
-      {({ node }) => (
-        <SidebarBottom>
-          <div {...styles.layout.container}>
-            <div {...styles.layout.headerSection}>
-              <Label>Bild auswählen</Label>
-            </div>
-            <div {...styles.layout.actions}>
-              <SelectImageButton
-                node={node}
-                editor={editor}
-                {...styles.buttons.iconButton}
-              >
-                <ChangeImageIcon size={22} />
-              </SelectImageButton>
-            </div>
+export const FigureImageUI = withTheme()(({ styles, editor }) => (
+  <Selected isNode='figureImage' offset={3}>
+    {({ node }) => (
+      <SidebarBottom>
+        <div {...styles.layout.container}>
+          <div {...styles.layout.headerSection}>
+            <Label>Bild auswählen</Label>
           </div>
-        </SidebarBottom>
-      )}
-    </Selected>
-  )
-)
+          <div {...styles.layout.actions}>
+            <SelectImageButton
+              node={node}
+              editor={editor}
+              {...styles.buttons.iconButton}
+            >
+              <ChangeImageIcon size={22} />
+            </SelectImageButton>
+          </div>
+        </div>
+      </SidebarBottom>
+    )}
+  </Selected>
+))
 
 export const renderUI = ({ editor }) => {
   return <FigureImageUI editor={editor} />

@@ -33,32 +33,35 @@ export const fromMdast = ({ TYPE, subModules }) => node => {
     node.children[node.children.length - 1]
   )
 
-  const figures = node.children.map(v =>
-    figureSerializer.fromMdast(v)
-  )
+  const figures = (caption
+    ? node.children.slice(0, -1)
+    : node.children
+  ).map(v => ({
+    ...figureSerializer.fromMdast(v),
+    type: 'figureGroupFigure'
+  }))
   const nodes = figures.concat(caption)
-  const result = {
+  return {
     object: 'block',
     type: TYPE,
     data,
     nodes
   }
-  console.log(result)
-  return result
 }
 
 export const toMdast = ({ subModules }) => node => {
   const [figureModule, captionModule] = subModules
 
-  const mdastChildren = node.nodes
-    .slice(0, -1)
+  const caption = captionModule.helpers.serializer.toMdast(
+    node.nodes[node.nodes.length - 1]
+  )
+
+  const nodes = caption ? node.nodes.slice(0, -1) : node.nodes
+
+  const mdastChildren = nodes
     .map(v => ({ ...v, type: figureModule.TYPE }))
     .map(v => figureModule.helpers.serializer.toMdast(v))
-    .concat(
-      captionModule.helpers.serializer.toMdast(
-        node.nodes[node.nodes.length - 1]
-      )
-    )
+    .concat(caption)
 
   return {
     type: 'zone',

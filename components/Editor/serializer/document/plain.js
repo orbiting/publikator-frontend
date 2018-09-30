@@ -13,23 +13,23 @@ export default ({ rule, subModules, TYPE }) => {
   const titleModule = subModules.find(m => m.name === 'title')
 
   const childSerializer = new MarkdownSerializer({
-    rules: subModules.reduce(
-      (a, m) => a.concat(
-        m.helpers && m.helpers.serializer &&
-        m.helpers.serializer.rules
-      ),
-      []
-    ).filter(Boolean)
+    rules: subModules
+      .reduce(
+        (a, m) =>
+          a.concat(
+            m.helpers &&
+              m.helpers.serializer &&
+              m.helpers.serializer.rules
+          ),
+        []
+      )
+      .filter(Boolean)
   })
 
   const documentRule = {
     match: object => object.object === 'document',
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
-      node.children.forEach((child, index) => {
-        // ToDo: match against rule.rules.matchMdast and wrap in center if no match
-      })
-
       const documentNode = {
         data: node.meta,
         object: 'document',
@@ -41,6 +41,7 @@ export default ({ rule, subModules, TYPE }) => {
           }
         })
       }
+      console.log(documentNode)
 
       return {
         document: documentNode,
@@ -51,40 +52,52 @@ export default ({ rule, subModules, TYPE }) => {
       return {
         type: 'root',
         meta: object.data,
-        children: childSerializer.toMdast(object.nodes, 0, object, rest)
+        children: childSerializer.toMdast(
+          object.nodes,
+          0,
+          object,
+          rest
+        )
       }
     }
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      documentRule
-    ]
+    rules: [documentRule]
   })
 
-  const newDocument = ({ title, template }, me) => serializer.deserialize(parse(
-    `---
+  const newDocument = ({ title, template }, me) =>
+    serializer.deserialize(
+      parse(
+        `---
 template: ${template}
 ---
-${titleModule ? `
-<section><h6>${titleModule.TYPE}</h6>
+${
+  titleModule
+    ? `
+<section><h6>TITLE</h6>
 
 # ${title}
 
 Lead
 
-Von ${me ? `[${me.name}](/~${me.id})` : '[Autor](<>)'} (Text) und Kollaborator, ${pubDateFormat(new Date())}
+Von ${
+  me ? `[${me.name}](/~${me.id})` : '[Autor](<>)'
+} (Text) und Kollaborator, ${pubDateFormat(new Date())}
 
 <hr/></section>
 
-` : ''}
-<section><h6>${centerModule.TYPE}</h6>
+`
+    : ''
+}
+<section><h6>CENTER</h6>
 
 ${titleModule ? 'Text' : title}
 
 <hr/></section>
 `
-  ))
+      )
+    )
 
   return {
     TYPE,

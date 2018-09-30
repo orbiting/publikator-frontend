@@ -4,7 +4,7 @@ import createHeadlineModule from '../headline'
 import createParagraphModule from '../paragraph'
 import { parse, stringify } from '@orbiting/remark-preset'
 
-const TYPE = 'COVER'
+const TYPE = 'COVERFIGURE'
 
 const titleModule = createHeadlineModule({
   TYPE: 'TITLE',
@@ -26,13 +26,12 @@ paragraphModule.name = 'paragraph'
 
 const coverModule = createCoverModule({
   TYPE,
+  schemaType: TYPE,
   rule: {
-    matchMdast: node => node.type === 'zone' && node.identifier === TYPE
+    matchMdast: node =>
+      node.type === 'zone' && node.identifier === TYPE
   },
-  subModules: [
-    titleModule,
-    paragraphModule
-  ]
+  subModules: [titleModule, paragraphModule]
 })
 
 const serializer = coverModule.helpers.serializer

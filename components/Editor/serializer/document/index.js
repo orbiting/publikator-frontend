@@ -19,24 +19,39 @@ export default ({ rule, subModules, TYPE }) => {
     match: object => object.object === 'document',
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
-      const cover = findOrCreate(node.children, {
-        type: 'zone', identifier: coverModule.TYPE
-      }, {
-        children: []
-      })
+      const cover = findOrCreate(
+        node.children,
+        {
+          type: 'zone',
+          identifier: 'FIGURE'
+        },
+        {
+          children: [
+            {
+              type: 'paragraph',
+              children: [{ type: 'image' }]
+            }
+          ]
+        }
+      )
 
-      let center = findOrCreate(node.children, {
-        type: 'zone', identifier: centerModule.TYPE
-      }, {
-        children: []
-      })
+      let center = findOrCreate(
+        node.children,
+        {
+          type: 'zone',
+          identifier: 'CENTER'
+        },
+        {
+          children: []
+        }
+      )
 
       const centerIndex = node.children.indexOf(center)
       const before = []
       const after = []
-      node.children.forEach((child, index) => {
+      node.children.forEach((child, i) => {
         if (child !== cover && child !== center) {
-          if (index > centerIndex) {
+          if (i > centerIndex) {
             after.push(child)
           } else {
             before.push(child)
@@ -46,14 +61,9 @@ export default ({ rule, subModules, TYPE }) => {
       if (before.length || after.length) {
         center = {
           ...center,
-          children: [
-            ...before,
-            ...center.children,
-            ...after
-          ]
+          children: [...before, ...center.children, ...after]
         }
       }
-
       const documentNode = {
         data: node.meta,
         object: 'document',
@@ -69,16 +79,19 @@ export default ({ rule, subModules, TYPE }) => {
       }
     },
     toMdast: (object, index, parent, rest) => {
-      const cover = findOrCreate(object.nodes, { object: 'block', type: coverModule.TYPE })
+      const cover = findOrCreate(object.nodes, {
+        object: 'block',
+        type: coverModule.TYPE
+      })
       const center = findOrCreate(
         object.nodes,
         { object: 'block', type: centerModule.TYPE },
         { nodes: [] }
       )
       const centerIndex = object.nodes.indexOf(center)
-      object.nodes.forEach((node, index) => {
+      object.nodes.forEach((node, i) => {
         if (node !== cover && node !== center) {
-          center.nodes[index > centerIndex ? 'push' : 'unshift'](node)
+          center.nodes[i > centerIndex ? 'push' : 'unshift'](node)
         }
       })
       return {
@@ -93,25 +106,26 @@ export default ({ rule, subModules, TYPE }) => {
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      documentRule
-    ]
+    rules: [documentRule]
   })
 
-  const newDocument = ({ title }) => serializer.deserialize(parse(
-    `<section><h6>${coverModule.TYPE}</h6>
+  const newDocument = ({ title }) =>
+    serializer.deserialize(
+      parse(
+        `<section><h6>TITLE</h6>
 
 # ${title}
 
 <hr/></section>
 
-<section><h6>${centerModule.TYPE}</h6>
+<section><h6>CENTER</h6>
 
 Ladies and Gentlemen,
 
 <hr/></section>
 `
-  ))
+      )
+    )
 
   return {
     TYPE,

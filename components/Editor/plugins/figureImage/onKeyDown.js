@@ -31,9 +31,7 @@ const onEnter = (_, change) => {
     return
   }
 
-  const nextBlock = document.getNextBlock(
-    value.startBlock.key
-  )
+  const nextBlock = document.getNextBlock(value.startBlock.key)
 
   const delta =
     document.getDepth(value.startBlock.key) -
@@ -48,11 +46,7 @@ const onEnter = (_, change) => {
   }
 
   return focusNext(
-    insertBlockAfter(
-      change,
-      Caption.getNew(),
-      value.startBlock
-    )
+    insertBlockAfter(change, Caption.getNew(), value.startBlock)
   )
 }
 
@@ -78,7 +72,7 @@ const onDeleteOrBackspace = (_, change) => {
     return
   }
 
-  if (value.startBlock.data.get('url') !== '') {
+  if (value.startBlock.data.get('src') !== '') {
     return updateData(change, value.startBlock, {
       url: ''
     })
@@ -91,10 +85,7 @@ export default (event, change) => {
   if (event.key === 'Enter') {
     return onEnter(event, change)
   }
-  if (
-    event.key === 'Delete' ||
-    event.key === 'Backspace'
-  ) {
+  if (event.key === 'Delete' || event.key === 'Backspace') {
     return onDeleteOrBackspace(event, change)
   }
 }

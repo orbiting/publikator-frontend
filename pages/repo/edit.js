@@ -318,14 +318,16 @@ export class EditorPage extends Component {
   }
 
   componentWillReceiveProps (nextProps) {
+    const { commitId } = this.props.router.query
     const { repo = {}, loading } = this.props.data || {}
     const { repo: nextRepo = {}, loading: nextLoading } =
       nextProps.data || {}
 
     const shouldLoad =
-      repo !== nextRepo ||
-      repo.commit !== nextRepo.commit ||
-      loading !== nextLoading
+      commitId !== 'new' &&
+      (repo !== nextRepo ||
+        repo.commit !== nextRepo.commit ||
+        loading !== nextLoading)
     debug('componentWillReceiveProps', 'shouldLoad', shouldLoad)
     if (shouldLoad) {
       this.loadState(nextProps)

@@ -10,15 +10,9 @@ const withMetaFormat = withMeta({
 const TitleBlock = withMetaFormat(
   ({ children, attributes, value: format }) => {
     return (
-      <SchemaComponent
-        name='titleBlock'
-        {...attributes}
-      >
+      <SchemaComponent name='titleBlock' {...attributes}>
         {format && (
-          <SchemaComponent
-            name='format'
-            contentEditable={false}
-          >
+          <SchemaComponent name='format' contentEditable={false}>
             {format}
           </SchemaComponent>
         )}
@@ -29,19 +23,10 @@ const TitleBlock = withMetaFormat(
   }
 )
 
-export default ({
-  node,
-  children,
-  attributes,
-  editor
-}) => {
+export default ({ node, children, attributes, editor }) => {
   if (isBlock('titleBlock', node)) {
     return (
-      <TitleBlock
-        node={node}
-        attributes={attributes}
-        editor={editor}
-      >
+      <TitleBlock node={node} attributes={attributes} editor={editor}>
         {children}
       </TitleBlock>
     )
@@ -49,10 +34,7 @@ export default ({
 
   if (isBlock('title', node)) {
     return (
-      <SchemaComponent
-        name='title'
-        {...attributes}
-      >
+      <SchemaComponent name='title' {...attributes}>
         <span
           style={{
             position: 'relative',
@@ -67,46 +49,23 @@ export default ({
 
   if (isBlock('subject', node)) {
     return (
-      <SchemaComponent
-        name='subject'
-        {...attributes}
-      >
-        <span
-          style={{
-            position: 'relative',
-            display: 'block'
-          }}
-        >
-          {children}
-        </span>
+      <SchemaComponent name='subject' {...attributes}>
+        {children}
       </SchemaComponent>
     )
   }
 
   if (isBlock('lead', node)) {
     return (
-      <SchemaComponent
-        name='lead'
-        {...attributes}
-      >
-        <span
-          style={{
-            position: 'relative',
-            display: 'block'
-          }}
-        >
-          {children}
-        </span>
+      <SchemaComponent name='lead' {...attributes}>
+        {children}
       </SchemaComponent>
     )
   }
 
   if (isBlock('credit', node)) {
     return (
-      <SchemaComponent
-        name='credit'
-        {...attributes}
-      >
+      <SchemaComponent name='credit' {...attributes}>
         <span
           style={{
             position: 'relative',

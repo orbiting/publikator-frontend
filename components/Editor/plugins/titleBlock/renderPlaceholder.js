@@ -1,6 +1,8 @@
 import { isBlock } from '../../base/lib'
 
-import Placeholder from '../../base/components/Placeholder'
+import Placeholder, {
+  InlinePlaceholder
+} from '../../base/components/Placeholder'
 
 export default ({ node }) => {
   if (node.text.trim() !== '') {
@@ -11,14 +13,12 @@ export default ({ node }) => {
   }
 
   if (isBlock('subject', node)) {
-    return <Placeholder>Spitzmarke</Placeholder>
+    return <InlinePlaceholder>Spitzmarke</InlinePlaceholder>
   }
   if (isBlock('lead', node)) {
-    return <Placeholder>Lead</Placeholder>
+    return <InlinePlaceholder>Lead</InlinePlaceholder>
   }
   if (isBlock('credit', node)) {
-    return (
-      <Placeholder>Autoren, Datum</Placeholder>
-    )
+    return <Placeholder>Autoren, Datum</Placeholder>
   }
 }

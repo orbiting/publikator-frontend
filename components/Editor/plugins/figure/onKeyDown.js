@@ -16,15 +16,13 @@ const onDeleteOrBackspace = (_, change) => {
     return
   }
 
-  const parent = document.getParent(
-    value.startBlock.key
-  )
+  const parent = document.getParent(value.startBlock.key)
 
   if (!isBlock('figure', parent)) {
     return
   }
   if (
-    value.startBlock.data.get('url') === '' &&
+    value.startBlock.data.get('src') === '' &&
     parent.text.trim() === ''
   ) {
     return removeBlock(change, parent)
@@ -32,10 +30,7 @@ const onDeleteOrBackspace = (_, change) => {
 }
 
 export default (event, change) => {
-  if (
-    event.key === 'Delete' ||
-    event.key === 'Backspace'
-  ) {
+  if (event.key === 'Delete' || event.key === 'Backspace') {
     return onDeleteOrBackspace(event, change)
   }
 }

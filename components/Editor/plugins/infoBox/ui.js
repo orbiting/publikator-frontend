@@ -1,62 +1,36 @@
 import React, { Fragment } from 'react'
-import { FaCheck as HasImageIcon } from 'react-icons/fa'
-import { MdClose as NoImageIcon } from 'react-icons/md'
-
-import { Label } from '@project-r/styleguide'
+import { Label, Radio, Checkbox } from '@project-r/styleguide'
 
 import { isBlock } from '../../base/lib'
-import SetValueButton from '../../base/components/SetValueButton'
-import ToggleButton from '../../base/components/ToggleButton'
-import Selected from '../../base/components/Selected'
+import {
+  removeBlock,
+  insertBlockAfter,
+  updateData
+} from '../../base/lib/changes'
 
+import { withTheme } from '../../base/apps/theme'
+
+import Selected from '../../base/components/Selected'
 import {
   SidebarBottom,
   SidebarTextOptions,
   SidebarFormatOptions
 } from '../../base/components/UI'
 
-import { withNodeData } from '../../base/apps/nodeData'
-import { withTheme } from '../../base/apps/theme'
-
-import { removeBlock, insertBlockAfter } from '../../base/lib/changes'
-
 import { getNewInfoboxFigure } from './lib'
-
-import {
-  BreakoutLeftIcon,
-  FloatLeftIcon,
-  DefaultIcon
-} from '../common/breakouts'
-
-import {
-  TinyIcon,
-  SmallIcon,
-  MediumIcon,
-  LargeIcon
-} from '../common/sizes'
 
 import { BoldButton } from '../bold/ui'
 import { LinkButton } from '../link/ui'
 import { TextButtons } from '../common/ui'
 
-const BreakoutButton = withNodeData({
-  fieldName: 'size'
-})(SetValueButton)
-
-const FigureSizeButton = withNodeData({
-  fieldName: 'figureSize'
-})(SetValueButton)
-
-const FigureToggleButton = withTheme()(({ node, editor, styles }) => {
+const FigureToggleButton = ({ node, editor }) => {
   const figure = node.nodes.get(1)
   const hasFigure = isBlock('infoBoxFigure', figure)
-  const Icon = hasFigure ? HasImageIcon : NoImageIcon
   return (
-    <ToggleButton
-      active={hasFigure}
-      {...styles.buttons.iconButton}
-      onClick={isActive =>
-        isActive
+    <Checkbox
+      checked={hasFigure}
+      onChange={() =>
+        hasFigure
           ? editor.change(removeBlock, figure)
           : editor.change(
             insertBlockAfter,
@@ -65,10 +39,10 @@ const FigureToggleButton = withTheme()(({ node, editor, styles }) => {
           )
       }
     >
-      <Icon size={22} />
-    </ToggleButton>
+      Mit Bild?
+    </Checkbox>
   )
-})
+}
 
 export const InfoBoxUI = withTheme()(({ styles, editor }) => {
   return (
@@ -77,97 +51,80 @@ export const InfoBoxUI = withTheme()(({ styles, editor }) => {
         const figure = node.nodes.get(1)
         const hasFigure = isBlock('infoBoxFigure', figure)
         const infoBoxSize = node.data.get('size')
+        const isFloatSize = infoBoxSize === 'float'
+        const figureSize = node.data.get('figureSize', 'S')
         return (
           <SidebarBottom>
             <div {...styles.layout.container}>
               <div {...styles.layout.sectionHeader}>
-                <Label>Infobox</Label>
-              </div>
-              <hr {...styles.layout.hairline} />
-              <div {...styles.layout.sectionHeader}>
                 <Label>Ausrichtung</Label>
               </div>
-              <div {...styles.layout.actions}>
-                <BreakoutButton
-                  name={null}
-                  node={node}
-                  {...styles.buttons.iconButton}
-                  editor={editor}
-                >
-                  <DefaultIcon />
-                </BreakoutButton>
-                <BreakoutButton
-                  name='breakout'
-                  node={node}
-                  {...styles.buttons.iconButton}
-                  editor={editor}
-                >
-                  <BreakoutLeftIcon />
-                </BreakoutButton>
-                <BreakoutButton
-                  name='float'
-                  node={node}
-                  {...styles.buttons.iconButton}
-                  editor={editor}
-                >
-                  <FloatLeftIcon />
-                </BreakoutButton>
+              <div {...styles.layout.vSection}>
+                {[
+                  { label: 'Normal', size: undefined },
+                  { label: 'Gross', size: 'breakout' },
+                  { label: 'Links', size: 'float' }
+                ].map((size, i) => {
+                  const checked = infoBoxSize === size.size
+                  return [
+                    <Radio
+                      key={`radio${i}`}
+                      checked={checked}
+                      onChange={() => {
+                        if (checked) return
+                        editor.change(updateData, node, {
+                          size: size.size
+                        })
+                      }}
+                    >
+                      {size.label}
+                    </Radio>
+                  ]
+                })}
               </div>
-            </div>
-
-            <div {...styles.layout.container}>
-              <div {...styles.layout.sectionHeader}>
-                <Label>Mit Bild?</Label>
-              </div>
-              <div {...styles.layout.actions}>
-                <FigureToggleButton node={node} editor={editor} />
+              <div {...styles.layout.section}>
+                <FigureToggleButton editor={editor} node={node} />
               </div>
             </div>
             {hasFigure && (
               <div {...styles.layout.container}>
                 <div {...styles.layout.sectionHeader}>
-                  <Label>Bild-Grösse</Label>
+                  <Label>Bildgrösse</Label>
                 </div>
-                <div {...styles.layout.actions}>
-                  <FigureSizeButton
-                    name={null}
-                    node={node}
-                    {...styles.buttons.iconButton}
-                    editor={editor}
-                  >
-                    <LargeIcon />
-                  </FigureSizeButton>
-                  <FigureSizeButton
-                    name='M'
-                    node={node}
-                    {...styles.buttons.iconButton}
-                    editor={editor}
-                  >
-                    <MediumIcon />
-                  </FigureSizeButton>
-                  {infoBoxSize !== 'float' && (
-                    <Fragment>
-                      <FigureSizeButton
-                        key='small-button'
-                        name='S'
-                        node={node}
-                        {...styles.buttons.iconButton}
-                        editor={editor}
+                <div {...styles.layout.vSection}>
+                  {['S', 'M', 'L'].map((value, i) => {
+                    const checked = figureSize === value
+
+                    return [
+                      <Radio
+                        key={`radio${i}`}
+                        checked={checked}
+                        onChange={() => {
+                          if (checked) return
+                          editor.change(updateData, node, {
+                            figureSize: value
+                          })
+                        }}
                       >
-                        <SmallIcon />
-                      </FigureSizeButton>
-                      <FigureSizeButton
-                        key='tiny-button'
-                        name='XS'
-                        node={node}
-                        {...styles.buttons.iconButton}
-                        editor={editor}
-                      >
-                        <TinyIcon />
-                      </FigureSizeButton>
-                    </Fragment>
-                  )}
+                        {value}
+                      </Radio>
+                    ]
+                  })}
                 </div>
+                {!isFloatSize && (
+                  <div {...styles.layout.section}>
+                    <Checkbox
+                      checked={node.data.get('figureFloat') || false}
+                      onChange={(_, figureFloat) =>
+                        editor.change(updateData, node, {
+                          figureFloat
+                        })
+                      }
+                    >
+                      Für Text optimieren
+                    </Checkbox>
+                  </div>
+                )}
               </div>
             )}
           </SidebarBottom>

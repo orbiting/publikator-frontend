@@ -6,13 +6,7 @@ import { isBlock } from '../../base/lib'
 import { SelectImageButton } from './ui'
 
 const FigureImage = withTheme()(
-  ({
-    node,
-    attributes,
-    editor,
-    isSelected,
-    styles
-  }) => (
+  ({ node, attributes, editor, isSelected, styles }) => (
     <SelectImageButton
       useAltKey
       key='content'
@@ -23,13 +17,11 @@ const FigureImage = withTheme()(
         display: 'block'
       }}
     >
-      {isSelected && (
-        <span {...styles.layout.outline} />
-      )}
-      {node.data.get('url') ? (
+      {isSelected && <span {...styles.layout.outline} />}
+      {node.data.get('src') ? (
         <SchemaComponent
           name='figureImage'
-          src={node.data.get('url')}
+          src={node.data.get('src')}
           title={node.data.get('title')}
           alt={node.data.get('alt')}
           {...attributes}

@@ -5,28 +5,30 @@ import { matchBlock } from '../utils'
 export default ({ rule, subModules, TYPE }) => {
   const editorOptions = rule.editorOptions || {}
 
-  const {
-    identifier = 'TITLE'
-  } = editorOptions
+  const { identifier = 'TITLE' } = editorOptions
 
   const childSerializer = new MarkdownSerializer({
-    rules: subModules.reduce(
-      (a, m) => a.concat(
-        m.helpers && m.helpers.serializer &&
-        m.helpers.serializer.rules
-      ),
-      []
-    ).filter(Boolean)
+    rules: subModules
+      .reduce(
+        (a, m) =>
+          a.concat(
+            m.helpers &&
+              m.helpers.serializer &&
+              m.helpers.serializer.rules
+          ),
+        []
+      )
+      .filter(Boolean)
   })
 
   const serializerRule = {
     match: matchBlock(TYPE),
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
-      const subject = findNode(
-        node.children,
-        { type: 'heading', depth: 2 }
-      )
+      const subject = findNode(node.children, {
+        type: 'heading',
+        depth: 2
+      })
 
       // if there's no subject yet, add one after the headline.
       const writableNode = { ...node, children: [...node.children] }
@@ -38,12 +40,20 @@ export default ({ rule, subModules, TYPE }) => {
         })
       }
 
-      let nodes = childSerializer.fromMdast(writableNode.children, 0, writableNode, rest)
+      let nodes = childSerializer.fromMdast(
+        writableNode.children,
+        0,
+        writableNode,
+        rest
+      )
       const { format } = rest.context
       if (format) {
         // enhance all immediate children with format
         // - needed for headline
-        nodes = nodes.map(node => ({ ...node, data: { ...node.data, format } }))
+        nodes = nodes.map(n => ({
+          ...n,
+          data: { ...n.data, format }
+        }))
       }
 
       return {
@@ -63,15 +73,18 @@ export default ({ rule, subModules, TYPE }) => {
         type: 'zone',
         identifier,
         data,
-        children: childSerializer.toMdast(object.nodes, 0, object, rest)
+        children: childSerializer.toMdast(
+          object.nodes,
+          0,
+          object,
+          rest
+        )
       }
     }
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      serializerRule
-    ]
+    rules: [serializerRule]
   })
 
   return {

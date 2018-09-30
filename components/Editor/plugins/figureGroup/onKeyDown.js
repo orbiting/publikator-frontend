@@ -17,8 +17,7 @@ const selectableBlocks = [
 ]
 
 const isFigureEmpty = node =>
-  node.text.trim() === '' &&
-  !node.nodes.first().data.get('url')
+  node.text.trim() === '' && !node.nodes.first().data.get('src')
 
 const isFigureGroupEmpty = node =>
   // Has empty text
@@ -26,8 +25,7 @@ const isFigureGroupEmpty = node =>
   // Has only one child, which is a figure
   (!node.nodes.size === 1 ||
     // Has two children, the second is the caption
-    (node.nodes.size === 2 &&
-      isBlock('caption', node.nodes.last())))
+    (node.nodes.size === 2 && isBlock('caption', node.nodes.last())))
 
 const onDeleteOrBackspace = (_, change) => {
   const {
@@ -39,11 +37,7 @@ const onDeleteOrBackspace = (_, change) => {
     return
   }
 
-  if (
-    !selectableBlocks.some(f =>
-      f(value.startBlock)
-    )
-  ) {
+  if (!selectableBlocks.some(f => f(value.startBlock))) {
     return
   }
 
@@ -101,24 +95,15 @@ const onEnter = (_, change) => {
     return
   }
 
-  if (
-    !isBlock('captionByline', value.startBlock)
-  ) {
+  if (!isBlock('captionByline', value.startBlock)) {
     return
   }
 
-  const childIndex = getChildIndex(
-    value,
-    figureGroupFigure
-  )
+  const childIndex = getChildIndex(value, figureGroupFigure)
 
   if (childIndex === figureGroup.nodes.size - 1) {
     return focusNext(
-      insertBlockAfter(
-        change,
-        Caption.getNew(),
-        figureGroupFigure
-      )
+      insertBlockAfter(change, Caption.getNew(), figureGroupFigure)
     )
   }
 
@@ -136,10 +121,7 @@ export default (event, change) => {
     return onEnter(event, change)
   }
 
-  if (
-    event.key === 'Backspace' ||
-    event.key === 'Delete'
-  ) {
+  if (event.key === 'Backspace' || event.key === 'Delete') {
     return onDeleteOrBackspace(event, change)
   }
 }

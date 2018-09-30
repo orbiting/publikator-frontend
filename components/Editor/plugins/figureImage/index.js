@@ -6,10 +6,8 @@ import { renderUI } from './ui'
 const getNew = () =>
   Block.create({
     type: 'figureImage',
-    isVoid: true,
     data: {
-      url: '',
-      title: '',
+      src: '',
       alt: ''
     }
   })

@@ -1,11 +1,7 @@
 import { SchemaComponent } from '../../base/components/Schema'
 import { isBlock } from '../../base/lib'
 
-export default ({
-  children,
-  attributes,
-  node
-}) => {
+export default ({ children, attributes, node }) => {
   if (isBlock('infoBox', node)) {
     return (
       <SchemaComponent
@@ -20,10 +16,7 @@ export default ({
   }
   if (isBlock('infoBoxTitle', node)) {
     return (
-      <SchemaComponent
-        name='infoBoxTitle'
-        attributes={attributes}
-      >
+      <SchemaComponent name='infoBoxTitle' attributes={attributes}>
         <span
           style={{
             display: 'block',
@@ -44,7 +37,9 @@ export default ({
           style: { position: 'relative' }
         }}
       >
-        {children}
+        <span style={{ position: 'relative', display: 'block' }}>
+          {children}
+        </span>
       </SchemaComponent>
     )
   }

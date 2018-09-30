@@ -104,7 +104,14 @@ const initModule = (rule, context = {}) => {
       context
     })
     context.editorSchema[TYPE] = rule
+    if (TYPE === 'figure') {
+      context.editorSchema['figureGroupFigure'] = rule
+    }
+
     module.TYPE = TYPE
+    module.schemaType = (
+      editorOptions.type || editorModule
+    ).toUpperCase()
     module.name = editorModule
     module.subModules = subModules
 

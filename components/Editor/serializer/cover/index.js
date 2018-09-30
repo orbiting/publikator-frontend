@@ -2,7 +2,7 @@ import { matchBlock } from '../utils'
 import { findOrCreate } from '../utils/serialization'
 import MarkdownSerializer from 'slate-mdast-serializer'
 
-export default ({ rule, subModules, TYPE }) => {
+export default ({ rule, schemaType, subModules, TYPE }) => {
   const titleModule = subModules.find(m => m.name === 'headline')
   if (!titleModule) {
     throw new Error('Missing headline submodule')
@@ -23,14 +23,14 @@ export default ({ rule, subModules, TYPE }) => {
     fromMdast: (node, index, parent, rest) => {
       // fault tolerant because markdown could have been edited outside
       const deepNodes = node.children.reduce(
-        (children, child) => children
-          .concat(child)
-          .concat(child.children),
+        (children, child) =>
+          children.concat(child).concat(child.children),
         []
       )
       const image = findOrCreate(deepNodes, { type: 'image' })
       const imageParagraph = node.children.find(
-        child => child.children && child.children.indexOf(image) !== -1
+        child =>
+          child.children && child.children.indexOf(image) !== -1
       )
       const title = findOrCreate(
         node.children,
@@ -38,18 +38,19 @@ export default ({ rule, subModules, TYPE }) => {
         { children: [] }
       )
 
-      const lead = (
-        node.children.find(child => child.type === 'paragraph' && child !== imageParagraph) ||
+      const lead = node.children.find(
+        child =>
+          child.type === 'paragraph' && child !== imageParagraph
+      ) ||
         findOrCreate(
           node.children,
           { type: 'blockquote' },
           { children: [] }
-        ).children[0] ||
-        ({
-          type: 'paragraph',
-          children: []
-        })
-      )
+        ).children[0] || {
+        type: 'paragraph',
+        children: []
+      }
+      console.log('exec cover', node, index)
 
       return {
         object: 'block',
@@ -67,7 +68,7 @@ export default ({ rule, subModules, TYPE }) => {
     toMdast: (object, index, ...args) => {
       return {
         type: 'zone',
-        identifier: TYPE,
+        identifier: schemaType,
         children: [
           {
             type: 'image',
@@ -75,18 +76,26 @@ export default ({ rule, subModules, TYPE }) => {
             url: object.data.src
           },
           titleSerializer.toMdast(
-            findOrCreate(object.nodes, {
-              object: 'block',
-              type: titleModule.TYPE
-            }, { nodes: [] }),
+            findOrCreate(
+              object.nodes,
+              {
+                object: 'block',
+                type: titleModule.TYPE
+              },
+              { nodes: [] }
+            ),
             1,
             ...args
           ),
           leadSerializer.toMdast(
-            findOrCreate(object.nodes, {
-              object: 'block',
-              type: leadModule.TYPE
-            }, { nodes: [] }),
+            findOrCreate(
+              object.nodes,
+              {
+                object: 'block',
+                type: leadModule.TYPE
+              },
+              { nodes: [] }
+            ),
             2,
             ...args
           )
@@ -96,9 +105,7 @@ export default ({ rule, subModules, TYPE }) => {
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      cover
-    ]
+    rules: [cover]
   })
 
   return {
