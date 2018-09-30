@@ -20,7 +20,7 @@ const imageModule = createImageModule({
 imageModule.name = 'figureImage'
 
 const bylineModule = createParagraphModule({
-  TYPE: 'EMPHASIS',
+  TYPE: 'captionByline',
   rule: {
     matchMdast: node => node.type === 'emphasis'
   },
@@ -28,28 +28,23 @@ const bylineModule = createParagraphModule({
 })
 
 const captionModule = createCaptionModule({
-  TYPE: 'FIGURE_CAPTION',
+  TYPE: 'caption',
   rule: {
     matchMdast: node => node.type === 'paragraph',
     editorOptions: {}
   },
-  subModules: [
-    bylineModule,
-    boldModule
-  ]
+  subModules: [bylineModule, boldModule]
 })
 captionModule.name = 'figureCaption'
 
 const figureModule = createFigureModule({
   TYPE,
   rule: {
-    matchMdast: node => node.type === 'zone' && node.identifier === TYPE,
+    matchMdast: node =>
+      node.type === 'zone' && node.identifier === TYPE,
     editorOptions: {}
   },
-  subModules: [
-    imageModule,
-    captionModule
-  ]
+  subModules: [imageModule, captionModule]
 })
 
 const serializer = figureModule.helpers.serializer
@@ -81,9 +76,8 @@ Caption_Byline_
 
   const caption = node.nodes.get(1)
   assert.equal(caption.object, 'block')
-  assert.equal(caption.type, 'FIGURE_CAPTION')
+  assert.equal(caption.type, 'caption')
   assert.equal(caption.text, 'CaptionByline')
-
   assert.equal(stringify(serializer.serialize(value)).trimRight(), md)
   assert.end()
 })
@@ -98,7 +92,7 @@ B**_Caption_
   const node = value.document.nodes.first()
 
   assert.equal(node.object, 'block')
-  assert.equal(node.type, 'FIGURE_CAPTION')
+  assert.equal(node.type, 'caption')
   assert.equal(node.text, 'A\nBCaption')
 
   assert.equal(stringify(serializer.serialize(value)), md)

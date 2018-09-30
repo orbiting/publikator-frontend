@@ -13,7 +13,7 @@
     "heroku-postbuild": "npm run build",
     "tape": "cross-env NODE_ENV=test babel-tape-runner",
     "test": "npm run test:unit && npm run test:jsdom",
-    "test:unit": "cross-env NODE_ENV=test babel-tape-runner \"?(lib|pages|components)/**/*.test.js\" | faucet",
+    "test:unit": "cross-env NODE_ENV=test babel-tape-runner \"?(lib|pages|components)/**/*.test.js\"",
     "test:jsdom": "cross-env NODE_ENV=test babel-tape-runner test/jsdom/setup.js \"test/jsdom/**/*.test.js\" | faucet",
     "cloc": "find . -name '*.js' -not -path \"./node_modules*\" -not -path \"./.next*\" | xargs wc -l",
     "standardize": "standard --fix",
