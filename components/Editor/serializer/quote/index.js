@@ -3,11 +3,15 @@ import MarkdownSerializer from 'slate-mdast-serializer'
 import { matchBlock } from '../utils'
 
 export default ({ rule, subModules, TYPE }) => {
-  const paragrapQuoteModule = subModules.find(m => m.name === 'paragraph')
+  const paragrapQuoteModule = subModules.find(
+    m => m.name === 'paragraph'
+  )
   if (!paragrapQuoteModule) {
     throw new Error('Missing paragraph submodule (quote)')
   }
-  const paragraphSourceModule = subModules.find(m => m.name === 'paragraph' && m !== paragrapQuoteModule)
+  const paragraphSourceModule = subModules.find(
+    m => m.name === 'paragraph' && m !== paragrapQuoteModule
+  )
   if (!paragraphSourceModule) {
     throw new Error('Missing a second paragraph submodule (source)')
   }
@@ -21,40 +25,55 @@ export default ({ rule, subModules, TYPE }) => {
   ].filter(Boolean)
 
   const childSerializer = new MarkdownSerializer({
-    rules: orderedSubModules.reduce(
-      (a, m) => a.concat(
-        m.helpers && m.helpers.serializer &&
-        m.helpers.serializer.rules
-      ),
-      []
-    ).filter(Boolean)
+    rules: orderedSubModules
+      .reduce(
+        (a, m) =>
+          a.concat(
+            m.helpers &&
+              m.helpers.serializer &&
+              m.helpers.serializer.rules
+          ),
+        []
+      )
+      .filter(Boolean)
   })
 
   const serializerRule = {
     match: matchBlock(TYPE),
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
+      const nodes = childSerializer
+        .fromMdast(node.children, 0, node, rest)
+        .map(
+          n =>
+            n.type === 'figure'
+              ? { ...n, type: 'pullQuoteFigure' }
+              : n
+        )
+
       return {
         object: 'block',
         type: TYPE,
         data: node.data,
-        nodes: childSerializer.fromMdast(node.children, 0, node, rest)
+        nodes
       }
     },
     toMdast: (object, index, parent, rest) => {
+      const nodes = object.nodes.map(
+        n =>
+          n.type === 'pullQuoteFigure' ? { ...n, type: 'figure' } : n
+      )
       return {
         type: 'zone',
-        identifier: TYPE,
+        identifier: 'QUOTE',
         data: object.data,
-        children: childSerializer.toMdast(object.nodes, 0, object, rest)
+        children: childSerializer.toMdast(nodes, 0, object, rest)
       }
     }
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      serializerRule
-    ]
+    rules: [serializerRule]
   })
 
   return {

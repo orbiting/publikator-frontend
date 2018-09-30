@@ -33,17 +33,19 @@ const conversionStrategy = (change, node) => {
 }
 
 const toFlatBlockConversion = (change, node, block) => {
-  return node.nodes.reduce(
-    (t, item) =>
-      !isBlock('caption', item)
-        ? t
-          .setNodeByKey(item.key, {
-            type: block
-          })
-          .unwrapBlockByKey(item.key)
-        : t,
-    change
-  )
+  return node.nodes
+    .reduce(
+      (t, item) =>
+        !isBlock('caption', item)
+          ? t
+            .setNodeByKey(item.key, {
+              type: block
+            })
+            .unwrapBlockByKey(item.key)
+          : t,
+      change
+    )
+    .removeNodeByKey(node.key)
 }
 
 export const BlockQuoteButton = withTheme()(props => (
@@ -63,7 +65,7 @@ export const BlockQuoteButton = withTheme()(props => (
 
 export const BlockQuoteUI = withTheme()(({ styles, editor }) => {
   return (
-    <Selected isNode='list' offset={1}>
+    <Selected isNode='blockQuote' offset={1}>
       {({ node }) => (
         <Fragment>
           <SidebarBlockOptions>

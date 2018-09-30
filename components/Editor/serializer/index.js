@@ -106,6 +106,8 @@ const initModule = (rule, context = {}) => {
     context.editorSchema[TYPE] = rule
     if (TYPE === 'figure') {
       context.editorSchema['figureGroupFigure'] = rule
+      context.editorSchema['infoBoxFigure'] = rule
+      context.editorSchema['pullQuoteFigure'] = rule
     }
 
     module.TYPE = TYPE

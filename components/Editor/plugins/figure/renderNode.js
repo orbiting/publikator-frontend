@@ -15,34 +15,22 @@ const styles = {
   })
 }
 
-export default ({
-  node,
-  attributes,
-  children
-}) => {
+export default ({ node, attributes, children }) => {
   if (isBlock('figure', node)) {
-    return node.data.get('size') ===
-      'edgeToEdge' ? (
-        <div
-          key='content-edgeToEdge'
-          {...styles.edgeToEdge}
-        >
-          <SchemaComponent
-            name='figure'
-            {...attributes}
-          >
-            {children}
-          </SchemaComponent>
-        </div>
-      ) : (
-        <SchemaComponent
-          name='figure'
-          key='content'
-          {...attributes}
-          size={node.data.get('size')}
-        >
+    return node.data.get('size') === 'edgeToEdge' ? (
+      <div key='content-edgeToEdge' {...styles.edgeToEdge}>
+        <SchemaComponent name='figure' {...attributes}>
           {children}
         </SchemaComponent>
-      )
+      </div>
+    ) : (
+      <SchemaComponent
+        name='figure'
+        {...attributes}
+        size={node.data.get('size')}
+      >
+        {children}
+      </SchemaComponent>
+    )
   }
 }

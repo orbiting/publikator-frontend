@@ -5,6 +5,7 @@ import { isBlock } from '../../base/lib'
 import InfoBox from '../infoBox'
 import Figure from '../figure'
 import FigureGroup from '../figureGroup'
+import PullQuote from '../pullQuote'
 import Toolbar from '../toolbar'
 
 const CenterToolbar = Toolbar({
@@ -16,12 +17,14 @@ const CenterToolbar = Toolbar({
     isBlock('figure'),
     isBlock('subhead'),
     isBlock('list'),
-    isBlock('figureGroup')
+    isBlock('figureGroup'),
+    isBlock('pullQuote')
   ]),
   insertItems: [
     { text: 'Infobox', value: InfoBox.getNew },
     { text: 'Figure', value: Figure.getNew },
-    { text: 'Figure Group', value: FigureGroup.getNew }
+    { text: 'Figure Group', value: FigureGroup.getNew },
+    { text: 'Pull Quote', value: PullQuote.getNew }
   ]
 })
 

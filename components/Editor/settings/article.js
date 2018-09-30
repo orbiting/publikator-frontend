@@ -4,6 +4,7 @@ import { isBlock } from '../base/lib'
 import Link from '../plugins/link'
 import FigureGroup from '../plugins/figureGroup'
 import BlockQuote from '../plugins/blockQuote'
+import PullQuote from '../plugins/pullQuote'
 import Figure from '../plugins/figure'
 import FigureImage from '../plugins/figureImage'
 import Cover from '../plugins/cover'
@@ -32,6 +33,7 @@ const contentPlugins = [
   BlockQuote,
   Cover,
   Figure,
+  PullQuote,
   FigureImage,
   Caption,
   Paragraph,

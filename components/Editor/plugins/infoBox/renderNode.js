@@ -43,4 +43,16 @@ export default ({ children, attributes, node }) => {
       </SchemaComponent>
     )
   }
+  if (isBlock('infoBoxFigure', node)) {
+    return (
+      <SchemaComponent
+        name='infoBoxFigure'
+        attributes={{
+          ...attributes
+        }}
+      >
+        {children}
+      </SchemaComponent>
+    )
+  }
 }
