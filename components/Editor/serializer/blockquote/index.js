@@ -12,41 +12,51 @@ export const getSubmodules = options => {
 export const fromMdast = options => {
   const { paragraphModule, captionModule } = getSubmodules(options)
   return (node, index, parent, rest) => {
-    const caption = node.children.filter(captionModule.rule.matchMdast)
-    const blockquotes = node.children.filter(paragraphModule.rule.matchMdast)
+    const caption = node.children.filter(
+      captionModule.rule.matchMdast
+    )
+    const blockquotes = node.children.filter(
+      paragraphModule.rule.matchMdast
+    )
     const serializedBlockQuotes = blockquotes.length
-      ? paragraphModule.helpers.serializer.fromMdast(blockquotes.map(n => ({
-        ...n,
-        children: n.children && n.children.length
-          ? n.children[0].children
-          : [{
-            type: 'text',
-            value: ''
-          }]
-      })))
+      ? paragraphModule.helpers.serializer.fromMdast(
+        blockquotes.map(n => ({
+          ...n,
+          children:
+              n.children && n.children.length
+                ? n.children[0].children
+                : [
+                  {
+                    type: 'text',
+                    value: ''
+                  }
+                ]
+        }))
+      )
       : [{ object: 'block', type: paragraphModule.TYPE }]
 
-    const serializedCaption = captionModule.helpers.serializer.fromMdast(caption.length ? caption : ([{
-      type: 'paragraph',
-      children: [
-        { type: 'text', value: '' },
-        {
-          type: 'emphasis',
-          children: [
-            { type: 'text', value: '' }
-          ]
-        }
-      ]
-    }]))
+    const serializedCaption = captionModule.helpers.serializer.fromMdast(
+      caption.length
+        ? caption
+        : [
+          {
+            type: 'paragraph',
+            children: [
+              { type: 'text', value: '' },
+              {
+                type: 'emphasis',
+                children: [{ type: 'text', value: '' }]
+              }
+            ]
+          }
+        ]
+    )
 
     return {
       object: 'block',
       type: options.TYPE,
       data: node.data,
-      nodes: [
-        ...serializedBlockQuotes,
-        ...serializedCaption
-      ]
+      nodes: [...serializedBlockQuotes, ...serializedCaption]
     }
   }
 }
@@ -55,15 +65,16 @@ export const toMdast = options => {
   const { paragraphModule, captionModule } = getSubmodules(options)
 
   return (node, index, parent, rest) => {
-    const caption = node.nodes.slice(-1)
-    const paragraphs = node.nodes.slice(0, -1)
-
+    const blockquotes = node.nodes.filter(
+      n => n.type === 'blockQuoteText'
+    )
+    const caption = node.nodes.filter(n => n.type === 'caption')
     return {
       type: 'zone',
       identifier: 'BLOCKQUOTE',
       children: [
         ...paragraphModule.helpers.serializer
-          .toMdast(paragraphs)
+          .toMdast(blockquotes)
           .map(n => ({ type: 'blockquote', children: [n] })),
         ...captionModule.helpers.serializer.toMdast(caption)
       ]
@@ -88,5 +99,4 @@ export default options => ({
   helpers: {
     serializer: getSerializer(options)
   }
-
 })

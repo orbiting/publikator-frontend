@@ -1,0 +1,105 @@
+{
+  "editorState": {
+    "type": "root",
+    "meta": {
+      "slug": "episode-1",
+      "subject": "",
+      "auto": true,
+      "gallery": true,
+      "series": "https://github.com/republik-dev/article-master",
+      "format":
+        "https://github.com/republik-dev/format-auf-langer-sicht",
+      "title": "Episode 1",
+      "template": "article",
+      "description": "Leadadsafsadf",
+      "feed": true
+    },
+    "children": [
+      {
+        "type": "zone",
+        "identifier": "TITLE",
+        "data": {},
+        "children": [
+          {
+            "type": "heading",
+            "depth": 1,
+            "children": [{ "type": "text", "value": "Episode 1" }]
+          },
+          {
+            "type": "heading",
+            "depth": 2,
+            "children": [{ "type": "text", "value": "" }]
+          },
+          {
+            "type": "paragraph",
+            "children": [{ "type": "text", "value": "Leadadsafsadf" }]
+          },
+          {
+            "type": "paragraph",
+            "children": [
+              { "type": "text", "value": "Von " },
+              {
+                "type": "link",
+                "title": null,
+                "url": "/~eca9ee2c-4678-4f63-8564-651293df2b97",
+                "children": [
+                  { "type": "text", "value": "Simon Schmid" }
+                ]
+              },
+              {
+                "type": "text",
+                "value": " (Text) und Kollaborator, 3. September 2018"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "type": "zone",
+        "identifier": "CENTER",
+        "children": [
+          {
+            "type": "paragraph",
+            "children": [{ "type": "text", "value": "Texts" }]
+          },
+          {
+            "type": "paragraph",
+            "children": [{ "type": "text", "value": "adfa" }]
+          },
+          {
+            "type": "zone",
+            "identifier": "INFOBOX",
+            "data": {},
+            "children": [
+              {
+                "type": "heading",
+                "depth": 3,
+                "children": [{ "type": "text", "value": "" }]
+              },
+              {
+                "type": "zone",
+                "identifier": "FIGURE",
+                "data": {},
+                "children": [
+                  { "type": "image", "alt": "", "url": "" },
+                  {
+                    "type": "paragraph",
+                    "children": [{ "type": "text", "value": "" }]
+                  }
+                ]
+              },
+              {
+                "type": "paragraph",
+                "children": [{ "type": "text", "value": "" }]
+              }
+            ]
+          },
+          {
+            "type": "paragraph",
+            "children": [{ "type": "text", "value": "sdfsadf" }]
+          }
+        ]
+      }
+    ]
+  }
+}

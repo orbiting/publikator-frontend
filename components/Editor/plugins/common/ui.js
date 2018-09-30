@@ -5,6 +5,7 @@ import { SubheadButton } from '../subhead/ui'
 import { SubButton } from '../subscript/ui'
 import { SupButton } from '../superscript/ui'
 import { OrderedListButton, UnorderedListButton } from '../list/ui'
+import { BlockQuoteButton } from '../blockQuote/ui'
 
 export const BlockButtons = withTheme()(
   ({ node, editor, styles }) => (
@@ -18,6 +19,7 @@ export const BlockButtons = withTheme()(
         <SubheadButton node={node} editor={editor} />
         <UnorderedListButton node={node} editor={editor} />
         <OrderedListButton node={node} editor={editor} />
+        <BlockQuoteButton node={node} editor={editor} />
       </div>
     </div>
   )

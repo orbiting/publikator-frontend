@@ -25,72 +25,63 @@ const getSerializer = options => {
   })
 
   const fromMdast = (node, index, parent, rest) => {
-    const captionNodes = node.children.filter(
-      n => n.type !== 'emphasis'
-    )
-    const byline = node.children.find(n => n.type === 'emphasis') || {
-      type: 'emphasis',
-      children: []
-    }
-    const bylineNodes = byline.children
+    const lastChild = node.children[node.children.length - 1]
+    const byline = lastChild.type === 'emphasis' && lastChild
+    const text =
+      byline && node.children.length === 1
+        ? null
+        : byline
+          ? node.children.slice(0, -1)
+          : node.children
 
-    const res = {
+    const nodes = [
+      text && {
+        object: 'block',
+        type: 'captionText',
+        nodes: inlineSerializer.fromMdast(text, 0, node, rest)
+      },
+      byline && {
+        object: 'block',
+        type: bylineModule.TYPE,
+        nodes: bylineModule.helpers.serializer.fromMdast(
+          byline.children,
+          0,
+          node,
+          rest
+        )
+      }
+    ].filter(Boolean)
+
+    return {
       object: 'block',
       type: options.TYPE,
-      nodes: [
-        {
-          object: 'block',
-          type: 'captionText',
-          nodes: inlineSerializer.fromMdast(
-            captionNodes,
-            0,
-            node,
-            rest
-          )
-        },
-        {
-          object: 'block',
-          type: bylineModule.TYPE,
-          nodes: bylineModule.helpers.serializer.fromMdast(
-            bylineNodes,
-            0,
-            node,
-            rest
-          )
-        }
-      ]
+      nodes
     }
-    return res
   }
 
   const toMdast = (object, index, parent, rest) => {
-    const [caption, byline] = object.nodes
+    const text = object.nodes.find(n => n.type === 'captionText')
+    const byline = object.nodes.find(n => n.type === 'captionByline')
 
     const children = [
-      ...inlineSerializer.toMdast(caption.nodes, 0, object, rest)
-    ]
-    const bylineChildren = bylineModule.helpers.serializer.toMdast(
-      byline.nodes,
-      1,
-      object,
-      rest
-    )
-
-    if (
-      bylineChildren.length &&
-      !(bylineChildren.length === 1 && bylineChildren[0].value === '')
-    ) {
-      children.push({
+      ...(text
+        ? inlineSerializer.toMdast(text.nodes, 0, object, rest)
+        : []),
+      byline && {
         type: 'emphasis',
-        children: bylineChildren
-      })
-    }
+        children: bylineModule.helpers.serializer.toMdast(
+          byline.nodes,
+          0,
+          byline,
+          rest
+        )
+      }
+    ].filter(Boolean)
 
-    const res = {
+    return {
       type: 'paragraph',
       children
     }
-    return res
   }
 
   return new MarkdownSerializer({
