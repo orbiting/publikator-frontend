@@ -9,6 +9,7 @@ import Figure from '../plugins/figure'
 import FigureImage from '../plugins/figureImage'
 import Cover from '../plugins/cover'
 import Caption from '../plugins/caption'
+import Embeds from '../plugins/embeds'
 import Bold from '../plugins/bold'
 import List from '../plugins/list'
 import Superscript from '../plugins/superscript'
@@ -31,6 +32,7 @@ const contentPlugins = [
   InfoBox,
   TitleBlock,
   BlockQuote,
+  Embeds,
   Cover,
   Figure,
   PullQuote,

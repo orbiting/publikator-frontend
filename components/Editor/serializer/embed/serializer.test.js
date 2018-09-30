@@ -1,7 +1,5 @@
 import test from 'tape'
-import {
-  matchZone
-} from 'mdast-react-render/lib/utils'
+import { matchZone } from 'mdast-react-render/lib/utils'
 import { parse, stringify } from '@orbiting/remark-preset'
 
 import { createEmbedVideoModule, createEmbedTwitterModule } from './'
@@ -15,7 +13,7 @@ const paragraphModule = createParagraphModule({
 paragraphModule.name = 'paragraph'
 
 const embedVideoModule = createEmbedVideoModule({
-  TYPE: 'EMBEDVIDEO',
+  TYPE: 'videoEmbed',
   rule: {
     matchMdast: matchZone('EMBEDVIDEO'),
     editorOptions: {
@@ -27,7 +25,7 @@ const embedVideoModule = createEmbedVideoModule({
 embedVideoModule.name = 'embedVideo'
 
 const embedTwitterModule = createEmbedTwitterModule({
-  TYPE: 'EMBEDTWITTER',
+  TYPE: 'twitterEmbed',
   rule: {
     matchMdast: matchZone('EMBEDTWITTER'),
     editorOptions: {
@@ -62,18 +60,22 @@ test('embedVideo serialization', assert => {
   const embed = value.document.nodes.first()
 
   assert.equal(embed.object, 'block')
-  assert.equal(embed.type, 'EMBEDVIDEO')
+  assert.equal(embed.type, 'videoEmbed')
 
   assert.deepEqual(embed.data.toJS(), {
     __typename: 'VimeoEmbed',
     id: '242527960',
     userId: '/users/4801470',
     userName: 'Roman De Giuli',
-    thumbnail: 'https://i.vimeocdn.com/video/666449997_960x556.jpg?r=pad',
+    thumbnail:
+      'https://i.vimeocdn.com/video/666449997_960x556.jpg?r=pad',
     url: 'https://vimeo.com/channels/staffpicks/242527960'
   })
 
-  assert.equal(stringify(embedVideoSerializer.serialize(value)).trimRight(), md)
+  assert.equal(
+    stringify(embedVideoSerializer.serialize(value)).trimRight(),
+    md
+  )
   assert.end()
 })
 
@@ -99,18 +101,22 @@ test('embedTwitter serialization', assert => {
   const embed = value.document.nodes.first()
 
   assert.equal(embed.object, 'block')
-  assert.equal(embed.type, 'EMBEDTWITTER')
+  assert.equal(embed.type, 'twitterEmbed')
 
   assert.deepEqual(embed.data.toJS(), {
     __typename: 'TwitterEmbed',
     id: '930363029669203969',
-    text: 'Good luck against Argentina later, @alexiwobi https://t.co/mm9us0b7JC',
+    text:
+      'Good luck against Argentina later, @alexiwobi https://t.co/mm9us0b7JC',
     userId: '34613288',
     userName: 'Arsenal FC',
     userScreenName: 'Arsenal',
     url: 'https://twitter.com/Arsenal/status/930363029669203969'
   })
 
-  assert.equal(stringify(embedTwitterSerializer.serialize(value)).trimRight(), md)
+  assert.equal(
+    stringify(embedTwitterSerializer.serialize(value)).trimRight(),
+    md
+  )
   assert.end()
 })

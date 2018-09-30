@@ -2,14 +2,10 @@ import MarkdownSerializer from 'slate-mdast-serializer'
 import { matchBlock } from '../utils'
 import { findOrCreate } from '../utils/serialization'
 
-const fromMdast = ({ TYPE }) => (
-  node
-) => {
+const fromMdast = ({ TYPE }) => node => {
   const deepNodes = node.children.reduce(
     (children, child) =>
-      children
-        .concat(child)
-        .concat(child.children),
+      children.concat(child).concat(child.children),
     []
   )
   const link = findOrCreate(deepNodes, {
@@ -26,16 +22,12 @@ const fromMdast = ({ TYPE }) => (
   }
 }
 
-const toMdast = ({ TYPE }) => (
-  node
-) => {
-  const {
-    url,
-    ...data
-  } = node.data
+const toMdast = ({ TYPE }) => node => {
+  const { url, ...data } = node.data
   return {
     type: 'zone',
-    identifier: TYPE,
+    identifier:
+      TYPE === 'twitterEmbed' ? 'EMBEDTWITTER' : 'EMBEDVIDEO',
     data,
     children: [
       {
@@ -62,8 +54,7 @@ const getSerializer = options =>
     rules: [
       {
         match: matchBlock(options.TYPE),
-        matchMdast:
-          options.rule.matchMdast,
+        matchMdast: options.rule.matchMdast,
         fromMdast: fromMdast(options),
         toMdast: toMdast(options)
       }

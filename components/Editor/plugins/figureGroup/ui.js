@@ -4,7 +4,7 @@ import { withTheme } from '../../base/apps/theme'
 import { isBlock } from '../../base/lib'
 import Selected from '../../base/components/Selected'
 import Toolbar from '../toolbar'
-import { SidebarTop } from '../../base/components/UI'
+import { SidebarBottom } from '../../base/components/UI'
 
 import {
   SizeButton,
@@ -29,7 +29,7 @@ const FigureGroupToolbar = Toolbar({
 export const FigureGroupUI = withTheme()(({ styles, editor }) => (
   <Selected isNode='figureGroup' offset={3}>
     {({ node }) => (
-      <SidebarTop>
+      <SidebarBottom>
         <div {...styles.layout.container}>
           <div {...styles.layout.headerSection}>
             <Label>Bildergruppe</Label>
@@ -47,7 +47,7 @@ export const FigureGroupUI = withTheme()(({ styles, editor }) => (
             </SizeButton>
           </div>
         </div>
-      </SidebarTop>
+      </SidebarBottom>
     )}
   </Selected>
 ))
