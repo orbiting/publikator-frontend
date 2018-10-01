@@ -775,7 +775,9 @@ export class EditorPage extends Component {
                 </div>
               )}
             />
-            <EditorUI />
+            <div style={{ display: showSidebar ? 'block' : 'none' }}>
+              <EditorUI />
+            </div>
             {/* <Sidebar warnings={warnings}
               isDisabled={Boolean(showLoading || error)}
               selectedTabId={(readOnly && 'workflow') || undefined}
