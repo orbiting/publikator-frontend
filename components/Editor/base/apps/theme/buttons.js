@@ -26,7 +26,7 @@ export const iconButton = merge(
       cursor: 'default',
       color: colors.disabled
     },
-    '&[data-active="true"]:not([disabled])': {
+    '&[data-active="true"]': {
       color: colors.primary
     }
   })
