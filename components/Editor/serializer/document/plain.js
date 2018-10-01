@@ -41,7 +41,6 @@ export default ({ rule, subModules, TYPE }) => {
           }
         })
       }
-      console.log(documentNode)
 
       return {
         document: documentNode,

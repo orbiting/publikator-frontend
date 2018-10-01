@@ -98,7 +98,8 @@ const documentPlainAutoMeta = change => {
     const headline = title.nodes.first()
     const headlineText = headline ? headline.text : ''
     const subject = title.nodes.get(1)
-    const lead = title.nodes.get(2)
+    const lead =
+      isBlock('lead', title.nodes.get(2)) && title.nodes.get(2)
 
     newData = newData
       .set('title', headlineText)
@@ -106,12 +107,11 @@ const documentPlainAutoMeta = change => {
       .set('description', lead ? lead.text : '')
       .set('slug', slugify(headlineText))
   }
-
   return data.equals(newData) ? null : newData
 }
 
 const getAutoMeta = schema => {
-  const docType = schema.get('document').editorModule
+  const docType = schema.get('document').name
   if (docType === 'documentPlain') {
     return documentPlainAutoMeta
   }
