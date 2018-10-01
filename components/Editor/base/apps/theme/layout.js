@@ -12,7 +12,7 @@ export const ui = ({ isVisible, align, style }) =>
       width: '0',
       top: '80px',
       right: align === 'right' ? '0' : 'auto',
-      zIndex: 9999
+      zIndex: 1
     }) ||
       {}),
     flexDirection: 'column',
@@ -57,14 +57,13 @@ export const backdrop = css({
   bottom: 0
 })
 
-export const heading = ({ align }) =>
-  css({
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'flex-start'
-  })
+export const heading = css({
+  display: 'flex',
+  flexDirection: 'row',
+  justifyContent: 'flex-start'
+})
 
-export const sectionHeader = config => merge(heading(config), section)
+export const sectionHeader = merge(heading, section)
 
 export const outline = css({
   border: `3px solid ${colors.primary}`,
@@ -118,10 +117,10 @@ export default config => ({
   section,
   hSection,
   vSection,
-  heading: heading(config),
+  heading,
   outline,
   backdrop,
-  sectionHeader: sectionHeader(config),
+  sectionHeader,
   hairline,
   horizontalGroup,
   actions

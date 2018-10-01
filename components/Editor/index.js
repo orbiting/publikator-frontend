@@ -25,23 +25,33 @@ const styles = {
 }
 
 const Container = ({ children }) => (
-  <div {...styles.container}>{ children }</div>
+  <div {...styles.container}>{children}</div>
 )
 
 const Document = ({ children, readOnly }) => (
-  <div {...styles.document} style={readOnly ? {
-    pointerEvents: 'none',
-    opacity: 0.6
-  } : {}}>
-    { children }
+  <div
+    {...styles.document}
+    style={
+      readOnly
+        ? {
+          pointerEvents: 'none',
+          opacity: 0.6
+        }
+        : {}
+    }
+  >
+    {children}
   </div>
 )
 
 export const getEditorSettings = schema => {
-  const { serializer, newDocument, editorSchema } = getSerializer(schema)
-  const { plugins } = schema.template === 'front'
-    ? frontSettings({ schema: editorSchema })
-    : articleSettings({ schema: editorSchema })
+  const { serializer, newDocument, editorSchema } = getSerializer(
+    schema
+  )
+  const { plugins } =
+    schema.template === 'front'
+      ? frontSettings({ schema: editorSchema })
+      : articleSettings({ schema: editorSchema })
   return {
     plugins,
     serializer,
@@ -53,7 +63,7 @@ export const getEditorSettings = schema => {
 export class Editor extends Component {
   constructor (props) {
     super(props)
-    this.onChange = (change) => {
+    this.onChange = change => {
       const { value, onChange, onDocumentChange } = this.props
 
       if (change.value !== value) {
@@ -68,16 +78,20 @@ export class Editor extends Component {
     const { value, plugins, schema, readOnly } = this.props
     return (
       <Container>
-        <Loader loading={!value} render={() =>
-          <Document readOnly={readOnly}>
-            <BaseEditor
-              schema={schema}
-              value={value}
-              plugins={plugins}
-              readOnly={readOnly}
-              onChange={this.onChange} />
-          </Document>
-        } />
+        <Loader
+          loading={!value}
+          render={() => (
+            <Document readOnly={readOnly}>
+              <BaseEditor
+                schema={schema}
+                value={value}
+                plugins={plugins}
+                readOnly={readOnly}
+                onChange={this.onChange}
+              />
+            </Document>
+          )}
+        />
       </Container>
     )
   }

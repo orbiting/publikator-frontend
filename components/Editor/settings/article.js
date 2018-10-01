@@ -17,6 +17,7 @@ import Superscript from '../plugins/superscript'
 import InfoBox from '../plugins/infoBox'
 import Subscript from '../plugins/subscript'
 import Italic from '../plugins/italic'
+import Chart from '../plugins/chart'
 import Paragraph from '../plugins/paragraph'
 import Subhead from '../plugins/subhead'
 import TitleBlock from '../plugins/titleBlock'
@@ -37,6 +38,7 @@ const contentPlugins = [
   Cover,
   Figure,
   HTML,
+  Chart,
   PullQuote,
   FigureImage,
   Caption,
