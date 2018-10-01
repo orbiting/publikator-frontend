@@ -50,7 +50,6 @@ export default ({ rule, schemaType, subModules, TYPE }) => {
         type: 'paragraph',
         children: []
       }
-      console.log('exec cover', node, index)
 
       return {
         object: 'block',
