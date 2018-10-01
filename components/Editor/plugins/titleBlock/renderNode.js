@@ -6,6 +6,7 @@ export default ({ node, children, attributes }) => {
     return (
       <SchemaComponent
         format={node.data.get('format')}
+        center={node.data.get('center')}
         name='titleBlock'
         {...attributes}
       >

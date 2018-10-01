@@ -8,12 +8,6 @@ import {
 
 export default {
   blocks: {
-    lead: {
-      nodes: [{ match: { object: 'text' } }],
-      normalize: (change, { child }) => {
-        return change.unwrapInlineByKey(child.key, { type: 'link' })
-      }
-    },
     titleBlock: {
       nodes: [
         {
