@@ -5,10 +5,7 @@ import FigureImage from '../figureImage'
 export const getNewInfoboxFigure = () =>
   Block.create({
     type: 'infoBoxFigure',
-    nodes: [
-      FigureImage.getNew(),
-      Caption.getNew()
-    ]
+    nodes: [FigureImage.getNew(), Caption.getNew()]
   })
 
 export const getNew = () =>
@@ -18,7 +15,6 @@ export const getNew = () =>
       Block.create({
         type: 'infoBoxTitle'
       }),
-      getNewInfoboxFigure(),
       Block.create({
         type: 'infoBoxText'
       })

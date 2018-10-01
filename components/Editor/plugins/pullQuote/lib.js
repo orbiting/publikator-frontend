@@ -12,7 +12,6 @@ export const getNew = () =>
   Block.create({
     type: 'pullQuote',
     nodes: [
-      getNewPullQuoteFigure(),
       Block.create({
         type: 'pullQuoteText'
       }),
