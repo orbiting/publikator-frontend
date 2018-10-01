@@ -53,7 +53,7 @@ export default {
   FRONTTYPOTITLE: 'frontTypoTitle',
   H1: 'title',
   H2: 'subhead',
-  HTML: false,
+  HTML: 'html',
   INFOBOX: 'infoBox',
   INFOFIGURE: 'infoBoxFigure',
   INFOFIGURECAPTION: 'caption',

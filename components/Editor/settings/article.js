@@ -11,6 +11,7 @@ import Cover from '../plugins/cover'
 import Caption from '../plugins/caption'
 import Embeds from '../plugins/embeds'
 import Bold from '../plugins/bold'
+import HTML from '../plugins/html'
 import List from '../plugins/list'
 import Superscript from '../plugins/superscript'
 import InfoBox from '../plugins/infoBox'
@@ -35,6 +36,7 @@ const contentPlugins = [
   Embeds,
   Cover,
   Figure,
+  HTML,
   PullQuote,
   FigureImage,
   Caption,
