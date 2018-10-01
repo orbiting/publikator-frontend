@@ -1,10 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import { fromJS } from 'immutable'
 import debounce from 'lodash.debounce'
-
-import JSONField, { renderAutoSize } from '../common/JSONField'
-import OverlayFormManager from '../common/OverlayFormManager'
-
 import {
   Interaction,
   Label,
@@ -12,7 +8,10 @@ import {
   Field
 } from '@project-r/styleguide'
 
-import { getHtml } from './utils'
+import JSONField, { renderAutoSize } from '../common/JSONField'
+import OverlayFormManager from '../common/OverlayFormManager'
+
+import { getHtml } from './lib'
 
 class Form extends Component {
   constructor (...args) {

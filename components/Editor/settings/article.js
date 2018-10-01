@@ -21,6 +21,7 @@ import Chart from '../plugins/chart'
 import Paragraph from '../plugins/paragraph'
 import Subhead from '../plugins/subhead'
 import TitleBlock from '../plugins/titleBlock'
+import DynamicComponent from '../plugins/dynamicComponent'
 import Center from '../plugins/center'
 
 import Meta from '../plugins/meta'
@@ -39,6 +40,7 @@ const contentPlugins = [
   Figure,
   HTML,
   Chart,
+  DynamicComponent,
   PullQuote,
   FigureImage,
   Caption,

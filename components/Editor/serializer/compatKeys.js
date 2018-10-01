@@ -26,7 +26,7 @@ export default {
   CREDIT: 'credit',
   DOCUMENTPLAIN: 'documentPlain',
   DOSSIERTAG: false,
-  DYNAMICCOMPONENT: false,
+  DYNAMICCOMPONENT: 'dynamicComponent',
   EMBEDTWITTER: 'twitterEmbed',
   EMBEDVIDEO: 'videoEmbed',
   EMPHASIS: 'italic',

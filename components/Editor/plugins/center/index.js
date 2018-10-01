@@ -8,6 +8,7 @@ import FigureGroup from '../figureGroup'
 import PullQuote from '../pullQuote'
 import HTML from '../html'
 import Chart from '../chart'
+import DynamicComponent from '../dynamicComponent'
 import Toolbar from '../toolbar'
 
 const CenterToolbar = Toolbar({
@@ -22,7 +23,8 @@ const CenterToolbar = Toolbar({
     isBlock('figureGroup'),
     isBlock('pullQuote'),
     isBlock('html'),
-    isBlock('chart')
+    isBlock('chart'),
+    isBlock('dynamicComponent')
   ]),
   insertItems: [
     { text: 'Infobox', value: InfoBox.getNew },
@@ -30,7 +32,8 @@ const CenterToolbar = Toolbar({
     { text: 'Figure Group', value: FigureGroup.getNew },
     { text: 'Pull Quote', value: PullQuote.getNew },
     { text: 'HTML Element', value: HTML.getNew },
-    { text: 'Chart', value: Chart.getNew }
+    { text: 'Chart', value: Chart.getNew },
+    { text: 'Dynamic Component', value: DynamicComponent.getNew }
   ]
 })
 
