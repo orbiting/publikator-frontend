@@ -1,5 +1,5 @@
-import { Label } from '@project-r/styleguide'
-import { FaFileImage as ChangeImageIcon } from 'react-icons/fa'
+import { css } from 'glamor'
+import ImageCard from '../../../Search/ImageCard'
 
 import ImageInput from '../../base/components/ImageInput'
 import { withNodeData } from '../../base/apps/nodeData'
@@ -11,21 +11,31 @@ export const SelectImageButton = withNodeData({
   fieldName: 'src'
 })(ImageInput)
 
-export const FigureImageUI = withTheme()(({ styles, editor }) => (
+const withCardStyles = withTheme(() => ({
+  imageCard: css({
+    transition: 'background-color .2s',
+    '&:hover': {
+      background: '#fff'
+    }
+  })
+}))
+
+export const FigureImageUI = withCardStyles(({ styles, editor }) => (
   <Selected isNode='figureImage' offset={3}>
     {({ node }) => (
       <SidebarBottom>
         <div {...styles.layout.container}>
-          <div {...styles.layout.headerSection}>
-            <Label>Bild auswählen</Label>
-          </div>
-          <div {...styles.layout.actions}>
+          <div {...styles.layout.section}>
             <SelectImageButton
               node={node}
               editor={editor}
               {...styles.buttons.iconButton}
             >
-              <ChangeImageIcon size={22} />
+              <ImageCard
+                {...styles.imageCard}
+                value={node.data.get('src')}
+                label='Bild'
+              />
             </SelectImageButton>
           </div>
         </div>
