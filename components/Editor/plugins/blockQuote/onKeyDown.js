@@ -71,6 +71,9 @@ const onBackspace = (_, change) => {
 
   const blockQuote = document.getParent(value.startBlock.key)
 
+  if (!selection.start.isAtStartOfNode(value.startBlock)) {
+    return
+  }
   if (!isBlock('blockQuote', blockQuote)) {
     return
   }
