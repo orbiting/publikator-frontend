@@ -33,19 +33,15 @@ export const container = ({
     backgroundColor: style === 'fluid' ? colors.secondaryBg : '#fff',
     maxWidth: `245px`,
     width: style === 'block' ? `${maxWidth}px` : 'max-content',
-    borderColor: colors.divider,
-    borderTopWidth: '0',
-    borderBottomWidth: '0',
-    borderRightWidth:
-      style === 'block' && align === 'left' ? '1px' : '0',
-    borderLeftWidth:
-      style === 'block' && align === 'right' ? '1px' : '0',
+    boxShadow: `${align === 'left' ? '1px' : '-1px'} 1px 0px 0px ${
+      colors.divider
+    }`,
     padding: '7px 5px 12px 5px',
     float: align === 'right' ? 'right' : 'none'
   })
 
 export const section = css({
-  marginBottom: '12px',
+  margin: '6px 0',
   padding: '2px 5px 5px 5px'
 })
 
@@ -59,7 +55,7 @@ export const backdrop = css({
 
 export const heading = css({
   display: 'flex',
-  flexDirection: 'row',
+  flexDirection: 'column',
   justifyContent: 'flex-start'
 })
 
@@ -77,7 +73,7 @@ export const outline = css({
 
 export const hairline = css({
   borderTop: `1px solid ${colors.disabled}`,
-  margin: '7px 0',
+  marginTop: '7px',
   width: '100%'
 })
 

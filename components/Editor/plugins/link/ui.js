@@ -142,10 +142,10 @@ export const LinkUI = compose(
       {({ node }) => (
         <SidebarBottom>
           <div {...styles.layout.container}>
-            <div {...styles.sectionHeader}>
+            <div {...styles.layout.sectionHeader}>
               <Label>Link</Label>
+              <hr {...styles.layout.hairline} />
             </div>
-            <hr {...styles.layout.hairline} />
             <div {...styles.cardSection} onClick={startEditing}>
               <LinkCard value={node.data.get('href')} />
             </div>
