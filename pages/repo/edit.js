@@ -1,12 +1,14 @@
 import React, { Component } from 'react'
 import { withRouter } from 'next/router'
+import { colors, Label } from '@project-r/styleguide'
+import { FaCogs as SettingsIcon } from 'react-icons/fa'
 
 import { compose } from 'redux'
-import { Router } from '../../lib/routes'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
 import { Value, KeyUtils } from 'slate'
 import debounce from 'lodash.debounce'
+import { Router } from '../../lib/routes'
 
 import withAuthorization from '../../components/Auth/withAuthorization'
 
@@ -20,8 +22,12 @@ import {
   EditorUI,
   getEditorSettings
 } from '../../components/Editor'
+import { isDocument } from '../../components/Editor/base/lib'
+import { withTheme } from '../../components/Editor/base/apps/theme'
+import { SidebarBottom } from '../../components/Editor/base/components/UI'
+import Selected from '../../components/Editor/base/components/Selected'
 
-// import VersionControl from '../../components/VersionControl'
+import VersionControl from '../../components/VersionControl'
 import CommitButton from '../../components/VersionControl/CommitButton'
 import {
   UncommittedChanges,
@@ -43,9 +49,6 @@ import initLocalStore from '../../lib/utils/localStorage'
 import { getSchema } from '../../components/Templates'
 import { API_UNCOMMITTED_CHANGES_URL } from '../../lib/settings'
 import * as fragments from '../../lib/graphql/fragments'
-
-import { colors } from '@project-r/styleguide'
-import { FaCogs as SettingsIcon } from 'react-icons/fa'
 
 import createDebug from 'debug'
 
@@ -132,7 +135,7 @@ const addWarning = message => state => ({
   showSidebar: true,
   warnings: [message, ...state.warnings].filter(
     // de-dup
-    (message, i, all) => all.indexOf(message) === i
+    (m, i, all) => all.indexOf(m) === i
   )
 })
 
@@ -141,6 +144,27 @@ const rmWarning = message => state => ({
 })
 
 const SIDEBAR_ICON_SIZE = 30
+
+const VersionControlUI = withTheme()(({ styles, ...props }) => {
+  return (
+    <Selected isNode={isDocument}>
+      {() => {
+        return (
+          <SidebarBottom>
+            <div {...styles.layout.container}>
+              <div {...styles.layout.sectionHeader}>
+                <Label>Workflow</Label>
+              </div>
+              <div {...styles.layout.section}>
+                <VersionControl {...props} />
+              </div>
+            </div>
+          </SidebarBottom>
+        )
+      }}
+    </Selected>
+  )
+})
 
 export class EditorPage extends Component {
   constructor (...args) {
@@ -778,6 +802,13 @@ export class EditorPage extends Component {
             <div style={{ display: showSidebar ? 'block' : 'none' }}>
               <EditorUI />
             </div>
+            <VersionControlUI
+              repoId={router.query.repoId}
+              commit={repo && (repo.commit || repo.latestCommit)}
+              isNew={isNew}
+              hasUncommittedChanges={hasUncommittedChanges}
+            />
+
             {/* <Sidebar warnings={warnings}
               isDisabled={Boolean(showLoading || error)}
               selectedTabId={(readOnly && 'workflow') || undefined}
