@@ -7,9 +7,14 @@ export const getImageTyoe = str => {
   return match && match[1]
 }
 
-export default ({ label, placeholder, value, ...props }) => {
+export default ({
+  label,
+  placeholder = 'Bild auswählen',
+  value,
+  ...props
+}) => {
   const image = getImageTyoe(value)
-  const isLocal = isUrl(image)
+  const isLocal = !isUrl(image)
   return (
     <div {...props}>
       <div>
