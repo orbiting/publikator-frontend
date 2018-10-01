@@ -21,7 +21,8 @@ const CenterToolbar = Toolbar({
     isBlock('list'),
     isBlock('figureGroup'),
     isBlock('pullQuote'),
-    isBlock('html')
+    isBlock('html'),
+    isBlock('chart')
   ]),
   insertItems: [
     { text: 'Infobox', value: InfoBox.getNew },
