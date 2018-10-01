@@ -5,8 +5,8 @@ import { Block } from 'slate'
 export const getNew = () =>
   Block.create({
     type: 'cover',
-    nodes: [
-      FigureImage.getNew(),
-      Caption.getNew()
-    ]
+    data: {
+      size: 'center'
+    },
+    nodes: [FigureImage.getNew(), Caption.getNew()]
   })
