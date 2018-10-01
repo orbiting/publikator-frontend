@@ -1,5 +1,4 @@
 import MarkdownSerializer from 'slate-mdast-serializer'
-import { findNode } from '../utils/serialization'
 import { matchBlock } from '../utils'
 
 export default ({ rule, subModules, TYPE }) => {
@@ -25,27 +24,17 @@ export default ({ rule, subModules, TYPE }) => {
     match: matchBlock(TYPE),
     matchMdast: rule.matchMdast,
     fromMdast: (node, index, parent, rest) => {
-      const subject = findNode(node.children, {
-        type: 'heading',
-        depth: 2
-      })
-
-      // if there's no subject yet, add one after the headline.
-      const writableNode = { ...node, children: [...node.children] }
-      if (!subject) {
-        writableNode.children.splice(1, 0, {
-          type: 'heading',
-          depth: 2,
-          children: []
-        })
-      }
+      // if there's only pne paragraph -> no lead.
+      const hasLead =
+        node.children.filter(v => v.type === 'paragraph').length > 1
 
       let nodes = childSerializer.fromMdast(
-        writableNode.children,
+        node.children,
         0,
-        writableNode,
+        node,
         rest
       )
+
       const { format } = rest.context
       if (format) {
         // enhance all immediate children with format
@@ -54,6 +43,14 @@ export default ({ rule, subModules, TYPE }) => {
           ...n,
           data: { ...n.data, format }
         }))
+      }
+
+      // Lead rule comes first, so make it a credit.
+      if (!hasLead) {
+        nodes = nodes.map(
+          v =>
+            (matchBlock('lead')(v) && { ...v, type: 'credit' }) || v
+        )
       }
 
       return {
@@ -68,6 +65,7 @@ export default ({ rule, subModules, TYPE }) => {
     },
     toMdast: (object, index, parent, rest) => {
       // omit format
+
       const { format, ...data } = object.data
       return {
         type: 'zone',
