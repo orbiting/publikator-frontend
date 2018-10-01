@@ -66,7 +66,7 @@ class Form extends Component {
               props: { size: undefined },
               parent: {
                 kinds: ['document', 'block'],
-                types: ['CENTER']
+                types: ['center']
               },
               unwrap: true
             },
@@ -75,36 +75,36 @@ class Form extends Component {
               props: { size: 'breakout' },
               parent: {
                 kinds: ['document', 'block'],
-                types: ['CENTER']
+                types: ['center']
               },
-              wrap: 'CENTER'
+              wrap: 'center'
             },
             {
               label: 'Normal',
               props: { size: undefined },
               parent: {
                 kinds: ['document', 'block'],
-                types: ['CENTER']
+                types: ['center']
               },
-              wrap: 'CENTER'
+              wrap: 'center'
             },
             {
               label: 'Klein',
               props: { size: 'narrow' },
               parent: {
                 kinds: ['document', 'block'],
-                types: ['CENTER']
+                types: ['center']
               },
-              wrap: 'CENTER'
+              wrap: 'center'
             },
             {
               label: 'Links',
               props: { size: 'floatTiny' },
               parent: {
                 kinds: ['document', 'block'],
-                types: ['CENTER']
+                types: ['center']
               },
-              wrap: 'CENTER'
+              wrap: 'center'
             }
           ].map(size => {
             let checked = Object.keys(size.props).every(
