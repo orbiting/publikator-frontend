@@ -78,7 +78,7 @@ const MyComponent = withEditMode(({ isInEditMode, startEditing, finishEditing })
 
 #### [`Editor/base/components`](./components/Editor/base/components)
 
-A mixture of helpers like `components/Selected` and singleton UI components such as the `components/UI` container.
+A mixture of helpers and singleton UI components such as the selection path menu.
 
 ### [`Editor/plugins`](./components/Editor/plugins/)
 
@@ -110,6 +110,11 @@ A consequence of this approach is, that you'll have slightly more boilerplate an
 
 And on top of that, you'll be always explicitly handling things with minimal dependencies, which makes maintenance work or specific adjustments a lot more contained.
 
+Currently there's two behavioral plugins:
+
+- [`AutoMeta`](./components/Editor/plugins/autoMeta/index.js)
+- [`Toolbar`](./components/Editor/plugins/toolbar/index.js)
+
 ### [`Editor/settings`](./components/Editor/settings/)
 
 Entry points for the different document templates. This is where the Editor plugins for the respective templates are assembled and more.
@@ -135,7 +140,7 @@ Pass it an mdast schema and you'll get an object containing:
 
 #### `<EditorUI />`
 
-A stateless component that simply renders all portal containers required for a successfull UI.
+A stateless component that simply renders all portal containers required for a successful UI.
 
 #### `<EditorStateProvider />`
 
@@ -159,10 +164,10 @@ Props:
 What happens if you open a commit (or create a new repo):
 
 1.  We get the styleguide schema for the respective template (status quo)
-2.  We get a serializer and a new document constructor for the schema from the serializer factory
-3.  We pass either the commits mdast content or a newly constructed document to the serializer and get a Slate document. If a locallly persisted version of either cases is found, its content has priority over API contents.
-4.  We pass the Slate document to the Editor.
-5.  When the document changes, we deserialize the Slate document to mdast and persist it.
+2.  We get a serializer, a new document constructor and all required editor settings for the styleguide schema.
+3.  We pass either the commits mdast content or a newly constructed document to the serializer and get a Slate document. If a locally persisted version of either cases is found, its content has priority over API contents.
+4.  We pass the Slate document to the editor, which was configured using the retrieved values from above.
+5.  When the document changes, we deserialize the Slate document to mdast, check for changes and persist it.
 6.  A commit action sends the deserialized mdast to the API and, upon success, clears the local version and points the route to the newly created commit.
 
 A few things not to forget:
