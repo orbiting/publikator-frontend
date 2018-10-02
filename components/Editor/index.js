@@ -104,6 +104,7 @@ Editor.propTypes = {
   value: PropTypes.object,
   plugins: PropTypes.array,
   readOnly: PropTypes.bool,
+  schema: PropTypes.object,
   onChange: PropTypes.func,
   onDocumentChange: PropTypes.func
 }
