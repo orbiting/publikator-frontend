@@ -70,73 +70,69 @@ export default ({ isNode, isChildNode, insertItems, offset }) => {
     withEditMode({ namespace: 'insertPanel' })
   )
 
-  return {
-    renderUI: withStuff(
-      ({
-        editor,
-        styles,
-        isInEditMode,
-        startEditing,
-        finishEditing
-      }) => {
-        return (
-          <Selected isNode={isChildNode} offset={offset}>
-            {({ node }) => {
-              const parent = editor.value.document.getParent(node.key)
-              if (!parent || !isNode(parent)) {
-                return
-              }
+  return withStuff(
+    ({
+      editor,
+      styles,
+      isInEditMode,
+      startEditing,
+      finishEditing
+    }) => {
+      return (
+        <Selected isNode={isChildNode} offset={offset}>
+          {({ node }) => {
+            const parent = editor.value.document.getParent(node.key)
+            if (!parent || !isNode(parent)) {
+              return
+            }
 
-              const isLast = node === parent.nodes.last()
-              const isFirst = node === parent.nodes.first()
-              const canDelete = parent.nodes.size > 1
-              return (
-                <SidebarEditOptions>
-                  <div {...styles.layout.container}>
-                    <div {...styles.layout.sectionHeader}>
-                      <Label>Bearbeiten</Label>
-                    </div>
-                    <div {...styles.layout.actions}>
-                      <AddButton
-                        disabled={!insertItems || !insertItems.length}
-                        onClick={() => startEditing()}
-                      />
-                      <MoveUpButton
-                        disabled={isFirst}
-                        onClick={() => editor.change(moveUp, node)}
-                      />
-                      <MoveDownButton
-                        disabled={isLast}
-                        onClick={() => editor.change(moveDown, node)}
-                      />
-                      <DeleteButton
-                        disabled={!canDelete}
-                        onClick={() =>
-                          editor.change(removeBlock, node)
-                        }
-                      />
-                    </div>
-                    {isInEditMode && (
-                      <InsertPanel
-                        items={insertItems}
-                        onClose={finishEditing}
-                        onSelect={newNode => {
-                          editor.change(
-                            insertBlockBefore,
-                            newNode,
-                            node
-                          )
-                          finishEditing()
-                        }}
-                      />
-                    )}
+            const isLast = node === parent.nodes.last()
+            const isFirst = node === parent.nodes.first()
+            const canDelete = parent.nodes.size > 1
+            return (
+              <SidebarEditOptions>
+                <div {...styles.layout.container}>
+                  <div {...styles.layout.sectionHeader}>
+                    <Label>Bearbeiten</Label>
                   </div>
-                </SidebarEditOptions>
-              )
-            }}
-          </Selected>
-        )
-      }
-    )
-  }
+                  <div {...styles.layout.iconGroup}>
+                    <AddButton
+                      disabled={!insertItems || !insertItems.length}
+                      onClick={() => startEditing()}
+                    />
+                    <MoveUpButton
+                      disabled={isFirst}
+                      onClick={() => editor.change(moveUp, node)}
+                    />
+                    <MoveDownButton
+                      disabled={isLast}
+                      onClick={() => editor.change(moveDown, node)}
+                    />
+                    <DeleteButton
+                      disabled={!canDelete}
+                      onClick={() => editor.change(removeBlock, node)}
+                    />
+                  </div>
+                  {isInEditMode && (
+                    <InsertPanel
+                      items={insertItems}
+                      onClose={finishEditing}
+                      onSelect={newNode => {
+                        editor.change(
+                          insertBlockBefore,
+                          newNode,
+                          node
+                        )
+                        finishEditing()
+                      }}
+                    />
+                  )}
+                </div>
+              </SidebarEditOptions>
+            )
+          }}
+        </Selected>
+      )
+    }
+  )
 }

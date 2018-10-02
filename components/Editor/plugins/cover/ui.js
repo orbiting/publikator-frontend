@@ -60,7 +60,7 @@ export const CoverUI = withTheme()(({ styles, editor }) => {
             <div {...styles.layout.sectionHeader}>
               <Label>Grösse</Label>
             </div>
-            <div {...styles.layout.actions}>
+            <div {...styles.layout.iconGroup}>
               <SizeButton name='tiny' node={node} editor={editor}>
                 <TinyIcon />
               </SizeButton>

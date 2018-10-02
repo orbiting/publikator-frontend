@@ -156,7 +156,7 @@ export const InfoBoxTextUI = withTheme()(({ styles, editor }) => {
               <div {...styles.layout.sectionHeader}>
                 <Label>Format</Label>
               </div>
-              <div {...styles.layout.actions}>
+              <div {...styles.layout.iconGroup}>
                 <BoldButton editor={editor} />
                 <LinkButton editor={editor} />
               </div>

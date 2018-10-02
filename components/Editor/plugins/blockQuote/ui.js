@@ -73,7 +73,7 @@ export const BlockQuoteUI = withTheme()(({ styles, editor }) => {
               <div {...styles.layout.sectionHeader}>
                 <Label>Block</Label>
               </div>
-              <div {...styles.layout.actions}>
+              <div {...styles.layout.iconGroup}>
                 <ParagraphButton
                   node={node}
                   editor={editor}
@@ -88,7 +88,7 @@ export const BlockQuoteUI = withTheme()(({ styles, editor }) => {
               <div {...styles.layout.sectionHeader}>
                 <Label>Format</Label>
               </div>
-              <div {...styles.layout.actions}>
+              <div {...styles.layout.iconGroup}>
                 <BoldButton node={node} editor={editor} />
                 <ItalicButton node={node} editor={editor} />
                 <LinkButton node={node} editor={editor} />

@@ -55,7 +55,7 @@ export const FigureGroupUI = withTheme()(({ styles, editor }) => (
 export const renderUI = ({ editor }) => {
   return (
     <Fragment>
-      <FigureGroupToolbar.renderUI editor={editor} />
+      <FigureGroupToolbar editor={editor} />
       <FigureGroupUI editor={editor} />
     </Fragment>
   )

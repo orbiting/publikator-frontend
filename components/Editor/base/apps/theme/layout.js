@@ -4,10 +4,10 @@ import {
   // mediaQueries,
 } from '@project-r/styleguide'
 
-export const ui = ({ isVisible, align, style }) =>
+export const ui = ({ align, style }) =>
   css({
     ...((style !== 'block' && {
-      display: !isVisible ? 'none' : 'flex',
+      display: 'flex',
       position: 'fixed',
       width: '0',
       top: '80px',
@@ -101,7 +101,7 @@ export const verticalGroup = css({
   }
 })
 
-export const actions = merge(horizontalGroup, section)
+export const iconGroup = merge(horizontalGroup, section)
 
 export const hSection = merge(horizontalGroup, section)
 
@@ -113,11 +113,9 @@ export default config => ({
   section,
   hSection,
   vSection,
-  heading,
   outline,
   backdrop,
   sectionHeader,
   hairline,
-  horizontalGroup,
-  actions
+  iconGroup
 })

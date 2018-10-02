@@ -37,7 +37,7 @@ export const ParagraphUI = withTheme()(({ styles, editor }) => (
             <div {...styles.layout.sectionHeader}>
               <Label>Format</Label>
             </div>
-            <div {...styles.layout.actions}>
+            <div {...styles.layout.iconGroup}>
               <BoldButton node={node} editor={editor} />
               <ItalicButton node={node} editor={editor} />
               <LinkButton node={node} editor={editor} />

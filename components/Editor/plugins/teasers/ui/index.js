@@ -27,7 +27,7 @@ const CreditForm = withTheme()(({ editor, styles }) => {
               <div {...styles.layout.sectionHeader}>
                 <Label>Format</Label>
               </div>
-              <div {...styles.layout.actions}>
+              <div {...styles.layout.iconGroup}>
                 <LinkButton editor={editor} />
               </div>
             </div>
@@ -97,9 +97,9 @@ export const renderUI = ({ editor }) => {
         <TeaserURLForm editor={editor} />
       </SidebarBottom>
       <CreditForm editor={editor} />
-      <DocumentTeaserToolbar.renderUI editor={editor} />
-      <DocumentTeaserGroupToolbar.renderUI editor={editor} />
-      <TeaserGroupToolbar.renderUI editor={editor} />
+      <DocumentTeaserToolbar editor={editor} />
+      <DocumentTeaserGroupToolbar editor={editor} />
+      <TeaserGroupToolbar editor={editor} />
     </Fragment>
   )
 }

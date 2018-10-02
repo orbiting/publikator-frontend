@@ -34,7 +34,6 @@ const api = {
 }
 
 const initialConfig = {
-  isVisible: true,
   align: 'left',
   style: 'fluid',
   maxWidth: '245px'

@@ -14,7 +14,7 @@ export const BlockButtons = withTheme()(
         <Label>Block</Label>
       </div>
 
-      <div {...styles.layout.actions}>
+      <div {...styles.layout.iconGroup}>
         <ParagraphButton node={node} editor={editor} />
         <SubheadButton node={node} editor={editor} />
         <UnorderedListButton node={node} editor={editor} />
@@ -30,7 +30,7 @@ export const TextButtons = withTheme()(({ editor, styles }) => (
     <div {...styles.layout.sectionHeader}>
       <Label>Text</Label>
     </div>
-    <div {...styles.layout.actions}>
+    <div {...styles.layout.iconGroup}>
       <SupButton editor={editor} />
       <SubButton editor={editor} />
     </div>

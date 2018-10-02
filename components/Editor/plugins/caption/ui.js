@@ -55,7 +55,7 @@ export const CaptionBylineUI = withTheme()(
               >
                 <Label>Format</Label>
               </div>
-              <div {...styles.layout.actions}>
+              <div {...styles.layout.iconGroup}>
                 <LinkButton editor={editor} />
               </div>
             </div>

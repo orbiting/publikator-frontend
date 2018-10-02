@@ -111,7 +111,7 @@ export const PullQuoteCiteUI = withTheme()(({ styles, editor }) => {
               <div {...styles.layout.sectionHeader}>
                 <Label>Format</Label>
               </div>
-              <div {...styles.layout.actions}>
+              <div {...styles.layout.iconGroup}>
                 <LinkButton editor={editor} />
               </div>
             </div>
