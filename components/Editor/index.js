@@ -11,6 +11,7 @@ import Loader from '../Loader'
 
 import articleSettings from './settings/article'
 import frontSettings from './settings/front'
+import formatSettings from './settings/format'
 
 export { EditorUI, EditorStateProvider }
 
@@ -51,7 +52,9 @@ export const getEditorSettings = schema => {
   const { plugins } =
     schema.template === 'front'
       ? frontSettings({ schema: editorSchema })
-      : articleSettings({ schema: editorSchema })
+      : schema.template === 'format'
+        ? formatSettings({ schema: editorSchema })
+        : articleSettings({ schema: editorSchema })
   return {
     plugins,
     serializer,

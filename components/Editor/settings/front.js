@@ -26,6 +26,6 @@ const DecoratedLink = {
 
 const contentPlugins = [DecoratedLink, Teasers]
 
-export default ({ schema }) => ({
+export default () => ({
   plugins: [...contentPlugins, Meta, UI(contentPlugins)]
 })
