@@ -7,18 +7,16 @@ import createParagraphModule from '../paragraph'
 const paragraphModule = createParagraphModule({
   TYPE: 'PARAGRAPH',
   rule: {},
-  subModules: []
+  subModules: [],
 })
 paragraphModule.name = 'paragraph'
 
 const blockquoteModule = createBlockquoteModule({
   TYPE: 'BLOCKQUOTE',
   rule: {
-    matchMdast: (node) => node.type === 'blockquote'
+    matchMdast: node => node.type === 'blockquote',
   },
-  subModules: [
-    paragraphModule
-  ]
+  subModules: [paragraphModule],
 })
 blockquoteModule.name = 'blockquote'
 
@@ -32,6 +30,9 @@ test('blockquote serialization', assert => {
   assert.equal(node.type, 'BLOCKQUOTE')
   assert.equal(node.text, 'A test')
 
-  assert.equal(stringify(serializer.serialize(value)).trimRight(), '> A test')
+  assert.equal(
+    stringify(serializer.serialize(value)).trimRight(),
+    '> A test',
+  )
   assert.end()
 })

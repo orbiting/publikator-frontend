@@ -12,82 +12,78 @@ import EmbedLoader from './EmbedLoader'
 import gql from 'graphql-tag'
 
 export const getVideoEmbed = gql`
-query getVideoEmbed($id: ID!, $embedType: EmbedType!) {
-  embed(id: $id, embedType: $embedType) {
-    __typename
-    ... on YoutubeEmbed {
-      platform
-      id
-      createdAt
-      retrievedAt
-      userName
-      userUrl
-      thumbnail
-      title
-      userName
-      userProfileImageUrl
-      aspectRatio
-      durationMs
-      mediaId
-    }
-    ... on VimeoEmbed {
-      platform
-      id
-      createdAt
-      retrievedAt
-      userName
-      userUrl
-      thumbnail
-      title
-      userName
-      userProfileImageUrl
-      aspectRatio
-      src {
-        mp4
-        hls
+  query getVideoEmbed($id: ID!, $embedType: EmbedType!) {
+    embed(id: $id, embedType: $embedType) {
+      __typename
+      ... on YoutubeEmbed {
+        platform
+        id
+        createdAt
+        retrievedAt
+        userName
+        userUrl
         thumbnail
+        title
+        userName
+        userProfileImageUrl
+        aspectRatio
+        durationMs
+        mediaId
       }
-      durationMs
-      mediaId
+      ... on VimeoEmbed {
+        platform
+        id
+        createdAt
+        retrievedAt
+        userName
+        userUrl
+        thumbnail
+        title
+        userName
+        userProfileImageUrl
+        aspectRatio
+        src {
+          mp4
+          hls
+          thumbnail
+        }
+        durationMs
+        mediaId
+      }
     }
   }
-}
 `
 
 export const getTwitterEmbed = gql`
-query getTwitterEmbed($id: ID!, $embedType: EmbedType!) {
-  embed(id: $id, embedType: $embedType) {
-    __typename
-    ... on TwitterEmbed {
-      id
-      createdAt
-      retrievedAt
-      text
-      html
-      userId
-      userName
-      userScreenName
-      userProfileImageUrl
-      image
-      more
-      playable
+  query getTwitterEmbed($id: ID!, $embedType: EmbedType!) {
+    embed(id: $id, embedType: $embedType) {
+      __typename
+      ... on TwitterEmbed {
+        id
+        createdAt
+        retrievedAt
+        text
+        html
+        userId
+        userName
+        userScreenName
+        userProfileImageUrl
+        image
+        more
+        playable
+      }
     }
   }
-}
 `
 
-const fromMdast = ({ TYPE }) => (
-  node
-) => {
+const fromMdast = ({ TYPE }) => node => {
   const deepNodes = node.children.reduce(
     (children, child) =>
-      children
-        .concat(child)
-        .concat(child.children),
-    []
+      children.concat(child).concat(child.children),
+    [],
   )
   const link = findOrCreate(deepNodes, {
-    type: 'link'
+    type: 'link',
   })
   return {
     kind: 'block',
@@ -95,18 +91,13 @@ const fromMdast = ({ TYPE }) => (
     isVoid: true,
     data: {
       ...node.data,
-      url: link.url
-    }
+      url: link.url,
+    },
   }
 }
 
-const toMdast = ({ TYPE }) => (
-  node
-) => {
-  const {
-    url,
-    ...data
-  } = node.data
+const toMdast = ({ TYPE }) => node => {
+  const { url, ...data } = node.data
   return {
     type: 'zone',
     identifier: TYPE,
@@ -121,13 +112,13 @@ const toMdast = ({ TYPE }) => (
             children: [
               {
                 type: 'text',
-                value: url
-              }
-            ]
-          }
-        ]
-      }
-    ]
+                value: url,
+              },
+            ],
+          },
+        ],
+      },
+    ],
   }
 }
 
@@ -136,12 +127,11 @@ const getSerializer = options =>
     rules: [
       {
         match: matchBlock(options.TYPE),
-        matchMdast:
-          options.rule.matchMdast,
+        matchMdast: options.rule.matchMdast,
         fromMdast: fromMdast(options),
-        toMdast: toMdast(options)
-      }
-    ]
+        toMdast: toMdast(options),
+      },
+    ],
   })
 
 const embedPlugin = ({ query, ...options }) => {
@@ -149,34 +139,34 @@ const embedPlugin = ({ query, ...options }) => {
   const Component = withApollo(EmbedLoader(query, Embed))
 
   return {
-    renderNode (props) {
-      const {
-        node
-      } = props
+    renderNode(props) {
+      const { node } = props
 
       if (!matchBlock(options.TYPE)(node)) {
         return
       }
 
-      return (
-        <Component {...props} />
-      )
+      return <Component {...props} />
     },
     schema: {
       blocks: {
         [options.TYPE]: {
-          isVoid: true
-        }
-      }
-    }
+          isVoid: true,
+        },
+      },
+    },
   }
 }
 
-const moduleFactory = ({ query, matchUrl, getQueryParams }) => options => {
+const moduleFactory = ({
+  query,
+  matchUrl,
+  getQueryParams,
+}) => options => {
   const { rule, TYPE } = options
   return {
     helpers: {
-      serializer: getSerializer(options)
+      serializer: getSerializer(options),
     },
     changes: {},
     ui: createUi({ TYPE, editorOptions: rule.editorOptions }),
@@ -186,11 +176,11 @@ const moduleFactory = ({ query, matchUrl, getQueryParams }) => options => {
         matchUrl,
         getQueryParams,
         matchSource: matchBlock(
-          rule.editorOptions.lookupType.toUpperCase()
+          rule.editorOptions.lookupType.toUpperCase(),
         ),
-        TYPE
-      })
-    ]
+        TYPE,
+      }),
+    ],
   }
 }
 
@@ -210,26 +200,25 @@ const getVideoQueryParams = url => {
   if (YOUTUBE_REGEX.test(url)) {
     return {
       embedType: 'YoutubeEmbed',
-      id: YOUTUBE_REGEX.exec(url)[1]
+      id: YOUTUBE_REGEX.exec(url)[1],
     }
   }
   if (VIMEO_REGEX.test(url)) {
     return {
       embedType: 'VimeoEmbed',
-      id: VIMEO_REGEX.exec(url)[1]
+      id: VIMEO_REGEX.exec(url)[1],
     }
   }
   throw new Error(`No valid video embed URL: ${url}`)
 }
 
-const matchTwitterUrl = url =>
-  TWITTER_REGEX.test(url)
+const matchTwitterUrl = url => TWITTER_REGEX.test(url)
 
 const getTwitterQueryParams = url => {
   if (TWITTER_REGEX.test(url)) {
     return {
       embedType: 'TwitterEmbed',
-      id: TWITTER_REGEX.exec(url)[1]
+      id: TWITTER_REGEX.exec(url)[1],
     }
   }
   throw new Error(`No valid twitter embed URL: ${url}`)
@@ -238,11 +227,11 @@ const getTwitterQueryParams = url => {
 export const createEmbedVideoModule = moduleFactory({
   matchUrl: matchVideoUrl,
   getQueryParams: getVideoQueryParams,
-  query: getVideoEmbed
+  query: getVideoEmbed,
 })
 
 export const createEmbedTwitterModule = moduleFactory({
   matchUrl: matchTwitterUrl,
   getQueryParams: getTwitterQueryParams,
-  query: getTwitterEmbed
+  query: getTwitterEmbed,
 })

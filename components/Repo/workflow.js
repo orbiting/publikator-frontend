@@ -1,57 +1,60 @@
-
 export const phases = [
   {
     key: 'draft',
     color: 'Indigo',
-    milestones: []
+    milestones: [],
   },
   {
     key: 'creation',
     color: 'Gold',
-    milestones: ['startCreation']
+    milestones: ['startCreation'],
   },
   {
     key: 'finalEditing',
     color: 'Orange',
-    milestones: ['finalEditing']
+    milestones: ['finalEditing'],
   },
   {
     key: 'production',
     color: 'Tomato',
-    milestones: ['startProduction']
+    milestones: ['startProduction'],
   },
   {
     key: 'proofReading',
     color: 'HotPink',
-    milestones: ['startProofReading']
+    milestones: ['startProofReading'],
   },
   {
     key: 'finalControl',
     color: 'Fuchsia',
-    milestones: ['proofReadingOk']
+    milestones: ['proofReadingOk'],
   },
   {
     key: 'ready',
     color: 'MediumSeaGreen',
-    milestones: ['proofReadingOk', 'numbersOk', 'imagesOk', 'factCheckOk', 'finalControl']
+    milestones: [
+      'proofReadingOk',
+      'numbersOk',
+      'imagesOk',
+      'factCheckOk',
+      'finalControl',
+    ],
   },
   {
     key: 'scheduled',
     color: 'Turquoise',
     published: true,
-    scheduled: true
+    scheduled: true,
   },
   {
     key: 'published',
     color: 'RoyalBlue',
     published: true,
-    live: true
-  }
+    live: true,
+  },
 ]
 
-export const milestoneNames = phases.reduce(
-  (all, phase) => all.concat(phase.milestones),
-  []
-)
+export const milestoneNames = phases
+  .reduce((all, phase) => all.concat(phase.milestones), [])
   .filter(Boolean)
   .filter((name, index, all) => all.indexOf(name) === index)

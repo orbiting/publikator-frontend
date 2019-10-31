@@ -1,6 +1,10 @@
 import React from 'react'
 
-import { matchBlock, createBlockButton, buttonStyles } from '../../utils'
+import {
+  matchBlock,
+  createBlockButton,
+  buttonStyles,
+} from '../../utils'
 import MarkdownSerializer from 'slate-mdast-serializer'
 import { createStaticKeyHandler } from '../../utils/keyHandlers'
 
@@ -15,7 +19,7 @@ export default ({ rule, subModules, TYPE }) => {
     mdastType = 'blockquote',
     formatButtonText,
     identifier,
-    isStatic
+    isStatic,
   } = rule.editorOptions || {}
 
   const schemaRule = {
@@ -25,39 +29,48 @@ export default ({ rule, subModules, TYPE }) => {
       kind: 'block',
       type: TYPE,
       data: node.data,
-      nodes: paragraphSerializer.fromMdast(node.children, 0, node, rest)
+      nodes: paragraphSerializer.fromMdast(
+        node.children,
+        0,
+        node,
+        rest,
+      ),
     }),
     toMdast: (object, index, parent, rest) => ({
       type: mdastType,
       identifier,
       data: object.data,
-      children: paragraphSerializer.toMdast(object.nodes, 0, object, rest)
-    })
+      children: paragraphSerializer.toMdast(
+        object.nodes,
+        0,
+        object,
+        rest,
+      ),
+    }),
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      schemaRule
-    ]
+    rules: [schemaRule],
   })
 
   const Component = rule.component
 
-  const staticHandler = isStatic && createStaticKeyHandler({ TYPE, rule: rule || {} })
+  const staticHandler =
+    isStatic && createStaticKeyHandler({ TYPE, rule: rule || {} })
 
   return {
     TYPE,
     rule,
     helpers: {
-      serializer
+      serializer,
     },
     changes: {},
     ui: {
       blockFormatButtons: [
-        formatButtonText && createBlockButton({
-          type: TYPE
-        })(
-          ({ active, disabled, visible, ...props }) =>
+        formatButtonText &&
+          createBlockButton({
+            type: TYPE,
+          })(({ active, disabled, visible, ...props }) => (
             <span
               {...buttonStyles.block}
               {...props}
@@ -67,22 +80,20 @@ export default ({ rule, subModules, TYPE }) => {
             >
               {formatButtonText}
             </span>
-        )
-      ]
+          )),
+      ],
     },
     plugins: [
       {
-        renderNode ({ node, children, attributes }) {
+        renderNode({ node, children, attributes }) {
           if (!schemaRule.match(node)) return
 
           return (
-            <Component attributes={attributes}>
-              {children}
-            </Component>
+            <Component attributes={attributes}>{children}</Component>
           )
         },
-        onKeyDown (...args) {
-          const [ event, change ] = args
+        onKeyDown(...args) {
+          const [event, change] = args
 
           const isBackspace = event.key === 'Backspace'
           const isEnter = event.key === 'Enter'
@@ -91,7 +102,7 @@ export default ({ rule, subModules, TYPE }) => {
           const { value } = change
           const inBlock = value.document.getClosest(
             value.startBlock.key,
-            matchBlock(TYPE)
+            matchBlock(TYPE),
           )
           if (!inBlock) return
 
@@ -100,8 +111,7 @@ export default ({ rule, subModules, TYPE }) => {
           const isEmpty = !value.startBlock.text
 
           if (isEmpty && (!isBackspace || inBlock.nodes.size === 1)) {
-            return change
-              .unwrapBlock()
+            return change.unwrapBlock()
           }
 
           if (isBackspace) {
@@ -112,8 +122,7 @@ export default ({ rule, subModules, TYPE }) => {
             return staticHandler(...args)
           }
 
-          return change
-            .splitBlock(2)
+          return change.splitBlock(2)
         },
         schema: {
           blocks: {
@@ -122,27 +131,25 @@ export default ({ rule, subModules, TYPE }) => {
                 {
                   kinds: ['block'],
                   types: [paragraphModule.TYPE],
-                  min: 1
-                }
+                  min: 1,
+                },
               ],
               normalize: (change, reason, { node, index, child }) => {
                 if (reason === 'child_type_invalid') {
-                  change.setNodeByKey(
-                    child.key,
-                    { type: paragraphModule.TYPE }
-                  )
+                  change.setNodeByKey(child.key, {
+                    type: paragraphModule.TYPE,
+                  })
                 }
                 if (reason === 'child_kind_invalid') {
-                  change.wrapBlockByKey(
-                    child.key,
-                    { type: paragraphModule.TYPE }
-                  )
+                  change.wrapBlockByKey(child.key, {
+                    type: paragraphModule.TYPE,
+                  })
                 }
-              }
-            }
-          }
-        }
-      }
-    ]
+              },
+            },
+          },
+        },
+      },
+    ],
   }
 }

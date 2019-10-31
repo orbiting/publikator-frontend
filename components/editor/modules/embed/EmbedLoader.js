@@ -13,26 +13,28 @@ const styles = {
     lineHeight: 0,
     transition: 'outline-color 0.2s',
     '&[data-active="true"]': {
-      outlineColor: colors.primary
+      outlineColor: colors.primary,
     },
-    pointerEvents: 'none'
-  })
+    pointerEvents: 'none',
+  }),
 }
 
 export default (query, Component) => {
   class EmbedLoader extends React.Component {
-    constructor (props, ...args) {
+    constructor(props, ...args) {
       super(props, ...args)
       const { node } = props
       const hasId = node.data.has('id')
       this.state = {
         loading: !hasId,
         error:
-          !hasId && !node.data.has('queryParams') && 'No embed params found.'
+          !hasId &&
+          !node.data.has('queryParams') &&
+          'No embed params found.',
       }
     }
 
-    componentDidMount () {
+    componentDidMount() {
       const { loading, error } = this.state
       if (!loading || error) {
         return
@@ -44,27 +46,29 @@ export default (query, Component) => {
       client
         .query({
           query,
-          variables: { id, embedType }
+          variables: { id, embedType },
         })
         .then(({ data }) => {
           editor.change(t =>
             t.setNodeByKey(node.key, {
               data: {
                 ...data.embed,
-                url: node.data.get('url')
-              }
-            })
+                url: node.data.get('url'),
+              },
+            }),
           )
           this.setState({ error: null, loading: false })
         })
         .catch(error => this.setState({ error, loading: false }))
     }
 
-    render () {
+    render() {
       const { loading, error } = this.state
       const { client, t, ...props } = this.props
       const { node, editor } = props
-      const active = editor.value.blocks.some(block => block.key === node.key)
+      const active = editor.value.blocks.some(
+        block => block.key === node.key,
+      )
 
       return (
         <Loader

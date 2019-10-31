@@ -3,20 +3,15 @@ import PropTypes from 'prop-types'
 
 const propTypes = {
   value: PropTypes.object.isRequired,
-  onChange: PropTypes.func
+  onChange: PropTypes.func,
 }
 
-export default ({
-  isDisabled
-}) =>
-  Component => {
-    const PropertyForm = props =>
-      <Component
-        disabled={isDisabled(props)}
-        {...props}
-      />
+export default ({ isDisabled }) => Component => {
+  const PropertyForm = props => (
+    <Component disabled={isDisabled(props)} {...props} />
+  )
 
-    PropertyForm.propTypes = propTypes
+  PropertyForm.propTypes = propTypes
 
-    return PropertyForm
-  }
+  return PropertyForm
+}

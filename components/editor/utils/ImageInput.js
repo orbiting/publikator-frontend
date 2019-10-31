@@ -6,11 +6,11 @@ import withT from '../../../lib/withT'
 const styles = {
   label: css({
     display: 'block',
-    marginBottom: 5
+    marginBottom: 5,
   }),
   input: css({
-    display: 'none'
-  })
+    display: 'none',
+  }),
 }
 
 const readImage = (onChange, t) => e => {
@@ -21,7 +21,7 @@ const readImage = (onChange, t) => e => {
   }
   const file = files[0]
 
-  const [ type, format ] = file.type.split('/')
+  const [type, format] = file.type.split('/')
   if (type !== 'image') {
     window.alert(t('image/upload/notImage'))
     return
@@ -34,39 +34,39 @@ const readImage = (onChange, t) => e => {
     (format === 'jpeg' && sizeInMb > jpegMb) ||
     (format !== 'jpeg' && sizeInMb > restMb)
   ) {
-    if (!window.confirm(t('image/upload/excessiveSize', {
-      sizeInMb: Math.round(sizeInMb * 10) / 10,
-      jpegMb,
-      restMb,
-      format: format.toUpperCase()
-    }))) {
+    if (
+      !window.confirm(
+        t('image/upload/excessiveSize', {
+          sizeInMb: Math.round(sizeInMb * 10) / 10,
+          jpegMb,
+          restMb,
+          format: format.toUpperCase(),
+        }),
+      )
+    ) {
       return
     }
   }
 
   const reader = new window.FileReader()
-  reader.addEventListener(
-    'load',
-    () => onChange(e, reader.result)
-  )
+  reader.addEventListener('load', () => onChange(e, reader.result))
   reader.readAsDataURL(file)
 }
 
 const ImageInput = ({ onChange, t, src, label, maxWidth = 200 }) => (
   <label>
-    <Label {...styles.label}>
-      {label}
-    </Label>
+    <Label {...styles.label}>{label}</Label>
     <img
       src={src || '/static/placeholder.png'}
       style={{
         maxWidth,
-        width: src ? undefined : '100%'
+        width: src ? undefined : '100%',
       }}
-      alt='' />
+      alt=""
+    />
     <input
-      type='file'
-      accept='image/jpeg,image/png,image/gif,image/svg+xml'
+      type="file"
+      accept="image/jpeg,image/png,image/gif,image/svg+xml"
       {...styles.input}
       onChange={readImage(onChange, t)}
     />

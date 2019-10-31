@@ -1,7 +1,7 @@
 import React from 'react'
 import { css } from 'glamor'
 
-export default ({children}) => {
+export default ({ children }) => {
   const style = {
     position: 'absolute',
     top: '0px',
@@ -9,7 +9,7 @@ export default ({children}) => {
     bottom: '0px',
     left: '0px',
     pointerEvents: 'none',
-    opacity: 0.333
+    opacity: 0.333,
   }
 
   return (
@@ -24,13 +24,17 @@ const styles = {
     pointerEvents: 'none',
     opacity: 0.333,
     ':empty::before': {
-      'content': 'attr(data-text)'
-    }
-  })
+      content: 'attr(data-text)',
+    },
+  }),
 }
 
-export const Inline = ({children}) => {
+export const Inline = ({ children }) => {
   return (
-    <span {...styles.inline} data-text={children} contentEditable={false} />
+    <span
+      {...styles.inline}
+      data-text={children}
+      contentEditable={false}
+    />
   )
 }

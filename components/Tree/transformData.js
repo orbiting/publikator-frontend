@@ -3,15 +3,24 @@ import { scaleOrdinal } from 'd3-scale'
 
 export const transformData = props => {
   const colors = scaleOrdinal([
-    '#D0A2CA', '#9383BD', '#AD5676', '#EA8B64', '#C9B71D', '#90AA00',
-    '#8A786A', '#6DBF9B', '#159B73', '#4772BA', '#006B95', '#229EDC'
-  ])
-    .domain(
-      []
-        .concat(props.commits)
-        .reverse()
-        .map(c => c.author.email)
-    )
+    '#D0A2CA',
+    '#9383BD',
+    '#AD5676',
+    '#EA8B64',
+    '#C9B71D',
+    '#90AA00',
+    '#8A786A',
+    '#6DBF9B',
+    '#159B73',
+    '#4772BA',
+    '#006B95',
+    '#229EDC',
+  ]).domain(
+    []
+      .concat(props.commits)
+      .reverse()
+      .map(c => c.author.email),
+  )
 
   let commits = props.commits
     .map(commit => {
@@ -23,10 +32,10 @@ export const transformData = props => {
         parentIds: commit.parentIds,
         milestones: props.milestones.filter(o => {
           return o.commit.id === commit.id && o.name !== 'meta'
-        })
+        }),
       }
     })
-    .sort(function (a, b) {
+    .sort(function(a, b) {
       return ascending(new Date(a.date), new Date(b.date))
     })
 
@@ -44,7 +53,7 @@ export const transformData = props => {
       commit.milestoneBarRef = ref
     }
     commit.data = {
-      slotIndex: null
+      slotIndex: null,
     }
     if (!commit.parentIds) return
     commit.parentIds.forEach(parentId => {
@@ -59,7 +68,7 @@ export const transformData = props => {
       parentNodes.set(parentId, children)
       links.push({
         sourceId: parentId,
-        destinationId: commit.id
+        destinationId: commit.id,
       })
     })
   })
@@ -77,7 +86,7 @@ export const transformData = props => {
     numSlots: max(commits, commit => commit.data.slotIndex + 1),
     links: links,
     parentNodes: parentNodes,
-    colors
+    colors,
   }
 }
 
@@ -109,7 +118,7 @@ const getPaths = (commits, parentNodes) => {
 
 const getOrderedPaths = paths => {
   // TODO: More sophisticated ordering.
-  return paths.sort(function (a, b) {
+  return paths.sort(function(a, b) {
     return descending(a.length, b.length)
   })
 }
@@ -117,7 +126,7 @@ const getOrderedPaths = paths => {
 const assignSlots = (commits, parentNodes) => {
   let paths = getPaths(commits, parentNodes)
   let orderedPaths = getOrderedPaths(paths)
-  commits.sort(function (a, b) {
+  commits.sort(function(a, b) {
     return descending(new Date(a.date), new Date(b.date))
   })
 

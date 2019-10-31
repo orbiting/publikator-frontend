@@ -8,14 +8,10 @@ const styles = {
     backgroundColor: colors.error,
     color: '#fff',
     marginBottom: 10,
-    padding: 10
-  })
+    padding: 10,
+  }),
 }
 
 export default ({ message }) => {
-  return (
-    <div {...styles.warning}>
-      {message}
-    </div>
-  )
+  return <div {...styles.warning}>{message}</div>
 }

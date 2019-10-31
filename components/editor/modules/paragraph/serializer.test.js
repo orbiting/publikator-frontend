@@ -7,7 +7,7 @@ test('paragraph serialization', assert => {
   const paragraphModule = createParagraphModule({
     TYPE: 'P',
     rule: {},
-    subModules: []
+    subModules: [],
   })
 
   const serializer = paragraphModule.helpers.serializer
@@ -19,7 +19,10 @@ test('paragraph serialization', assert => {
   assert.equal(node.type, 'P')
   assert.equal(node.text, 'Test')
 
-  assert.equal(stringify(serializer.serialize(value)).trimRight(), 'Test')
+  assert.equal(
+    stringify(serializer.serialize(value)).trimRight(),
+    'Test',
+  )
   assert.end()
 })
 
@@ -27,7 +30,7 @@ test('paragraph with break in mark', assert => {
   const paragraphModule = createParagraphModule({
     TYPE: 'P',
     rule: {},
-    subModules: [boldModule]
+    subModules: [boldModule],
   })
 
   const serializer = paragraphModule.helpers.serializer
@@ -51,10 +54,10 @@ test('paragraph with mdastPlaceholder', assert => {
     TYPE: 'P',
     rule: {
       editorOptions: {
-        mdastPlaceholder: '\u2063'
-      }
+        mdastPlaceholder: '\u2063',
+      },
     },
-    subModules: []
+    subModules: [],
   })
 
   const serializer = paragraphModule.helpers.serializer

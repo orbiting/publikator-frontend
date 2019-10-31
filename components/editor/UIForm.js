@@ -12,33 +12,34 @@ const styles = {
     ':after': {
       content: '""',
       display: 'table',
-      clear: 'both'
-    }
+      clear: 'both',
+    },
   }),
   span: css({
     float: 'left',
     paddingLeft: `${GUTTER / 2}px`,
     paddingRight: `${GUTTER / 2}px`,
     minHeight: 1,
-    width: '50%'
-  })
+    width: '50%',
+  }),
 }
 
-export default ({ children, getWidth = defaultGetWidth, ...props }) => {
+export default ({
+  children,
+  getWidth = defaultGetWidth,
+  ...props
+}) => {
   const wrappedChildren = React.Children.map(
     children,
     (child, index) => (
       <div
         key={`input-${index}`}
         {...styles.span}
-        style={{width: getWidth()}}>
+        style={{ width: getWidth() }}
+      >
         {child}
       </div>
-    )
+    ),
   )
-  return (
-    <div {...styles.grid}>
-      {wrappedChildren}
-    </div>
-  )
+  return <div {...styles.grid}>{wrappedChildren}</div>
 }

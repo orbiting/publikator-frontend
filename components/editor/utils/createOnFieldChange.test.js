@@ -3,7 +3,7 @@ import createOnFieldChange from './createOnFieldChange'
 import { Value } from 'slate'
 
 const rawDoc = {
-  'nodes': [
+  nodes: [
     {
       kind: 'block',
       type: 'paragraph',
@@ -12,34 +12,34 @@ const rawDoc = {
           kind: 'text',
           leaves: [
             {
-              text: 'Hello Node w/o data!'
-            }
-          ]
-        }
-      ]
+              text: 'Hello Node w/o data!',
+            },
+          ],
+        },
+      ],
     },
     {
       kind: 'block',
       type: 'paragraph',
       data: {
-        foo: 'bar'
+        foo: 'bar',
       },
       nodes: [
         {
           kind: 'text',
           leaves: [
             {
-              text: 'Hello Node with data!'
-            }
-          ]
-        }
-      ]
-    }
-  ]
+              text: 'Hello Node with data!',
+            },
+          ],
+        },
+      ],
+    },
+  ],
 }
 
 const initialState = Value.fromJSON({
-  document: rawDoc
+  document: rawDoc,
 })
 
 test('utils.createOnFieldChange: handler called with value', assert => {
@@ -50,11 +50,18 @@ test('utils.createOnFieldChange: handler called with value', assert => {
     assert.equal(
       change.value.document.nodes.first().data.get('foo'),
       'bar',
-      'sets the data[key] property to the second argument passed to the handler function'
+      'sets the data[key] property to the second argument passed to the handler function',
     )
   }
 
-  createOnFieldChange(onChange, initialState, paragraphNode, 'foo', null, 'bar')
+  createOnFieldChange(
+    onChange,
+    initialState,
+    paragraphNode,
+    'foo',
+    null,
+    'bar',
+  )
 })
 
 test('utils.createOnFieldChange: handler called without value', assert => {
@@ -66,11 +73,18 @@ test('utils.createOnFieldChange: handler called without value', assert => {
     assert.equal(
       change.value.document.nodes.get(1).data.has('foo'),
       false,
-      'removes the data[key] property if the second argument passed to the handler is falsy'
+      'removes the data[key] property if the second argument passed to the handler is falsy',
     )
   }
 
-  createOnFieldChange(onChange, initialState, paragraphNodeWithData, 'foo', null, undefined)
+  createOnFieldChange(
+    onChange,
+    initialState,
+    paragraphNodeWithData,
+    'foo',
+    null,
+    undefined,
+  )
 })
 
 test('utils.createOnFieldChange: partial application', assert => {
@@ -80,16 +94,19 @@ test('utils.createOnFieldChange: partial application', assert => {
 
   const onChange = () => true
 
-  const args = [onChange, initialState, paragraphNode, 'foo', null, 'bar']
+  const args = [
+    onChange,
+    initialState,
+    paragraphNode,
+    'foo',
+    null,
+    'bar',
+  ]
 
   const result = args.reduce(
     (fn, arg) => fn(arg),
-    createOnFieldChange
+    createOnFieldChange,
   )
 
-  assert.equal(
-    typeof result !== 'function',
-    true,
-    'works'
-  )
+  assert.equal(typeof result !== 'function', true, 'works')
 })

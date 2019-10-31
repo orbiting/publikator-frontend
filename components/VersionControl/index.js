@@ -46,29 +46,33 @@ export const repoSubscription = gql`
 
 const styles = {
   container: css({
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
   }),
   button: {
     height: 40,
-    fontSize: '16px'
-  }
+    fontSize: '16px',
+  },
 }
 
 class EditSidebar extends Component {
-  componentDidMount () {
+  componentDidMount() {
     this.subscribe()
   }
 
-  componentDidUpdate () {
+  componentDidUpdate() {
     this.subscribe()
   }
 
-  subscribe () {
-    if (!this.props.isNew && !this.unsubscribe && this.props.data.repo) {
+  subscribe() {
+    if (
+      !this.props.isNew &&
+      !this.unsubscribe &&
+      this.props.data.repo
+    ) {
       this.unsubscribe = this.props.data.subscribeToMore({
         document: repoSubscription,
         variables: {
-          repoId: this.props.repoId
+          repoId: this.props.repoId,
         },
         updateQuery: (prev, { subscriptionData }) => {
           if (!subscriptionData.data) {
@@ -84,33 +88,34 @@ class EditSidebar extends Component {
                   ...prev.repo.commits,
                   nodes: [
                     ...commits.nodes,
-                    ...prev.repo.commits.nodes
-                  ].filter(({ id }, i, all) =>
-                  // deduplicate by id
-                    i === all.findIndex(repo => repo.id === id)
-                  )
-                }
-              }
+                    ...prev.repo.commits.nodes,
+                  ].filter(
+                    ({ id }, i, all) =>
+                      // deduplicate by id
+                      i === all.findIndex(repo => repo.id === id),
+                  ),
+                },
+              },
             }
           } else {
             return prev
           }
-        }
+        },
       })
     }
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     this.unsubscribe && this.unsubscribe()
   }
 
-  render () {
+  render() {
     const {
       t,
       commit,
       hasUncommittedChanges,
       isNew,
-      data = {}
+      data = {},
     } = this.props
     const { loading, error, repo } = data
 
@@ -120,7 +125,9 @@ class EditSidebar extends Component {
 
     return (
       <Loader
-        loading={(loading && !repo) || !repo || !commit || !repo.commits}
+        loading={
+          (loading && !repo) || !repo || !commit || !repo.commits
+        }
         error={error}
         render={() => (
           <div {...styles.container}>
@@ -160,9 +167,9 @@ export default compose(
     skip: props => props.isNew,
     options: props => ({
       variables: {
-        repoId: props.repoId
+        repoId: props.repoId,
       },
-      fetchPolicy: 'cache-first'
-    })
-  })
+      fetchPolicy: 'cache-first',
+    }),
+  }),
 )(EditSidebar)

@@ -10,17 +10,19 @@ const styles = {
   container: css({
     backgroundColor: colors.social,
     padding: '12px 24px',
-    marginBottom: '12px'
+    marginBottom: '12px',
   }),
   notice: css({
-    color: 'white'
-  })
+    color: 'white',
+  }),
 }
 
 const RepoArchivedBanner = ({ t }) => {
   return (
     <div {...styles.container}>
-      <Interaction.H3 {...styles.notice}>{t('repo/archived/notice')}</Interaction.H3>
+      <Interaction.H3 {...styles.notice}>
+        {t('repo/archived/notice')}
+      </Interaction.H3>
     </div>
   )
 }

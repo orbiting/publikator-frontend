@@ -18,7 +18,9 @@ export default ({ rule, subModules, TYPE }) => {
   }
 
   const figureModule = subModules.find(m => m.name === 'figure')
-  const title2Module = subModules.find(m => m.name === 'headline' && m !== titleModule)
+  const title2Module = subModules.find(
+    m => m.name === 'headline' && m !== titleModule,
+  )
   const listModule = subModules.find(m => m.name === 'list')
 
   const orderedSubModules = [
@@ -26,17 +28,21 @@ export default ({ rule, subModules, TYPE }) => {
     figureModule,
     title2Module,
     listModule,
-    paragraphModule
+    paragraphModule,
   ].filter(Boolean)
 
   const childSerializer = new MarkdownSerializer({
-    rules: orderedSubModules.reduce(
-      (a, m) => a.concat(
-        m.helpers && m.helpers.serializer &&
-        m.helpers.serializer.rules
-      ),
-      []
-    ).filter(Boolean)
+    rules: orderedSubModules
+      .reduce(
+        (a, m) =>
+          a.concat(
+            m.helpers &&
+              m.helpers.serializer &&
+              m.helpers.serializer.rules,
+          ),
+        [],
+      )
+      .filter(Boolean),
   })
 
   const Container = rule.component
@@ -49,7 +55,12 @@ export default ({ rule, subModules, TYPE }) => {
         kind: 'block',
         type: TYPE,
         data: node.data,
-        nodes: childSerializer.fromMdast(node.children, 0, node, rest)
+        nodes: childSerializer.fromMdast(
+          node.children,
+          0,
+          node,
+          rest,
+        ),
       }
     },
     toMdast: (object, index, parent, rest) => {
@@ -57,21 +68,24 @@ export default ({ rule, subModules, TYPE }) => {
         type: 'zone',
         identifier: TYPE,
         data: object.data,
-        children: childSerializer.toMdast(object.nodes, 0, object, rest)
+        children: childSerializer.toMdast(
+          object.nodes,
+          0,
+          object,
+          rest,
+        ),
       }
-    }
+    },
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      serializerRule
-    ]
+    rules: [serializerRule],
   })
 
   return {
     TYPE,
     helpers: {
-      serializer
+      serializer,
     },
     changes: {},
     ui: createUi({
@@ -80,30 +94,40 @@ export default ({ rule, subModules, TYPE }) => {
       editorOptions,
       figureModule,
       titleModule,
-      paragraphModule
+      paragraphModule,
     }),
     plugins: [
       {
-        renderNode ({ node, children, attributes }) {
+        renderNode({ node, children, attributes }) {
           if (!serializerRule.match(node)) return
 
-          const hasFigure = figureModule && node.nodes.find(n => n.type === figureModule.TYPE)
+          const hasFigure =
+            figureModule &&
+            node.nodes.find(n => n.type === figureModule.TYPE)
           return (
             <Container
               {...node.data.toJS()}
               collapsableEditorPreview
-              figureSize={hasFigure ? node.data.get('figureSize', 'S') : undefined}
-              attributes={attributes}>
+              figureSize={
+                hasFigure
+                  ? node.data.get('figureSize', 'S')
+                  : undefined
+              }
+              attributes={attributes}
+            >
               {children}
             </Container>
           )
         },
-        onKeyDown (event, change) {
+        onKeyDown(event, change) {
           const isBackspace = event.key === 'Backspace'
           if (event.key !== 'Enter' && !isBackspace) return
 
           const { value } = change
-          const inBox = value.document.getClosest(value.startBlock.key, matchBlock(TYPE))
+          const inBox = value.document.getClosest(
+            value.startBlock.key,
+            matchBlock(TYPE),
+          )
           if (!inBox) return
 
           const isEmpty = !inBox || !inBox.text
@@ -113,9 +137,13 @@ export default ({ rule, subModules, TYPE }) => {
           if (
             !block.text &&
             !isBackspace &&
-            !(
-              // let list module handle it
-              listModule && value.document.getClosest(block.key, matchBlock(listModule.TYPE))
+            !// let list module handle it
+            (
+              listModule &&
+              value.document.getClosest(
+                block.key,
+                matchBlock(listModule.TYPE),
+              )
             )
           ) {
             event.preventDefault()
@@ -139,25 +167,32 @@ export default ({ rule, subModules, TYPE }) => {
             [TYPE]: {
               nodes: [
                 {
-                  kinds: ['block'], types: [titleModule.TYPE], min: 1, max: 1
+                  kinds: ['block'],
+                  types: [titleModule.TYPE],
+                  min: 1,
+                  max: 1,
                 },
                 figureModule && {
-                  kinds: ['block'], types: [figureModule.TYPE], min: 0, max: 1
+                  kinds: ['block'],
+                  types: [figureModule.TYPE],
+                  min: 0,
+                  max: 1,
                 },
                 {
                   kinds: ['block'],
                   types: [
                     paragraphModule.TYPE,
                     title2Module && title2Module.TYPE,
-                    listModule && listModule.TYPE
+                    listModule && listModule.TYPE,
                   ].filter(Boolean),
-                  min: 1
-                }
+                  min: 1,
+                },
               ].filter(Boolean),
               normalize: (change, reason, { node, index, child }) => {
-                const desiredType = index === 0
-                  ? titleModule.TYPE
-                  : paragraphModule.TYPE
+                const desiredType =
+                  index === 0
+                    ? titleModule.TYPE
+                    : paragraphModule.TYPE
 
                 if (node.nodes.first().kind !== 'block') {
                   child = node.nodes.first()
@@ -166,41 +201,31 @@ export default ({ rule, subModules, TYPE }) => {
                 }
 
                 if (reason === 'child_required') {
-                  change.insertNodeByKey(
-                    node.key,
-                    index,
-                    {
-                      kind: 'block',
-                      type: desiredType
-                    }
-                  )
+                  change.insertNodeByKey(node.key, index, {
+                    kind: 'block',
+                    type: desiredType,
+                  })
                 }
                 if (reason === 'child_kind_invalid') {
-                  change.wrapBlockByKey(
-                    child.key,
-                    {
-                      type: desiredType
-                    }
-                  )
+                  change.wrapBlockByKey(child.key, {
+                    type: desiredType,
+                  })
                 }
                 if (reason === 'child_type_invalid') {
-                  change.setNodeByKey(
-                    child.key,
-                    {
-                      type: desiredType
-                    }
-                  )
+                  change.setNodeByKey(child.key, {
+                    type: desiredType,
+                  })
                 }
                 if (reason === 'child_unknown') {
                   if (index > 1) {
                     change.unwrapNodeByKey(child.key)
                   }
                 }
-              }
-            }
-          }
-        }
-      }
-    ]
+              },
+            },
+          },
+        },
+      },
+    ],
   }
 }

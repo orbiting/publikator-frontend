@@ -5,11 +5,11 @@ import Placeholder from '../../Placeholder'
 import {
   matchBlock,
   createBlockButton,
-  buttonStyles
+  buttonStyles,
 } from '../../utils'
 import {
   createStaticKeyHandler,
-  createInsertAfterKeyHandler
+  createInsertAfterKeyHandler,
 } from '../../utils/keyHandlers'
 
 export default ({ rule, subModules, TYPE }) => {
@@ -18,63 +18,61 @@ export default ({ rule, subModules, TYPE }) => {
     placeholder,
     formatButtonText,
     formatTypes,
-    isStatic = false
+    isStatic = false,
   } = rule.editorOptions || {}
 
   const inlineSerializer = new MarkdownSerializer({
     rules: subModules
       .reduce(
-        (a, m) => a.concat(
-          m.helpers && m.helpers.serializer &&
-          m.helpers.serializer.rules
-        ),
-        []
-      ).filter(Boolean)
+        (a, m) =>
+          a.concat(
+            m.helpers &&
+              m.helpers.serializer &&
+              m.helpers.serializer.rules,
+          ),
+        [],
+      )
+      .filter(Boolean),
   })
 
   const title = {
     match: matchBlock(TYPE),
     matchMdast: node =>
       node.type === 'heading' && node.depth === depth,
-    fromMdast: (
-      node,
-      index,
-      parent,
-      rest
-    ) => {
-      return ({
+    fromMdast: (node, index, parent, rest) => {
+      return {
         kind: 'block',
         type: TYPE,
-        nodes: inlineSerializer.fromMdast(node.children, 0, node, rest)
-      })
+        nodes: inlineSerializer.fromMdast(
+          node.children,
+          0,
+          node,
+          rest,
+        ),
+      }
     },
-    toMdast: (
-      object,
-      index,
-      parent,
-      rest
-    ) => {
-      return ({
+    toMdast: (object, index, parent, rest) => {
+      return {
         type: 'heading',
         depth,
         children: inlineSerializer.toMdast(
           object.nodes,
           0,
           object,
-          rest
-        )
-      })
-    }
+          rest,
+        ),
+      }
+    },
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [title]
+    rules: [title],
   })
 
   return {
     TYPE,
     helpers: {
-      serializer
+      serializer,
     },
     changes: {},
     rule: title,
@@ -83,7 +81,7 @@ export default ({ rule, subModules, TYPE }) => {
         formatButtonText &&
           createBlockButton({
             type: TYPE,
-            parentTypes: formatTypes
+            parentTypes: formatTypes,
           })(({ active, disabled, visible, ...props }) => (
             <span
               {...buttonStyles.block}
@@ -94,8 +92,8 @@ export default ({ rule, subModules, TYPE }) => {
             >
               {formatButtonText}
             </span>
-          ))
-      ]
+          )),
+      ],
     },
     plugins: [
       {
@@ -110,21 +108,21 @@ export default ({ rule, subModules, TYPE }) => {
 
             return <Placeholder>{placeholder}</Placeholder>
           }),
-        renderNode ({ node, children, attributes }) {
+        renderNode({ node, children, attributes }) {
           if (!title.match(node)) return
 
           return (
             <rule.component
               attributes={{
                 ...attributes,
-                style: { position: 'relative' }
+                style: { position: 'relative' },
               }}
               {...node.data.toJS()}
             >
               <span
                 style={{
                   position: 'relative',
-                  display: 'block'
+                  display: 'block',
                 }}
               >
                 {children}
@@ -135,11 +133,11 @@ export default ({ rule, subModules, TYPE }) => {
         schema: {
           blocks: {
             [TYPE]: {
-              nodes: [{ kinds: ['text'] }]
-            }
-          }
-        }
-      }
-    ]
+              nodes: [{ kinds: ['text'] }],
+            },
+          },
+        },
+      },
+    ],
   }
 }

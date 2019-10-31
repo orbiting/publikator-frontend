@@ -14,9 +14,9 @@ const styles = {
     lineHeight: 0,
     transition: 'outline-color 0.2s',
     '&[data-active="true"]': {
-      outlineColor: colors.primary
-    }
-  })
+      outlineColor: colors.primary,
+    },
+  }),
 }
 
 export default ({ rule, subModules, TYPE }) => {
@@ -24,62 +24,66 @@ export default ({ rule, subModules, TYPE }) => {
 
   const figureImage = {
     match: matchBlock(TYPE),
-    matchMdast: (node) => node.type === 'image',
-    fromMdast: (node) => {
-      return ({
+    matchMdast: node => node.type === 'image',
+    fromMdast: node => {
+      return {
         kind: 'block',
         type: TYPE,
         data: {
           alt: node.alt,
-          src: node.url
+          src: node.url,
         },
         isVoid: true,
-        nodes: []
-      })
+        nodes: [],
+      }
     },
-    toMdast: (object) => ({
+    toMdast: object => ({
       type: 'image',
       alt: object.data.alt,
-      url: object.data.src
-    })
+      url: object.data.src,
+    }),
   }
 
   const serializer = new MarkdownSerializer({
-    rules: [
-      figureImage
-    ]
+    rules: [figureImage],
   })
 
   return {
     TYPE,
     helpers: {
-      serializer
+      serializer,
     },
     changes: {},
     plugins: [
       {
-        renderNode (props) {
+        renderNode(props) {
           const { node, editor, attributes } = props
           if (node.type !== TYPE) return
-          const active = editor.value.blocks.some(block => block.key === node.key)
+          const active = editor.value.blocks.some(
+            block => block.key === node.key,
+          )
 
           return (
             <span
               {...styles.border}
               {...attributes}
-              data-active={active}>
-              <Image src={node.data.get('src') || gray2x1} alt={node.data.get('alt')} />
+              data-active={active}
+            >
+              <Image
+                src={node.data.get('src') || gray2x1}
+                alt={node.data.get('alt')}
+              />
             </span>
           )
         },
         schema: {
           blocks: {
             [TYPE]: {
-              isVoid: true
-            }
-          }
-        }
-      }
-    ]
+              isVoid: true,
+            },
+          },
+        },
+      },
+    ],
   }
 }

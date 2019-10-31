@@ -13,20 +13,20 @@ const styles = {
     left: 0,
     height: 2,
     backgroundColor: colors.primary,
-    transition: 'width 200ms linear, opacity 200ms linear'
-  })
+    transition: 'width 200ms linear, opacity 200ms linear',
+  }),
 }
 
 class LoadingBar extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
       loading: false,
-      progress: 0
+      progress: 0,
     }
   }
-  onRouteChangeStart = (url) => {
+  onRouteChangeStart = url => {
     clearTimeout(this.timeout)
     this.setState({ loading: true, progress: 0.02 })
 
@@ -43,18 +43,24 @@ class LoadingBar extends Component {
     clearTimeout(this.timeout)
     this.setState({ loading: false })
   }
-  componentDidMount () {
+  componentDidMount() {
     Router.events.on('routeChangeStart', this.onRouteChangeStart)
-    Router.events.on('routeChangeComplete', this.onRouteChangeComplete)
+    Router.events.on(
+      'routeChangeComplete',
+      this.onRouteChangeComplete,
+    )
     Router.events.on('routeChangeError', this.onRouteChangeError)
   }
-  componentWillUnmount () {
+  componentWillUnmount() {
     clearTimeout(this.timeout)
     Router.events.off('routeChangeStart', this.onRouteChangeStart)
-    Router.events.off('routeChangeComplete', this.onRouteChangeComplete)
+    Router.events.off(
+      'routeChangeComplete',
+      this.onRouteChangeComplete,
+    )
     Router.events.off('routeChangeError', this.onRouteChangeError)
   }
-  componentDidUpdate () {
+  componentDidUpdate() {
     if (this.state.loading) {
       clearTimeout(this.timeout)
       this.timeout = setTimeout(() => {
@@ -70,20 +76,20 @@ class LoadingBar extends Component {
             amount = 0.005
           }
           return {
-            progress: progress + amount
+            progress: progress + amount,
           }
         })
       }, 200)
     }
   }
-  render () {
+  render() {
     const { loading, progress } = this.state
     return (
       <div
         {...styles.loadingBar}
         style={{
           opacity: loading ? 1 : 0,
-          width: `${progress * 100}%`
+          width: `${progress * 100}%`,
         }}
       />
     )

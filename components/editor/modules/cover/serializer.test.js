@@ -10,29 +10,27 @@ const titleModule = createHeadlineModule({
   TYPE: 'TITLE',
   rule: {
     editorOptions: {
-      depth: 1
-    }
+      depth: 1,
+    },
   },
-  subModules: []
+  subModules: [],
 })
 titleModule.name = 'headline'
 
 const paragraphModule = createParagraphModule({
   TYPE: 'LEAD',
   rule: {},
-  subModules: []
+  subModules: [],
 })
 paragraphModule.name = 'paragraph'
 
 const coverModule = createCoverModule({
   TYPE,
   rule: {
-    matchMdast: node => node.type === 'zone' && node.identifier === TYPE
+    matchMdast: node =>
+      node.type === 'zone' && node.identifier === TYPE,
   },
-  subModules: [
-    titleModule,
-    paragraphModule
-  ]
+  subModules: [titleModule, paragraphModule],
 })
 
 const serializer = coverModule.helpers.serializer

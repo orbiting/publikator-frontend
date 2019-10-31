@@ -1,5 +1,5 @@
 export default ({ matchSource, matchUrl, getQueryParams, TYPE }) => ({
-  onKeyDown (event, change) {
+  onKeyDown(event, change) {
     if (event.key !== 'Enter') return
     if (event.shiftKey !== false) return
 
@@ -23,9 +23,9 @@ export default ({ matchSource, matchUrl, getQueryParams, TYPE }) => ({
         type: TYPE,
         data: {
           queryParams: getQueryParams(url),
-          url
+          url,
         },
-        isVoid: true
+        isVoid: true,
       }
 
       event.preventDefault()
@@ -33,11 +33,11 @@ export default ({ matchSource, matchUrl, getQueryParams, TYPE }) => ({
         .insertNodeByKey(
           parent.key,
           parent.nodes.indexOf(block),
-          newNode
+          newNode,
         )
         .collapseToStartOf(block)
         .extendToEndOf(block)
         .delete()
     }
-  }
+  },
 })

@@ -1,22 +1,20 @@
 import React from 'react'
 import { css } from 'glamor'
 
-import {
-  colors
-} from '@project-r/styleguide'
+import { colors } from '@project-r/styleguide'
 
 import LoadingBar from './LoadingBar'
 import { HEADER_HEIGHT, ZINDEX_HEADER } from './constants'
 
 const styles = {
   header: css({
-    clear: 'both'
+    clear: 'both',
   }),
   bar: css({
     zIndex: ZINDEX_HEADER,
     position: 'fixed',
     '@media print': {
-      position: 'absolute'
+      position: 'absolute',
     },
     top: 0,
     left: 0,
@@ -25,20 +23,18 @@ const styles = {
     height: HEADER_HEIGHT,
     borderBottom: `1px solid ${colors.divider}`,
     whiteSpace: 'nowrap',
-    overflow: 'auto'
+    overflow: 'auto',
   }),
   left: css({
-    float: 'left'
+    float: 'left',
   }),
   right: css({
-    float: 'right'
-  })
+    float: 'right',
+  }),
 }
 
 export const Section = ({ align, children }) => (
-  <div {...styles[align || 'left']}>
-    {children}
-  </div>
+  <div {...styles[align || 'left']}>{children}</div>
 )
 
 export const Header = ({ children, barStyle }) => (

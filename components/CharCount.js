@@ -15,8 +15,6 @@ export default withT(({ value, t }) => (
   <Interaction.P>
     <Label>{t('ui/sidebar/info/numCharacters')}</Label>
     <br />
-    {
-      countFormat(safeTextLength(value) || 0)
-    }
+    {countFormat(safeTextLength(value) || 0)}
   </Interaction.P>
 ))

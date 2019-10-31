@@ -14,9 +14,12 @@ import { t } from '../../lib/withT'
 import dynamicComponentRequire from '../editor/modules/dynamiccomponent/require'
 import * as withFrontData from './withFrontData'
 
-const NoOpLink = ({ children }) => React.cloneElement(React.Children.only(children), {
-  onClick: e => { e.preventDefault() }
-})
+const NoOpLink = ({ children }) =>
+  React.cloneElement(React.Children.only(children), {
+    onClick: e => {
+      e.preventDefault()
+    },
+  })
 
 const schemas = {
   // first is default schema for the editor
@@ -30,16 +33,17 @@ const schemas = {
     CommentLink: NoOpLink,
     DiscussionLink: NoOpLink,
     t,
-    ...withFrontData
+    ...withFrontData,
   }),
   format: createFormatSchema({ t, dynamicComponentRequire }),
   discussion: createDiscussionSchema({ t, dynamicComponentRequire }),
-  dossier: createDossierSchema({ t, dynamicComponentRequire })
+  dossier: createDossierSchema({ t, dynamicComponentRequire }),
 }
 
 export const getSchema = template => {
   const key = template || Object.keys(schemas)[0]
-  const schema = schemas[key] || (key === 'editorial' && schemas.article)
+  const schema =
+    schemas[key] || (key === 'editorial' && schemas.article)
 
   if (!schema) {
     throw new Error(`Unkown Schema ${key}`)

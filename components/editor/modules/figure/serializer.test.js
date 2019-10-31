@@ -12,44 +12,39 @@ const imageModule = createImageModule({
   TYPE: 'FIGURE_IMAGE',
   rule: {
     editorOptions: {
-      depth: 1
-    }
+      depth: 1,
+    },
   },
-  subModules: []
+  subModules: [],
 })
 imageModule.name = 'figureImage'
 
 const bylineModule = createParagraphModule({
   TYPE: 'EMPHASIS',
   rule: {
-    matchMdast: node => node.type === 'emphasis'
+    matchMdast: node => node.type === 'emphasis',
   },
-  subModules: []
+  subModules: [],
 })
 
 const captionModule = createCaptionModule({
   TYPE: 'FIGURE_CAPTION',
   rule: {
     matchMdast: node => node.type === 'paragraph',
-    editorOptions: {}
+    editorOptions: {},
   },
-  subModules: [
-    bylineModule,
-    boldModule
-  ]
+  subModules: [bylineModule, boldModule],
 })
 captionModule.name = 'figureCaption'
 
 const figureModule = createFigureModule({
   TYPE,
   rule: {
-    matchMdast: node => node.type === 'zone' && node.identifier === TYPE,
-    editorOptions: {}
+    matchMdast: node =>
+      node.type === 'zone' && node.identifier === TYPE,
+    editorOptions: {},
   },
-  subModules: [
-    imageModule,
-    captionModule
-  ]
+  subModules: [imageModule, captionModule],
 })
 
 const serializer = figureModule.helpers.serializer

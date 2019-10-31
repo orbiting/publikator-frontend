@@ -18,7 +18,7 @@ import {
   Field,
   Label,
   RawHtml,
-  colors
+  colors,
 } from '@project-r/styleguide'
 
 import Poller from './Poller'
@@ -27,64 +27,63 @@ const styles = {
   form: css({
     display: 'flex',
     justifyContent: 'space-between',
-    flexFlow: 'row wrap'
+    flexFlow: 'row wrap',
   }),
   input: css({
     marginRight: 10,
     marginBottom: 0,
     width: '58%',
-    flexGrow: 1
+    flexGrow: 1,
   }),
   button: css({
     width: 160,
     textAlign: 'center',
-    marginBottom: 15
+    marginBottom: 15,
   }),
   hint: css({
     marginTop: -5,
     color: colors.lightText,
     display: 'block',
-    lineHeight: '20px'
+    lineHeight: '20px',
   }),
   hintA: css({
     textDecoration: 'underline',
     textDecorationSkip: 'ink',
     color: colors.lightText,
     ':hover': {
-      color: colors.text
-    }
-  })
+      color: colors.text,
+    },
+  }),
 }
 
 const checkEmail = ({ value, shouldValidate, t }) => ({
   email: value,
-  error: (
+  error:
     (value.trim().length <= 0 && t('signIn/email/error/empty')) ||
-    (!isEmail(value) && t('signIn/email/error/invalid'))
-  ),
-  dirty: shouldValidate
+    (!isEmail(value) && t('signIn/email/error/invalid')),
+  dirty: shouldValidate,
 })
 
 class SignIn extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
 
     this.state = {
       ...checkEmail({
         value: props.email || '',
-        t: props.t
+        t: props.t,
       }),
       polling: false,
       loading: false,
-      success: undefined
+      success: undefined,
     }
 
-    this.onFormSubmit = (event) => {
+    this.onFormSubmit = event => {
       event.preventDefault()
       this.signIn()
     }
 
-    this.signIn = (tokenType) => {
+    this.signIn = tokenType => {
       const { loading, error, email } = this.state
       const { signIn, context, acceptedConsents } = this.props
 
@@ -99,35 +98,31 @@ class SignIn extends Component {
 
       this.setState(() => ({ loading: true }))
 
-      signIn(
-        email,
-        context,
-        acceptedConsents,
-        tokenType
-      )
+      signIn(email, context, acceptedConsents, tokenType)
         .then(({ data }) => {
           this.setState(() => ({
             polling: true,
             loading: false,
             phrase: data.signIn.phrase,
             tokenType: data.signIn.tokenType,
-            alternativeFirstFactors: data.signIn.alternativeFirstFactors
+            alternativeFirstFactors:
+              data.signIn.alternativeFirstFactors,
           }))
         })
         .catch(error => {
           this.setState(() => ({
             serverError: error,
-            loading: false
+            loading: false,
           }))
         })
     }
   }
 
-  componentDidMount () {
+  componentDidMount() {
     this.setState({ cookiesDisabled: !navigator.cookieEnabled })
   }
 
-  componentWillUnmount () {
+  componentWillUnmount() {
     if (this.state.polling) {
       const data = this.props.client.readQuery({ query: meQuery })
       if (data.me) {
@@ -136,7 +131,7 @@ class SignIn extends Component {
     }
   }
 
-  reloadOnSuccess () {
+  reloadOnSuccess() {
     const { context, noReload } = this.props
     // only immediately reload if not in a context like faq or purchase
     if (!context && !noReload) {
@@ -147,40 +142,49 @@ class SignIn extends Component {
     }
   }
 
-  render () {
+  render() {
     const { t, label, beforeForm } = this.props
     const {
-      phrase, tokenType, alternativeFirstFactors,
-      polling, loading, success,
-      error, dirty, email,
-      serverError
+      phrase,
+      tokenType,
+      alternativeFirstFactors,
+      polling,
+      loading,
+      success,
+      error,
+      dirty,
+      email,
+      serverError,
     } = this.state
 
     if (polling) {
-      return loading
-        ? <InlineSpinner size={26} />
-        : <Poller
+      return loading ? (
+        <InlineSpinner size={26} />
+      ) : (
+        <Poller
           tokenType={tokenType}
           phrase={phrase}
           email={email}
           alternativeFirstFactors={alternativeFirstFactors}
           onCancel={() => {
             this.setState(() => ({
-              polling: false
+              polling: false,
             }))
           }}
-          onTokenTypeChange={(altTokenType) => {
+          onTokenTypeChange={altTokenType => {
             this.signIn(altTokenType)
           }}
-          onSuccess={(me) => {
+          onSuccess={me => {
             this.setState(() => ({
               polling: false,
               success: t('signIn/success', {
-                nameOrEmail: me.name || me.email
-              })
+                nameOrEmail: me.name || me.email,
+              }),
             }))
             this.reloadOnSuccess()
-          }} />
+          }}
+        />
+      )
     }
     if (success) {
       return <span>{success}</span>
@@ -190,9 +194,12 @@ class SignIn extends Component {
       return (
         <Fragment>
           <ErrorMessage error={t('cookies/disabled/error')} />
-          <RawHtml type={Interaction.P} dangerouslySetInnerHTML={{
-            __html: t('cookies/disabled/error/explanation')
-          }} />
+          <RawHtml
+            type={Interaction.P}
+            dangerouslySetInnerHTML={{
+              __html: t('cookies/disabled/error/explanation'),
+            }}
+          />
         </Fragment>
       )
     }
@@ -204,33 +211,39 @@ class SignIn extends Component {
           <div {...styles.form}>
             <div {...styles.input}>
               <Field
-                name='email'
-                type='email'
+                name="email"
+                type="email"
                 label={t('signIn/email/label')}
                 error={dirty && error}
                 onChange={(_, value, shouldValidate) => {
-                  this.setState(checkEmail({
-                    t,
-                    value,
-                    shouldValidate
-                  }))
+                  this.setState(
+                    checkEmail({
+                      t,
+                      value,
+                      shouldValidate,
+                    }),
+                  )
                 }}
-                value={email} />
+                value={email}
+              />
             </div>
             <div {...styles.button}>
-              {loading ? <InlineSpinner /> : <Button
-                block
-                type='submit'
-                disabled={loading}>{label || t('signIn/button')}</Button>}
+              {loading ? (
+                <InlineSpinner />
+              ) : (
+                <Button block type="submit" disabled={loading}>
+                  {label || t('signIn/button')}
+                </Button>
+              )}
             </div>
           </div>
         </form>
         <Label {...styles.hint}>
-          <Link route='legal/privacy'>
+          <Link route="legal/privacy">
             <a {...styles.hintA}>{t('signIn/privacy')}</a>
           </Link>
           {' – '}
-          <Link route='faq'>
+          <Link route="faq">
             <a {...styles.hintA}>{t('signIn/faq')}</a>
           </Link>
           {' – '}
@@ -244,28 +257,38 @@ class SignIn extends Component {
 
 SignIn.propTypes = {
   signIn: PropTypes.func.isRequired,
-  noReload: PropTypes.bool
+  noReload: PropTypes.bool,
 }
 
 const signInMutation = gql`
-mutation signIn($email: String!, $context: String, $consents: [String!], $tokenType: SignInTokenType) {
-  signIn(email: $email, context: $context, consents: $consents, tokenType: $tokenType) {
-    phrase
-    tokenType
-    alternativeFirstFactors
+  mutation signIn(
+    $email: String!
+    $context: String
+    $consents: [String!]
+    $tokenType: SignInTokenType
+  ) {
+    signIn(
+      email: $email
+      context: $context
+      consents: $consents
+      tokenType: $tokenType
+    ) {
+      phrase
+      tokenType
+      alternativeFirstFactors
+    }
   }
-}
 `
 
 export const withSignIn = graphql(signInMutation, {
   props: ({ mutate }) => ({
     signIn: (email, context = 'signIn', consents, tokenType) =>
-      mutate({ variables: { email, context, consents, tokenType } })
-  })
+      mutate({ variables: { email, context, consents, tokenType } }),
+  }),
 })
 
 export default compose(
   withApollo,
   withSignIn,
-  withT
+  withT,
 )(SignIn)

@@ -16,7 +16,7 @@ const me = {
   firstName: 'Test',
   lastName: 'Engine',
   email: 'test@project-r.construction',
-  roles: ['editor']
+  roles: ['editor'],
 }
 
 const testData = setupData({
@@ -26,24 +26,22 @@ const testData = setupData({
         me: {
           type: 'id',
           id: `${me.__typename}:${me.id}`,
-          generated: false
-        }
+          generated: false,
+        },
       },
-      [`${me.__typename}:${me.id}`]: me
-    }
-  }
+      [`${me.__typename}:${me.id}`]: me,
+    },
+  },
 })
 
-const EditorPageWithTestData = testData.withData(
-  EditorPage
-)
+const EditorPageWithTestData = testData.withData(EditorPage)
 
 test('EditorPage is write-able', assert => {
   const router = {
     query: {
       repoId: 'orbiting/test',
-      commitId: '1'
-    }
+      commitId: '1',
+    },
   }
   const wrapper = mount(
     <RouterProvider router={router}>
@@ -59,7 +57,7 @@ test('EditorPage is write-able', assert => {
             commit: {
               document: {
                 meta: {
-                  template: 'article'
+                  template: 'article',
                 },
                 content: parse(`---
 template: article
@@ -80,34 +78,34 @@ Von Autor
 Text
 
 <hr /></section>
-                `)
-              }
-            }
-          }
+                `),
+              },
+            },
+          },
         }}
         commitMutation={() => {
           Promise.resolve({
             data: {
               commit: {
-                id: '2'
-              }
-            }
+                id: '2',
+              },
+            },
           })
         }}
         uncommittedChanges={{
           loading: false,
           error: undefined,
-          users: []
+          users: [],
         }}
         hasUncommitedChanges={() => {
           return Promise.resolve({
             data: {
-              uncommittedChanges: true
-            }
+              uncommittedChanges: true,
+            },
           })
         }}
       />
-    </RouterProvider>
+    </RouterProvider>,
   )
 
   const page = wrapper.find(EditorPage).instance()
@@ -115,7 +113,7 @@ Text
   assert.equal(
     page.state.readOnly,
     false,
-    'is not readOnly when alone'
+    'is not readOnly when alone',
   )
 
   assert.end()

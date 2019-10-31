@@ -7,18 +7,16 @@ import createParagraphModule from '../paragraph'
 const linkModule = createLinkModule({
   TYPE: 'LINK',
   rule: {
-    matchMdast: node => node.type === 'link'
+    matchMdast: node => node.type === 'link',
   },
-  subModules: []
+  subModules: [],
 })
 linkModule.name = 'link'
 
 const paragraphModule = createParagraphModule({
   TYPE: 'PARAGRAPH',
   rule: {},
-  subModules: [
-    linkModule
-  ]
+  subModules: [linkModule],
 })
 paragraphModule.name = 'paragraph'
 
@@ -37,6 +35,9 @@ test('link serialization', assert => {
 
   assert.equal(link.getIn(['data', 'href']), 'example.com')
 
-  assert.equal(stringify(serializer.serialize(value)).trimRight(), '[Test](example.com)')
+  assert.equal(
+    stringify(serializer.serialize(value)).trimRight(),
+    '[Test](example.com)',
+  )
   assert.end()
 })

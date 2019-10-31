@@ -1,6 +1,11 @@
 import React from 'react'
 import { Label, Checkbox } from '@project-r/styleguide'
-import { matchBlock, createBlockButton, buttonStyles, createPropertyForm } from '../../utils'
+import {
+  matchBlock,
+  createBlockButton,
+  buttonStyles,
+  createPropertyForm,
+} from '../../utils'
 import createOnFieldChange from '../../utils/createOnFieldChange'
 import injectBlock from '../../utils/injectBlock'
 import UIForm from '../../UIForm'
@@ -13,8 +18,12 @@ export const ListForm = options => {
     // Multiple lists would involve more iteration work and given the fact, that this would happen on every select, I'd avoid it until necessary.
     const list = value.blocks.reduce(
       (memo, node) =>
-        memo || value.document.getFurthest(node.key, matchBlock(options.TYPE)),
-      undefined
+        memo ||
+        value.document.getFurthest(
+          node.key,
+          matchBlock(options.TYPE),
+        ),
+      undefined,
     )
 
     const handlerFactory = createOnFieldChange(onChange, value, list)
@@ -27,7 +36,7 @@ export const ListForm = options => {
             checked={list.data.get('compact')}
             onChange={handlerFactory('compact')}
           >
-                Kompakt
+            Kompakt
           </Checkbox>
         </UIForm>
       </div>
@@ -38,48 +47,53 @@ export const ListForm = options => {
     isDisabled: ({ value }) => {
       const list = value.blocks.reduce(
         (memo, node) =>
-          memo || value.document.getFurthest(node.key, matchBlock(options.TYPE)),
-        undefined
+          memo ||
+          value.document.getFurthest(
+            node.key,
+            matchBlock(options.TYPE),
+          ),
+        undefined,
       )
 
       return !list
-    }
+    },
   })(Form)
 }
 
-export const createListButton = ({ TYPE, ordered, label, parentTypes, newBlock }) => createBlockButton({
-  type: TYPE,
+export const createListButton = ({
+  TYPE,
+  ordered,
+  label,
   parentTypes,
-  reducer: props =>
-    event => {
+  newBlock,
+}) =>
+  createBlockButton({
+    type: TYPE,
+    parentTypes,
+    reducer: props => event => {
       const { onChange, value } = props
       event.preventDefault()
 
-      const inList = value.document.getClosest(value.startBlock.key, matchBlock(TYPE))
+      const inList = value.document.getClosest(
+        value.startBlock.key,
+        matchBlock(TYPE),
+      )
 
       if (inList) {
         return onChange(
-          value
-            .change()
-            .setNodeByKey(inList.key, {
-              data: inList.data.merge({
-                ordered
-              })
-            })
+          value.change().setNodeByKey(inList.key, {
+            data: inList.data.merge({
+              ordered,
+            }),
+          }),
         )
       }
 
       return onChange(
-        value
-          .change()
-          .call(
-            injectBlock,
-            newBlock({ ordered })
-          )
+        value.change().call(injectBlock, newBlock({ ordered })),
       )
-    }
-})(
-  ({ active, disabled, visible, ...props }) =>
+    },
+  })(({ active, disabled, visible, ...props }) => (
     <span
       {...buttonStyles.block}
       {...props}
@@ -89,4 +103,4 @@ export const createListButton = ({ TYPE, ordered, label, parentTypes, newBlock }
     >
       {label}
     </span>
-)
+  ))

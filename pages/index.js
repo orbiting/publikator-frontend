@@ -14,10 +14,10 @@ const Index = ({ router: { query } }) => {
   return (
     <Frame>
       <Frame.Header>
-        <Frame.Header.Section align='left'>
+        <Frame.Header.Section align="left">
           <Frame.Nav />
         </Frame.Header.Section>
-        <Frame.Header.Section align='right'>
+        <Frame.Header.Section align="right">
           <Frame.Me />
         </Frame.Header.Section>
       </Frame.Header>
@@ -26,7 +26,8 @@ const Index = ({ router: { query } }) => {
           orderField={orderField}
           orderDirection={orderDirection}
           phase={query.phase}
-          search={query.q} />
+          search={query.q}
+        />
       </Frame.Body>
     </Frame>
   )
@@ -34,5 +35,5 @@ const Index = ({ router: { query } }) => {
 
 export default compose(
   withRouter,
-  withAuthorization(['editor'])
+  withAuthorization(['editor']),
 )(Index)

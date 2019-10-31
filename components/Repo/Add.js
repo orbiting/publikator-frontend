@@ -7,75 +7,77 @@ import withT from '../../lib/withT'
 
 import {
   Interaction,
-  Field, Button,
+  Field,
+  Button,
   Dropdown,
-  mediaQueries
+  mediaQueries,
 } from '@project-r/styleguide'
 
-import { GITHUB_ORG, TEMPLATES, REPO_PREFIX } from '../../lib/settings'
+import {
+  GITHUB_ORG,
+  TEMPLATES,
+  REPO_PREFIX,
+} from '../../lib/settings'
 
 let templateKeys = Object.keys(schemas)
 if (TEMPLATES) {
   const allowedTemplates = TEMPLATES.split(',')
-  templateKeys = templateKeys
-    .filter(key => allowedTemplates.indexOf(key) !== -1)
+  templateKeys = templateKeys.filter(
+    key => allowedTemplates.indexOf(key) !== -1,
+  )
 }
 
 const styles = {
   new: css({
     maxWidth: 600,
-    paddingBottom: 60
+    paddingBottom: 60,
   }),
   form: css({
     display: 'flex',
     justifyContent: 'space-between',
     flexFlow: 'row wrap',
-    margin: '0 auto'
+    margin: '0 auto',
   }),
   select: css({
     width: '100%',
-    marginTop: 10
+    marginTop: 10,
   }),
   input: css({
     width: '100%',
     [mediaQueries.mUp]: {
       marginRight: 10,
       marginBottom: 0,
-      width: '58%'
-    }
+      width: '58%',
+    },
   }),
   button: css({
     width: '100%',
     [mediaQueries.mUp]: {
       width: '38%',
-      minWidth: 160
-    }
-  })
+      minWidth: 160,
+    },
+  }),
 }
 
 class RepoAdd extends Component {
-  constructor (props) {
+  constructor(props) {
     super(props)
     this.state = {
       title: '',
-      template: ''
+      template: '',
     }
   }
-  getSlug (title) {
+  getSlug(title) {
     const { template } = this.state
     const schema = schemas[template]
-    const prefix = [
-      REPO_PREFIX,
-      schema && schema.repoPrefix
-    ].filter(Boolean).join('')
-    const slug = [
-      prefix,
-      slugify(title)
-    ].join('')
+    const prefix = [REPO_PREFIX, schema && schema.repoPrefix]
+      .filter(Boolean)
+      .join('')
+    const slug = [prefix, slugify(title)].join('')
 
     return slug
   }
-  onSubmit (event) {
+  onSubmit(event) {
     event.preventDefault()
 
     const { title, template, error } = this.state
@@ -89,12 +91,12 @@ class RepoAdd extends Component {
       repoId: [GITHUB_ORG, slug],
       commitId: 'new',
       title,
-      template
+      template,
     }).then(() => {
       window.scrollTo(0, 0)
     })
   }
-  handleTitle (value, shouldValidate) {
+  handleTitle(value, shouldValidate) {
     const { t } = this.props
 
     const slug = this.getSlug(value)
@@ -102,37 +104,42 @@ class RepoAdd extends Component {
       slug,
       title: value,
       dirty: shouldValidate,
-      error: (
-        (value.trim().length <= 0 && t('repo/add/titleField/error')) ||
-        (slug.length > 100 && t('repo/add/titleField/error/tooLong'))
-      )
+      error:
+        (value.trim().length <= 0 &&
+          t('repo/add/titleField/error')) ||
+        (slug.length > 100 && t('repo/add/titleField/error/tooLong')),
     })
   }
-  render () {
+  render() {
     const { t } = this.props
     const { title, template, dirty, error } = this.state
 
     const templateOptions = templateKeys.map(key => ({
       value: key,
-      text: t(`repo/add/template/${key}`, null, key)
+      text: t(`repo/add/template/${key}`, null, key),
     }))
 
     return (
       <div {...styles.new}>
         <Interaction.H2>{t('repo/add/title')}</Interaction.H2>
-        <form {...styles.form} onSubmit={e => this.onSubmit(e)} onKeyPress={e => {
-          if (e.key === 'Enter') {
-            this.onSubmit(e)
-          }
-        }}>
+        <form
+          {...styles.form}
+          onSubmit={e => this.onSubmit(e)}
+          onKeyPress={e => {
+            if (e.key === 'Enter') {
+              this.onSubmit(e)
+            }
+          }}
+        >
           <div {...styles.select}>
             <Dropdown
-              label='Vorlage'
+              label="Vorlage"
               items={templateOptions}
               value={template}
               onChange={item => {
-                this.setState({template: item.value})
-              }} />
+                this.setState({ template: item.value })
+              }}
+            />
           </div>
           <div {...styles.input}>
             <Field
@@ -145,7 +152,7 @@ class RepoAdd extends Component {
             />
           </div>
           <div {...styles.button}>
-            <Button type='submit' block>
+            <Button type="submit" block>
               {t('repo/add/submit')}
             </Button>
           </div>

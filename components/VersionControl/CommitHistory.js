@@ -12,27 +12,27 @@ const { P } = Interaction
 const styles = {
   container: css({
     fontSize: '13px',
-    marginBottom: '20px'
+    marginBottom: '20px',
   }),
   commits: css({
     borderTop: `1px solid ${colors.divider}`,
     listStyleType: 'none',
     margin: '5px 0',
-    padding: 0
+    padding: 0,
   }),
   commit: css({
     borderBottom: `1px solid ${colors.divider}`,
     padding: '5px 0',
-    position: 'relative'
+    position: 'relative',
   }),
   date: css({
     display: 'block',
-    fontSize: '11px'
-  })
+    fontSize: '11px',
+  }),
 }
 
 class CommitHistory extends Component {
-  render () {
+  render() {
     const { repoId, commitId, commits, maxItems, t } = this.props
 
     const numItems = maxItems || 3
@@ -45,10 +45,10 @@ class CommitHistory extends Component {
               <li key={commit.id} {...styles.commit}>
                 {commit.id !== commitId ? (
                   <Link
-                    route='repo/edit'
+                    route="repo/edit"
                     params={{
                       repoId: repoPath,
-                      commitId: commit.id
+                      commitId: commit.id,
                     }}
                   >
                     <a {...linkRule}>{commit.message}</a>
@@ -63,7 +63,7 @@ class CommitHistory extends Component {
               </li>
             ))}
           </ul>
-          <Link route='repo/tree' params={{ repoId: repoPath }}>
+          <Link route="repo/tree" params={{ repoId: repoPath }}>
             <a {...linkRule}>{t('commitHistory/more')}</a>
           </Link>
         </div>
@@ -74,6 +74,4 @@ class CommitHistory extends Component {
   }
 }
 
-export default compose(
-  withT
-)(CommitHistory)
+export default compose(withT)(CommitHistory)

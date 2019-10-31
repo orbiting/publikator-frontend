@@ -9,26 +9,26 @@ import { intersperse } from '../../lib/utils/helpers'
 
 const styles = {
   disabled: css({
-    color: colors.disabled
-  })
+    color: colors.disabled,
+  }),
 }
 
 const menu = [
   {
     key: 'edit',
-    route: 'repo/edit'
+    route: 'repo/edit',
   },
   {
     key: 'tree',
-    route: 'repo/tree'
-  }
+    route: 'repo/tree',
+  },
 ]
 
 const Nav = ({ router, route, isNew, t }) => {
   const { repoId } = router.query
 
   const params = {
-    repoId: repoId.split('/')
+    repoId: repoId.split('/'),
   }
 
   return (
@@ -37,28 +37,30 @@ const Nav = ({ router, route, isNew, t }) => {
         menu.map(item => {
           const label = t(`repo/nav/${item.key}`)
           if (item.route === route) {
-            return <span key={item.route}>{label}{' '}</span>
+            return <span key={item.route}>{label} </span>
           }
           if (isNew && item.key === 'tree') {
-            return <span key={item.route} {...styles.disabled}>{label}{' '}</span>
+            return (
+              <span key={item.route} {...styles.disabled}>
+                {label}{' '}
+              </span>
+            )
           }
           return (
-            <Link
-              key={item.route}
-              route={item.route}
-              params={params}
-            >
-              <a {...linkRule}>
-                {label}
-                {' '}
-              </a>
+            <Link key={item.route} route={item.route} params={params}>
+              <a {...linkRule}>{label} </a>
             </Link>
           )
         }),
-        (_, i) => <span key={i}>&nbsp;</span>
+        (_, i) => (
+          <span key={i}>&nbsp;</span>
+        ),
       )}
     </span>
   )
 }
 
-export default compose(withT, withRouter)(Nav)
+export default compose(
+  withT,
+  withRouter,
+)(Nav)

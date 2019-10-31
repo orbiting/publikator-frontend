@@ -10,16 +10,22 @@ import PublishForm from '../../components/Publication/PublishForm'
 
 import withT from '../../lib/withT'
 
-const Page = ({ router: { query: { repoId, commitId } }, data, t }) => {
+const Page = ({
+  router: {
+    query: { repoId, commitId },
+  },
+  data,
+  t,
+}) => {
   return (
     <Frame>
       <Frame.Header>
-        <Frame.Header.Section align='left'>
+        <Frame.Header.Section align="left">
           <Frame.Nav>
-            <RepoNav route='repo/tree' />
+            <RepoNav route="repo/tree" />
           </Frame.Nav>
         </Frame.Header.Section>
-        <Frame.Header.Section align='right'>
+        <Frame.Header.Section align="right">
           <Frame.Me />
         </Frame.Header.Section>
       </Frame.Header>
@@ -34,5 +40,5 @@ const Page = ({ router: { query: { repoId, commitId } }, data, t }) => {
 export default compose(
   withAuthorization(['editor']),
   withT,
-  withRouter
+  withRouter,
 )(Page)
