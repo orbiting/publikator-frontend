@@ -32,7 +32,7 @@ const styles = {
 }
 
 class CommitHistory extends Component {
-  render () {
+  render() {
     const { repoId, commitId, commits, maxItems, t } = this.props
 
     const numItems = maxItems || 3
@@ -45,7 +45,7 @@ class CommitHistory extends Component {
               <li key={commit.id} {...styles.commit}>
                 {commit.id !== commitId ? (
                   <Link
-                    route='repo/edit'
+                    route="repo/edit"
                     params={{
                       repoId: repoPath,
                       commitId: commit.id
@@ -63,7 +63,7 @@ class CommitHistory extends Component {
               </li>
             ))}
           </ul>
-          <Link route='repo/tree' params={{ repoId: repoPath }}>
+          <Link route="repo/tree" params={{ repoId: repoPath }}>
             <a {...linkRule}>{t('commitHistory/more')}</a>
           </Link>
         </div>
@@ -74,6 +74,4 @@ class CommitHistory extends Component {
   }
 }
 
-export default compose(
-  withT
-)(CommitHistory)
+export default compose(withT)(CommitHistory)

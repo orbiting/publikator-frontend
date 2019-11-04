@@ -20,11 +20,11 @@ const styles = {
 }
 
 class BaseCommit extends Component {
-  render () {
+  render() {
     const { commit, commits, repoId, t } = this.props
 
     const commitsBehind = [...commits]
-      .sort(function (a, b) {
+      .sort(function(a, b) {
         return descending(new Date(a.date), new Date(b.date))
       })
       .map(c => c.id)
@@ -35,7 +35,7 @@ class BaseCommit extends Component {
         {commit && (
           <div>
             <Label {...styles.commitsBehind}>
-              <Link route='repo/tree' params={{ repoId: repoId.split('/') }}>
+              <Link route="repo/tree" params={{ repoId: repoId.split('/') }}>
                 <a {...linkRule}>
                   {commitsBehind !== null && (
                     <span>

@@ -9,7 +9,9 @@ import { GITHUB_ORG } from '../../../lib/settings'
 let githubOrg = GITHUB_ORG
 export const setOrg = value => {
   if (process.env.NODE_ENV !== 'test') {
-    throw new Error('utils.github.setOrg can only be used in the TEST environment')
+    throw new Error(
+      'utils.github.setOrg can only be used in the TEST environment'
+    )
   }
   githubOrg = value
 }
@@ -30,7 +32,12 @@ export const extract = value => {
 
 const nada = () => null
 
-export const RepoLink = ({ value, Wrapper = Fragment, invalid = nada, autoSlug }) => {
+export const RepoLink = ({
+  value,
+  Wrapper = Fragment,
+  invalid = nada,
+  autoSlug
+}) => {
   const info = extract(value)
   if (!info) {
     return invalid(info)
@@ -41,20 +48,28 @@ export const RepoLink = ({ value, Wrapper = Fragment, invalid = nada, autoSlug }
   return (
     <Wrapper>
       <Link
-        route='repo/tree'
+        route="repo/tree"
         params={{
           repoId: info.id.split('/')
-        }}>
-        <a {...linkRule}>{info.name}{info.hash ? `#${info.hash}` : ''}</a>
+        }}
+      >
+        <a {...linkRule}>
+          {info.name}
+          {info.hash ? `#${info.hash}` : ''}
+        </a>
       </Link>
     </Wrapper>
   )
 }
 
 export const AutoSlugLinkInfo = ({ label, value }) => (
-  <RepoLink value={value} autoSlug Wrapper={({ children }) => (
-    <Label style={{ display: 'block', marginTop: -5, marginBottom: 10 }}>
-      {label}{' '}{children}
-    </Label>
-  )} />
+  <RepoLink
+    value={value}
+    autoSlug
+    Wrapper={({ children }) => (
+      <Label style={{ display: 'block', marginTop: -5, marginBottom: 10 }}>
+        {label} {children}
+      </Label>
+    )}
+  />
 )
