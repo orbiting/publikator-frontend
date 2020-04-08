@@ -1,4 +1,4 @@
-import React, { Fragment } from 'react'
+import React, { Fragment, useEffect } from 'react'
 import { Set, Map } from 'immutable'
 
 import { A, Label, Radio, Field, Dropdown } from '@project-r/styleguide'
@@ -8,14 +8,24 @@ import withT from '../../../../lib/withT'
 
 import RepoSelect from './RepoSelect'
 import UIForm from '../../UIForm'
+import MdClose from 'react-icons/lib/md/close'
+import { css } from 'glamor'
 
-export default withT(({ t, editor, node, onInputChange }) => {
+const styles = {
+  episode: css({
+    padding: '5px 0 20px',
+    borderBottom: '1px dashed'
+  })
+}
+
+export default withT(({ t, editor, node }) => {
   const coverTextAnchors = [null, 'top', 'middle', 'bottom'].map(value => ({
     value,
     text: t(`metaData/series/coverText/anchor/${value}`)
   }))
 
   const value = node.data.get('series')
+
   const onChange = key => newValue => {
     editor.change(change => {
       change.setNodeByKey(node.key, {
@@ -30,6 +40,24 @@ export default withT(({ t, editor, node, onInputChange }) => {
 
   const isEpisode = typeof value === 'string'
   const isMaster = !!value && !isEpisode
+
+  useEffect(() => {
+    if (isMaster) {
+      onSeriesChange({
+        ...value,
+        episodes: value.episodes.map(episode => {
+          return {
+            ...episode,
+            parts: episode.parts || []
+          }
+        })
+      })
+    }
+  }, [])
+
+  useEffect(() => {
+    console.log(value)
+  }, [value])
 
   const role = (
     <Fragment>
@@ -50,7 +78,14 @@ export default withT(({ t, editor, node, onInputChange }) => {
           event.preventDefault()
           onSeriesChange({
             title: '',
-            episodes: [{ title: '', publishDate: '', document: null }]
+            episodes: [
+              {
+                title: '',
+                publishDate: '',
+                document: null,
+                parts: []
+              }
+            ]
           })
         }}
       >
@@ -70,7 +105,7 @@ export default withT(({ t, editor, node, onInputChange }) => {
   )
 
   const episodes = isMaster && value.episodes
-  const onEpisodeChange = episodes => {
+  const onEpisodesChange = episodes => {
     onSeriesChange({
       ...value,
       episodes: episodes
@@ -173,12 +208,12 @@ export default withT(({ t, editor, node, onInputChange }) => {
             }}
           />
           {episodes.map((episode, i) => {
-            const { document: episodeDoc, ...values } = episode
+            const { document: episodeDoc, parts, ...values } = episode
             const keys = Set(['label', 'title', 'image', 'publishDate'])
             const defaultValues = Map(keys.map(key => [key, '']))
 
             const onEpisodeFieldChange = key => (_, keyValue) => {
-              onEpisodeChange(
+              onEpisodesChange(
                 episodes
                   .slice(0, i)
                   .concat({
@@ -188,21 +223,31 @@ export default withT(({ t, editor, node, onInputChange }) => {
                   .concat(episodes.slice(i + 1))
               )
             }
+
+            const onPartsChange = partsValue =>
+              onEpisodeFieldChange('parts')(undefined, partsValue)
+
             return (
-              <Fragment key={`episode-${i}`}>
-                <Label>{t('metaData/series/episodes/label')}</Label> &nbsp;{' '}
-                <A
-                  href='#remove'
-                  onClick={e => {
-                    e.preventDefault()
-                    onEpisodeChange(
-                      episodes.slice(0, i).concat(episodes.slice(i + 1))
-                    )
-                  }}
-                >
-                  {t('metaData/series/episodes/rm')}
-                </A>
-                <br />
+              <div key={`episode-${i}`} {...styles.episode}>
+                <div>
+                  <Label>
+                    <b>
+                      {t('metaData/series/episodes/label')} #{i + 1}
+                    </b>
+                  </Label>
+                  <A
+                    href='#remove'
+                    onClick={e => {
+                      e.preventDefault()
+                      onEpisodesChange(
+                        episodes.slice(0, i).concat(episodes.slice(i + 1))
+                      )
+                    }}
+                    style={{ float: 'right' }}
+                  >
+                    <MdClose size={20} fill='#000' />
+                  </A>
+                </div>
                 <MetaForm
                   data={defaultValues.merge(values)}
                   onInputChange={onEpisodeFieldChange}
@@ -215,14 +260,81 @@ export default withT(({ t, editor, node, onInputChange }) => {
                     onEpisodeFieldChange('document')(undefined, url)
                   }}
                 />
-              </Fragment>
+                <div>
+                  {parts && parts.length ? <Label>Parts</Label> : <br />}
+                  {parts &&
+                    parts.map((part, j) => {
+                      const { document: partDoc, title } = part
+
+                      const onPartFieldChange = key => keyValue => {
+                        onPartsChange(
+                          parts
+                            .slice(0, j)
+                            .concat({
+                              ...part,
+                              [key]: keyValue
+                            })
+                            .concat(parts.slice(j + 1))
+                        )
+                      }
+
+                      return (
+                        <div key={`part-${j}`}>
+                          <Label>
+                            Part #{j + 1}{' '}
+                            <A
+                              href='#remove'
+                              onClick={e => {
+                                e.preventDefault()
+                                onPartsChange(
+                                  parts.slice(0, j).concat(parts.slice(j + 1))
+                                )
+                              }}
+                            >
+                              (remove)
+                            </A>
+                          </Label>
+                          <Field
+                            label='Title'
+                            value={title}
+                            onChange={(e, value) =>
+                              onPartFieldChange('title')(value)
+                            }
+                          />
+                          <RepoSelect
+                            label={t('metaData/series/episodes/document')}
+                            value={partDoc}
+                            onChange={(_, url) => {
+                              onPartFieldChange('document')(url)
+                            }}
+                          />
+                        </div>
+                      )
+                    })}
+                  <A
+                    href='#addPart'
+                    onClick={e => {
+                      e.preventDefault()
+                      onPartsChange(
+                        parts.concat({
+                          title: '',
+                          document: null
+                        })
+                      )
+                    }}
+                  >
+                    <small>Add part</small>
+                  </A>
+                </div>
+              </div>
             )
           })}
+          <br />
           <A
             href='#add'
             onClick={e => {
               e.preventDefault()
-              onEpisodeChange(
+              onEpisodesChange(
                 episodes.concat({
                   title: '',
                   publishDate: '',
