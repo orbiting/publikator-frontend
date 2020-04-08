@@ -55,10 +55,6 @@ export default withT(({ t, editor, node }) => {
     }
   }, [])
 
-  useEffect(() => {
-    console.log(value)
-  }, [value])
-
   const role = (
     <Fragment>
       <Radio
