@@ -10,8 +10,16 @@ import RepoSelect from './RepoSelect'
 import UIForm from '../../UIForm'
 import MdClose from 'react-icons/lib/md/close'
 import { css } from 'glamor'
+import ColorPicker from '../../utils/ColorPicker'
 
 const styles = {
+  colorPickerContainer: css({
+    display: 'flex',
+    paddingBottom: 10
+  }),
+  colorPicker: css({
+    flex: 1
+  }),
   episode: css({
     padding: '5px 0 20px',
     borderBottom: '1px dashed'
@@ -203,6 +211,35 @@ export default withT(({ t, editor, node }) => {
               })
             }}
           />
+          <div {...styles.colorPickerContainer}>
+            <div {...styles.colorPicker}>
+              <ColorPicker
+                label='Primary color'
+                value={value.primaryColor}
+                onChange={primaryColor => {
+                  onSeriesChange({ ...value, primaryColor })
+                }}
+              />
+            </div>
+            <div {...styles.colorPicker}>
+              <ColorPicker
+                label='Text color'
+                value={value.textColor}
+                onChange={textColor => {
+                  onSeriesChange({ ...value, textColor })
+                }}
+              />
+            </div>
+            <div {...styles.colorPicker}>
+              <ColorPicker
+                label='Background color'
+                value={value.bgColor}
+                onChange={bgColor => {
+                  onSeriesChange({ ...value, bgColor })
+                }}
+              />
+            </div>
+          </div>
           {episodes.map((episode, i) => {
             const { document: episodeDoc, parts, ...values } = episode
             const keys = Set(['label', 'title', 'image', 'publishDate'])
