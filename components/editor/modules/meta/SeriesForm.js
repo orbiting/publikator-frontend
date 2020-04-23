@@ -1,4 +1,4 @@
-import React, { Fragment, useEffect } from 'react'
+import React, { Fragment } from 'react'
 import { Set, Map } from 'immutable'
 
 import {
@@ -41,6 +41,8 @@ export default withT(({ t, editor, node }) => {
 
   const value = node.data.get('series')
 
+  console.log(value)
+
   const onChange = key => newValue => {
     editor.change(change => {
       change.setNodeByKey(node.key, {
@@ -55,20 +57,6 @@ export default withT(({ t, editor, node }) => {
 
   const isEpisode = typeof value === 'string'
   const isMaster = !!value && !isEpisode
-
-  useEffect(() => {
-    if (isMaster) {
-      onSeriesChange({
-        ...value,
-        episodes: value.episodes.map(episode => {
-          return {
-            ...episode,
-            parts: episode.parts || []
-          }
-        })
-      })
-    }
-  }, [])
 
   const role = (
     <Fragment>
@@ -93,8 +81,7 @@ export default withT(({ t, editor, node }) => {
               {
                 title: '',
                 publishDate: '',
-                document: null,
-                parts: []
+                document: null
               }
             ]
           })
@@ -369,7 +356,7 @@ export default withT(({ t, editor, node }) => {
                     onClick={e => {
                       e.preventDefault()
                       onPartsChange(
-                        parts.concat({
+                        (parts || []).concat({
                           title: '',
                           document: null
                         })
