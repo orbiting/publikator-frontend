@@ -1,7 +1,14 @@
 import React, { Fragment, useEffect } from 'react'
 import { Set, Map } from 'immutable'
 
-import { A, Label, Radio, Field, Dropdown } from '@project-r/styleguide'
+import {
+  A,
+  Label,
+  Radio,
+  Field,
+  Dropdown,
+  Checkbox
+} from '@project-r/styleguide'
 
 import MetaForm from '../../utils/MetaForm'
 import withT from '../../../../lib/withT'
@@ -13,7 +20,7 @@ import { css } from 'glamor'
 import ColorPicker from '../../utils/ColorPicker'
 
 const styles = {
-  colorPickerContainer: css({
+  subContainer: css({
     display: 'flex',
     paddingBottom: 10
   }),
@@ -211,7 +218,19 @@ export default withT(({ t, editor, node }) => {
               })
             }}
           />
-          <div {...styles.colorPickerContainer}>
+
+          <div {...styles.subContainer}>
+            <Checkbox
+              checked={value.displayParents}
+              onChange={(_, checked) => {
+                onSeriesChange({ ...value, displayParents: checked })
+              }}
+            >
+              Link parent documents on article
+            </Checkbox>
+          </div>
+
+          <div {...styles.subContainer}>
             <div {...styles.colorPicker}>
               <ColorPicker
                 label='Primary color'
@@ -240,6 +259,7 @@ export default withT(({ t, editor, node }) => {
               />
             </div>
           </div>
+
           {episodes.map((episode, i) => {
             const { document: episodeDoc, parts, ...values } = episode
             const keys = Set(['label', 'title', 'image', 'publishDate'])
