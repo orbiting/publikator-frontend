@@ -41,7 +41,7 @@ import { getSchema } from '../../components/Templates'
 import { API_UNCOMMITTED_CHANGES_URL } from '../../lib/settings'
 import * as fragments from '../../lib/graphql/fragments'
 
-import { ColorContext, colors } from '@project-r/styleguide'
+import { ColorContext, colors, getPalette } from '@project-r/styleguide'
 import SettingsIcon from 'react-icons/lib/fa/cogs'
 
 import createDebug from 'debug'
@@ -645,7 +645,18 @@ export class EditorPage extends Component {
     const isNew = commitId === 'new'
     const error = data.error || this.state.error
     const showLoading = committing || loading || (!schema && !error)
+
+    const seriesData = editorState && editorState.document.data.get('series')
     const dark = editorState && editorState.document.data.get(DARK_MODE_KEY)
+    const themeColors =
+      seriesData &&
+      seriesData.primaryColor &&
+      getPalette({
+        primary: seriesData.primaryColor,
+        text: seriesData.textColor || colors.text,
+        background: seriesData.bgColor || colors.containerBg
+      })
+    const articleColors = themeColors || (dark && colors.negative)
 
     const sidebarPrependChildren = [
       ...warnings
@@ -743,7 +754,7 @@ export class EditorPage extends Component {
                     }
                   />
                 )}
-                <ColorContext.Provider value={dark && colors.negative}>
+                <ColorContext.Provider value={articleColors}>
                   <Editor
                     ref={this.editorRef}
                     schema={schema}
