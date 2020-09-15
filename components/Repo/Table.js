@@ -56,6 +56,7 @@ export const filterAndOrderRepos = gql`
       }
       nodes {
         id
+        isTemplate
         meta {
           publishDate
         }
@@ -403,6 +404,7 @@ class RepoList extends Component {
                 .map(({ repo, phase }) => {
                   const {
                     id,
+                    isTemplate,
                     meta: { publishDate },
                     latestCommit: {
                       date,
@@ -449,6 +451,8 @@ class RepoList extends Component {
                                 [GITHUB_ORG, REPO_PREFIX || ''].join('/'),
                                 ''
                               )}
+                            {' -> '}
+                            {isTemplate ? 'template' : 'document'}
                           </a>
                         </Link>
                       </Td>

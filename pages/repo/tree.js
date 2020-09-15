@@ -32,6 +32,7 @@ export const getRepoHistory = gql`
     repo(id: $repoId) {
       id
       isArchived
+      isTemplate
       commits(first: $first, after: $after) {
         pageInfo {
           hasNextPage
@@ -55,6 +56,7 @@ const treeRepoSubscription = gql`
     repoUpdate(repoId: $repoId) {
       id
       isArchived
+      isTemplate
       commits(first: 1) {
         nodes {
           ...SimpleCommit
