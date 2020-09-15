@@ -54,12 +54,14 @@ const commitMutation = gql`
     $parentId: ID
     $message: String!
     $document: DocumentInput!
+    $isTemplate: Boolean
   ) {
     commit(
       repoId: $repoId
       parentId: $parentId
       message: $message
       document: $document
+      isTemplate: $isTemplate
     ) {
       ...CommitWithDocument
       repo {
@@ -420,6 +422,8 @@ export class EditorPage extends Component {
     }
     const repoId = router.query.repoId
     const commitId = router.query.commitId
+
+    console.log(router.query.isTemplate)
     if (!commitId && repo && repo.latestCommit) {
       debug('loadState', 'redirect', repo.latestCommit)
       Router.replaceRoute('repo/edit', {
@@ -608,7 +612,7 @@ export class EditorPage extends Component {
   commitHandler() {
     const {
       router: {
-        query: { repoId, commitId }
+        query: { repoId, commitId, isTemplate }
       },
       commitMutation,
       t
@@ -623,9 +627,12 @@ export class EditorPage extends Component {
       committing: true
     })
 
+    const isNew = commitId === 'new'
+
     commitMutation({
       repoId,
-      parentId: commitId === 'new' ? null : commitId,
+      parentId: isNew ? null : commitId,
+      isTemplate: isNew ? isTemplate === 'true' : null,
       message: message,
       document: {
         content: this.editor.serializer.serialize(editorState)
@@ -640,7 +647,9 @@ export class EditorPage extends Component {
         })
         Router.replaceRoute('repo/edit', {
           repoId: repoId.split('/'),
-          commitId: data.commit.id
+          commitId: data.commit.id,
+          isTemplate: null,
+          templateDoc: null
         })
       })
       .catch(e => {
@@ -677,7 +686,7 @@ export class EditorPage extends Component {
 
   render() {
     const { router, data = {}, uncommittedChanges, t } = this.props
-    const { repoId, commitId } = router.query
+    const { repoId, commitId, isTemplate } = router.query
     const { loading, repo } = data
     const {
       schema,
@@ -744,6 +753,7 @@ export class EditorPage extends Component {
           <Frame.Header.Section align='right'>
             <CommitButton
               isNew={isNew}
+              isTemplate={isTemplate}
               readOnly={!showLoading && readOnly}
               didUnlock={didUnlock}
               hasUncommittedChanges={!showLoading && hasUncommittedChanges}

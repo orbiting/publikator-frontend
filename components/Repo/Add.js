@@ -10,7 +10,8 @@ import {
   Field,
   Button,
   Dropdown,
-  mediaQueries
+  mediaQueries,
+  Checkbox
 } from '@project-r/styleguide'
 
 import { GITHUB_ORG, TEMPLATES, REPO_PREFIX } from '../../lib/settings'
@@ -38,6 +39,11 @@ const styles = {
     width: '100%',
     marginTop: 10
   }),
+  checkbox: css({
+    display: 'flex',
+    alignItems: 'flex-end',
+    paddingBottom: 20
+  }),
   input: css({
     width: '100%',
     [mediaQueries.mUp]: {
@@ -47,11 +53,7 @@ const styles = {
     }
   }),
   button: css({
-    width: '100%',
-    [mediaQueries.mUp]: {
-      width: '38%',
-      minWidth: 160
-    }
+    width: '100%'
   })
 }
 
@@ -60,7 +62,8 @@ class RepoAdd extends Component {
     super(props)
     this.state = {
       title: '',
-      template: templateKeys.includes('article') ? 'article' : templateKeys[0]
+      template: templateKeys.includes('article') ? 'article' : templateKeys[0],
+      isTemplate: false
     }
   }
   getSlug(title) {
@@ -73,25 +76,30 @@ class RepoAdd extends Component {
 
     return slug
   }
+
+  goToEdit({ slug, title, template, isTemplate }) {
+    Router.replaceRoute('repo/edit', {
+      repoId: [GITHUB_ORG, slug],
+      commitId: 'new',
+      title,
+      template,
+      isTemplate
+    }).then(() => {
+      window.scrollTo(0, 0)
+    })
+  }
+
   onSubmit(event) {
     event.preventDefault()
-
-    const { title, template, error } = this.state
+    const { title, template, error, isTemplate } = this.state
     const slug = this.getSlug(title)
     if (error || !title || slug.length > 100) {
       this.handleTitle(title, true)
       return
     }
-
-    Router.replaceRoute('repo/edit', {
-      repoId: [GITHUB_ORG, slug],
-      commitId: 'new',
-      title,
-      template
-    }).then(() => {
-      window.scrollTo(0, 0)
-    })
+    this.goToEdit({ slug, title, template, isTemplate })
   }
+
   handleTitle(value, shouldValidate) {
     const { t } = this.props
 
@@ -107,7 +115,7 @@ class RepoAdd extends Component {
   }
   render() {
     const { t } = this.props
-    const { title, template, dirty, error } = this.state
+    const { title, template, dirty, error, isTemplate } = this.state
 
     const templateOptions = templateKeys.map(key => ({
       value: key,
@@ -145,6 +153,16 @@ class RepoAdd extends Component {
               }}
               error={dirty && error}
             />
+          </div>
+          <div {...styles.checkbox}>
+            <Checkbox
+              checked={isTemplate}
+              onChange={(_, checked) => {
+                this.setState({ isTemplate: checked })
+              }}
+            >
+              als template verwenden
+            </Checkbox>
           </div>
           <div {...styles.button}>
             <Button type='submit' block>

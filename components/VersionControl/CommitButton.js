@@ -6,12 +6,16 @@ import { Button, A, colors, mediaQueries } from '@project-r/styleguide'
 const Text = ({
   t,
   isNew,
+  isTemplate,
   readOnly,
   hasUncommittedChanges,
   didUnlock,
   onRevert,
   onLock
 }) => {
+  if (isTemplate) {
+    return 'Neues Template erstellen'
+  }
   if (isNew) {
     return t('commit/status/new/short')
   }
@@ -40,6 +44,7 @@ const CommitButton = props => {
     t,
     hasUncommittedChanges,
     isNew,
+    isTemplate,
     readOnly,
     onCommit,
     onUnlock
