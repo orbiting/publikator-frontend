@@ -96,6 +96,18 @@ const getLatestCommit = gql`
   ${fragments.SimpleCommit}
 `
 
+const getTemplateById = gql`
+  query getLatestCommit($repoId: ID!) {
+    templateRepo: repo(id: $repoId) {
+      id
+      latestCommit {
+        ...CommitWithDocument
+      }
+    }
+  }
+  ${fragments.CommitWithDocument}
+`
+
 const debug = createDebug('publikator:pages:edit')
 const TEST = process.env.NODE_ENV === 'test'
 
@@ -387,7 +399,11 @@ export class EditorPage extends Component {
   }
 
   loadState(props) {
-    const { t, data: { loading, error, repo } = {}, router } = props
+    const {
+      t,
+      data: { loading, error, repo, templateRepo } = {},
+      router
+    } = props
 
     if (!process.browser && !TEST) {
       // running without local storage doesn't make sense
@@ -415,10 +431,12 @@ export class EditorPage extends Component {
 
     const { schema } = this.state
     if (!schema) {
-      const commit = repo && repo.commit
+      const commit =
+        (repo && repo.commit) || (templateRepo && templateRepo.latestCommit)
 
       const template =
         (commit && commit.document.meta.template) || router.query.template
+
       debug('loadState', 'loadSchema', template)
       this.setState(
         {
@@ -438,11 +456,23 @@ export class EditorPage extends Component {
     const isNew = commitId === 'new'
     let committedEditorState
     if (isNew) {
-      committedEditorState = this.editor.newDocument(
-        router.query,
-        this.props.me
-      )
-      debug('loadState', 'new document', committedEditorState)
+      if (templateRepo) {
+        const commit = templateRepo.latestCommit
+        const json = {
+          ...commit.document.content,
+          // add format & section to root mdast node
+          format: commit.document.meta.format,
+          section: commit.document.meta.section
+        }
+        committedEditorState = this.editor.serializer.deserialize(json)
+        debug('loadState', 'new document from template', committedEditorState)
+      } else {
+        committedEditorState = this.editor.newDocument(
+          router.query,
+          this.props.me
+        )
+        debug('loadState', 'new document', committedEditorState)
+      }
     } else {
       const commit = repo.commit
       if (!commit) {
@@ -860,6 +890,14 @@ export default compose(
         data
       }
     }
+  }),
+  graphql(getTemplateById, {
+    skip: ({ router }) => !router.query.templateDoc,
+    options: ({ router }) => ({
+      variables: {
+        repoId: router.query.templateDoc
+      }
+    })
   }),
   withUncommitedChanges({
     options: ({ router }) => ({
