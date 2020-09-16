@@ -14,6 +14,27 @@ import {
 } from '@project-r/styleguide'
 
 import { GITHUB_ORG, TEMPLATES, REPO_PREFIX } from '../../lib/settings'
+import gql from 'graphql-tag'
+import { compose, graphql } from 'react-apollo'
+import { withRouter } from 'next/router'
+
+const getTemplateRepos = gql`
+  query templateListSearch {
+    reposSearch(isTemplate: true) {
+      totalCount
+      nodes {
+        id
+        latestCommit {
+          document {
+            meta {
+              title
+            }
+          }
+        }
+      }
+    }
+  }
+`
 
 let templateKeys = Object.keys(schemas)
 if (TEMPLATES) {
@@ -75,11 +96,13 @@ class RepoAdd extends Component {
   }
 
   goToEdit({ slug, title, template, isTemplate }) {
+    const templateIsRepo = !templateKeys.includes(template)
     Router.replaceRoute('repo/edit', {
       repoId: [GITHUB_ORG, slug],
       commitId: 'new',
       title,
-      template,
+      template: templateIsRepo ? null : template,
+      templateDoc: templateIsRepo ? template : null,
       isTemplate
     }).then(() => {
       window.scrollTo(0, 0)
@@ -90,6 +113,7 @@ class RepoAdd extends Component {
     event.preventDefault()
 
     const { title, template, error } = this.state
+
     const { isTemplate } = this.props
     const slug = this.getSlug(title)
     if (error || !title || slug.length > 100) {
@@ -113,13 +137,22 @@ class RepoAdd extends Component {
     })
   }
   render() {
-    const { t, isTemplate } = this.props
+    const { t, isTemplate, data } = this.props
     const { title, template, dirty, error } = this.state
 
-    const templateOptions = templateKeys.map(key => ({
-      value: key,
-      text: t(`repo/add/template/${key}`, null, key)
-    }))
+    const templateOptions = templateKeys
+      .map(key => ({
+        value: key,
+        text: t(`repo/add/template/${key}`, null, key)
+      }))
+      .concat(
+        data && data.reposSearch
+          ? data.reposSearch.nodes.map(node => ({
+              value: node.id,
+              text: node.latestCommit.document.meta.title
+            }))
+          : []
+      )
 
     return (
       <div {...styles.new}>
@@ -166,4 +199,10 @@ class RepoAdd extends Component {
   }
 }
 
-export default withT(RepoAdd)
+export default compose(
+  withT,
+  withRouter,
+  graphql(getTemplateRepos, {
+    skip: ({ router }) => router.query.templates
+  })
+)(RepoAdd)
