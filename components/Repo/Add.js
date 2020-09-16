@@ -10,6 +10,7 @@ import {
   Field,
   Button,
   Dropdown,
+  Autocomplete,
   mediaQueries
 } from '@project-r/styleguide'
 
@@ -81,7 +82,8 @@ class RepoAdd extends Component {
     super(props)
     this.state = {
       title: '',
-      template: templateKeys.includes('article') ? 'article' : templateKeys[0]
+      template: templateKeys.includes('article') ? 'article' : templateKeys[0],
+      templateFilter: ''
     }
   }
   getSlug(title) {
@@ -138,7 +140,8 @@ class RepoAdd extends Component {
   }
   render() {
     const { t, isTemplate, data } = this.props
-    const { title, template, dirty, error } = this.state
+    const { title, template, templateFilter, dirty, error } = this.state
+    const withTemplateDocs = data && data.reposSearch
 
     const templateOptions = templateKeys
       .map(key => ({
@@ -146,7 +149,7 @@ class RepoAdd extends Component {
         text: t(`repo/add/template/${key}`, null, key)
       }))
       .concat(
-        data && data.reposSearch
+        withTemplateDocs
           ? data.reposSearch.nodes.map(node => ({
               value: node.id,
               text: node.latestCommit.document.meta.title
@@ -169,14 +172,33 @@ class RepoAdd extends Component {
           }}
         >
           <div {...styles.select}>
-            <Dropdown
-              label='Vorlage'
-              items={templateOptions}
-              value={template}
-              onChange={item => {
-                this.setState({ template: item.value })
-              }}
-            />
+            {withTemplateDocs ? (
+              <Autocomplete
+                label='Vorlage'
+                value={template}
+                filter={templateFilter}
+                items={templateOptions.filter(
+                  ({ text }) =>
+                    !templateFilter ||
+                    text.toLowerCase().includes(templateFilter.toLowerCase())
+                )}
+                onChange={value => {
+                  this.setState({ template: value })
+                }}
+                onFilterChange={templateFilter =>
+                  this.setState({ templateFilter })
+                }
+              />
+            ) : (
+              <Dropdown
+                label='Vorlage'
+                items={templateOptions}
+                value={template}
+                onChange={item => {
+                  this.setState({ template: item.value })
+                }}
+              />
+            )}
           </div>
           <div {...styles.input}>
             <Field
