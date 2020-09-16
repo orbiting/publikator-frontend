@@ -142,7 +142,14 @@ class RepoAdd extends Component {
   }
   render() {
     const { t, isTemplate, data } = this.props
-    const { title, template, templateFilter, dirty, error } = this.state
+    const {
+      title,
+      template,
+      templateFilter,
+      templateItem,
+      dirty,
+      error
+    } = this.state
     const withTemplateDocs = data && data.reposSearch
 
     const templateOptions = templateKeys
@@ -177,15 +184,15 @@ class RepoAdd extends Component {
             {withTemplateDocs ? (
               <Autocomplete
                 label='Vorlage'
-                value={template}
+                value={templateItem}
                 filter={templateFilter}
                 items={templateOptions.filter(
                   ({ text }) =>
                     !templateFilter ||
                     text.toLowerCase().includes(templateFilter.toLowerCase())
                 )}
-                onChange={value => {
-                  this.setState({ template: value })
+                onChange={item => {
+                  this.setState({ templateItem: item, template: item.value })
                 }}
                 onFilterChange={templateFilter =>
                   this.setState({ templateFilter })
