@@ -11,13 +11,15 @@ import {
   Button,
   Dropdown,
   Autocomplete,
-  mediaQueries
+  mediaQueries,
+  colors
 } from '@project-r/styleguide'
 
 import { GITHUB_ORG, TEMPLATES, REPO_PREFIX } from '../../lib/settings'
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 import { withRouter } from 'next/router'
+import SearchIcon from 'react-icons/lib/md/search'
 
 const getTemplateRepos = gql`
   query templateListSearch {
@@ -187,6 +189,15 @@ class RepoAdd extends Component {
                 }}
                 onFilterChange={templateFilter =>
                   this.setState({ templateFilter })
+                }
+                icon={
+                  <SearchIcon
+                    size={30}
+                    style={{ color: colors.lightText }}
+                    onClick={() => {
+                      console.log('search')
+                    }}
+                  />
                 }
               />
             ) : (
