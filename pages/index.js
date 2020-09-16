@@ -8,6 +8,7 @@ import Frame from '../components/Frame'
 import RepoTable from '../components/Repo/Table'
 import { Link } from '../lib/routes'
 import { linkRule } from '@project-r/styleguide'
+import withT from '../lib/withT'
 
 const IndexNavLink = ({ isActive, route, params, label }) =>
   isActive ? (
@@ -18,21 +19,24 @@ const IndexNavLink = ({ isActive, route, params, label }) =>
     </Link>
   )
 
-const IndexNav = withRouter(({ router: { query } }) => {
+const IndexNav = compose(
+  withRouter,
+  withT
+)(({ router: { query }, t }) => {
   const onTemplates = query.templates
   return (
     <span>
       <IndexNavLink
         route='index'
         params={{}}
-        label='Articles'
+        label={t('repo/table/nav/articles')}
         isActive={!onTemplates}
       />
       <span>&nbsp;</span>
       <IndexNavLink
         route='index'
         params={{ templates: true }}
-        label='Templates'
+        label={t('repo/table/nav/templates')}
         isActive={onTemplates}
       />
     </span>

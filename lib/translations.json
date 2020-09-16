@@ -1,5 +1,5 @@
 {
-  "updated": "2020-09-16T14:14:59.422Z",
+  "updated": "2020-09-16T14:27:34.321Z",
   "title": "live",
   "data": [
     {
@@ -233,6 +233,14 @@
     {
       "key": "repo/search/noResults",
       "value": "Keine Resultate"
+    },
+    {
+      "key": "repo/table/nav/articles",
+      "value": "Artikel"
+    },
+    {
+      "key": "repo/table/nav/templates",
+      "value": "Templates"
     },
     {
       "key": "repo/table/pageInfo/loadMore",
@@ -857,6 +865,10 @@
     {
       "key": "commit/status/new/short",
       "value": "Neues Dokument erstellen"
+    },
+    {
+      "key": "commit/status/new/template",
+      "value": "Neues Template erstellen"
     },
     {
       "key": "commit/status/committed",

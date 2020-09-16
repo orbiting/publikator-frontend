@@ -14,7 +14,7 @@ const Text = ({
   onLock
 }) => {
   if (isTemplate) {
-    return 'Neues Template erstellen'
+    return t('commit/status/new/template')
   }
   if (isNew) {
     return t('commit/status/new/short')
