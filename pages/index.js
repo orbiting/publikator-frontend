@@ -6,6 +6,38 @@ import withAuthorization from '../components/Auth/withAuthorization'
 
 import Frame from '../components/Frame'
 import RepoTable from '../components/Repo/Table'
+import { Link } from '../lib/routes'
+import { linkRule } from '@project-r/styleguide'
+
+const IndexNavLink = ({ isActive, route, params, label }) =>
+  isActive ? (
+    <span>{label} </span>
+  ) : (
+    <Link route={route} params={params}>
+      <a {...linkRule}>{label} </a>
+    </Link>
+  )
+
+const IndexNav = withRouter(({ router: { query } }) => {
+  const onTemplates = query.templates
+  return (
+    <span>
+      <IndexNavLink
+        route='index'
+        params={{}}
+        label='Articles'
+        isActive={!onTemplates}
+      />
+      <span>&nbsp;</span>
+      <IndexNavLink
+        route='index'
+        params={{ templates: true }}
+        label='Templates'
+        isActive={onTemplates}
+      />
+    </span>
+  )
+})
 
 const Index = ({ router: { query } }) => {
   const [orderField, orderDirection] = (query.orderBy || '')
@@ -15,7 +47,9 @@ const Index = ({ router: { query } }) => {
     <Frame>
       <Frame.Header>
         <Frame.Header.Section align='left'>
-          <Frame.Nav />
+          <Frame.Nav>
+            <IndexNav />
+          </Frame.Nav>
         </Frame.Header.Section>
         <Frame.Header.Section align='right'>
           <Frame.Me />
@@ -33,7 +67,4 @@ const Index = ({ router: { query } }) => {
   )
 }
 
-export default compose(
-  withRouter,
-  withAuthorization(['editor'])
-)(Index)
+export default compose(withRouter, withAuthorization(['editor']))(Index)
