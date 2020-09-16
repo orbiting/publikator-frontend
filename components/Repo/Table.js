@@ -29,6 +29,7 @@ import { renderMdast } from 'mdast-react-render'
 import EditMetaDate from './EditMetaDate'
 import { phases } from './workflow'
 import RepoAdd from './Add'
+import { withRouter } from 'next/router'
 
 export const editRepoMeta = gql`
   mutation editRepoMeta($repoId: ID!, $publishDate: DateTime) {
@@ -42,12 +43,18 @@ export const editRepoMeta = gql`
 `
 
 export const filterAndOrderRepos = gql`
-  query repoListSearch($after: String, $search: String, $orderBy: RepoOrderBy) {
+  query repoListSearch(
+    $after: String
+    $search: String
+    $orderBy: RepoOrderBy
+    $isTemplate: Boolean
+  ) {
     repos: reposSearch(
       first: 50
       after: $after
       search: $search
       orderBy: $orderBy
+      isTemplate: $isTemplate
     ) {
       totalCount
       pageInfo {
@@ -546,15 +553,17 @@ class RepoList extends Component {
 
 const RepoListWithQuery = compose(
   withT,
+  withRouter,
   graphql(filterAndOrderRepos, {
-    options: ({ search }) => ({
+    options: ({ search, router }) => ({
       fetchPolicy: 'cache-and-network',
       ssr: false,
       notifyOnNetworkStatusChange: true,
       variables: {
         search:
           search && search.length >= SEARCH_MIN_LENGTH ? search : undefined,
-        orderBy: { field: 'PUSHED_AT', direction: 'DESC' }
+        orderBy: { field: 'PUSHED_AT', direction: 'DESC' },
+        isTemplate: !!router.query.templates
       }
     }),
     props: ({ data, ownProps }) => ({
