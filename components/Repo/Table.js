@@ -63,7 +63,6 @@ export const filterAndOrderRepos = gql`
       }
       nodes {
         id
-        isTemplate
         meta {
           publishDate
         }
@@ -233,6 +232,16 @@ class RepoList extends Component {
     }
   }
 
+  UNSAFE_componentWillReceiveProps(nextProps) {
+    if (
+      nextProps.router.query.templates !== this.props.router.query.templates
+    ) {
+      this.setState({
+        search: undefined
+      })
+    }
+  }
+
   render() {
     const {
       t,
@@ -241,8 +250,11 @@ class RepoList extends Component {
       orderDirection,
       phase: filterPhase,
       editRepoMeta,
-      fetchMore
+      fetchMore,
+      router: { query }
     } = this.props
+
+    const { templates } = query
 
     const { search } = this.state
 
@@ -279,7 +291,10 @@ class RepoList extends Component {
 
       this.setState(
         { search: value },
-        this.debouncedRouting.bind(this, getParams({ q: value }))
+        this.debouncedRouting.bind(this, {
+          templates,
+          ...getParams({ q: value })
+        })
       )
     }
 
@@ -311,24 +326,25 @@ class RepoList extends Component {
         />
 
         <div {...styles.filterBar}>
-          {phases.map(phase => {
-            const active =
-              activeFilterPhase && activeFilterPhase.key === phase.key
-            return (
-              <Link
-                key={phase.key}
-                route='index'
-                replace
-                params={getParams({ phase: active ? null : phase.key })}
-              >
-                <Phase
-                  t={t}
-                  phase={phase}
-                  disabled={activeFilterPhase && !active}
-                />
-              </Link>
-            )
-          })}
+          {!templates &&
+            phases.map(phase => {
+              const active =
+                activeFilterPhase && activeFilterPhase.key === phase.key
+              return (
+                <Link
+                  key={phase.key}
+                  route='index'
+                  replace
+                  params={getParams({ phase: active ? null : phase.key })}
+                >
+                  <Phase
+                    t={t}
+                    phase={phase}
+                    disabled={activeFilterPhase && !active}
+                  />
+                </Link>
+              )
+            })}
           {data.repos && (
             <Label {...styles.pageInfo}>
               {data.repos.nodes.length === data.repos.totalCount
@@ -359,20 +375,24 @@ class RepoList extends Component {
             <Tr>
               <Th style={{ width: '28%' }}>{t('repo/table/col/title')}</Th>
               <Th style={{ width: '20%' }}>{t('repo/table/col/credits')}</Th>
-              {orderFields.map(({ field, width }) => (
-                <ThOrder
-                  key={field}
-                  route='index'
-                  params={getParams({ field, order: true })}
-                  activeDirection={orderDirection}
-                  activeField={orderField}
-                  field={field}
-                  style={{ width }}
-                >
-                  {t(`repo/table/col/${field}`, undefined, field)}
-                </ThOrder>
-              ))}
-              <Th style={{ width: '10%' }}>{t('repo/table/col/phase')}</Th>
+              {(templates ? orderFields.slice(0, 1) : orderFields).map(
+                ({ field, width }) => (
+                  <ThOrder
+                    key={field}
+                    route='index'
+                    params={getParams({ field, order: true })}
+                    activeDirection={orderDirection}
+                    activeField={orderField}
+                    field={field}
+                    style={{ width }}
+                  >
+                    {t(`repo/table/col/${field}`, undefined, field)}
+                  </ThOrder>
+                )
+              )}
+              {!templates && (
+                <Th style={{ width: '10%' }}>{t('repo/table/col/phase')}</Th>
+              )}
               <Th style={{ width: 70 }} />
             </Tr>
           </thead>
@@ -458,8 +478,6 @@ class RepoList extends Component {
                                 [GITHUB_ORG, REPO_PREFIX || ''].join('/'),
                                 ''
                               )}
-                            {' -> '}
-                            {isTemplate ? 'template' : 'document'}
                           </a>
                         </Link>
                       </Td>
@@ -480,17 +498,21 @@ class RepoList extends Component {
                           {authorName}: «{message}»
                         </Label>
                       </TdNum>
-                      <TdNum>
-                        <EditMetaDate
-                          value={publishDate}
-                          onChange={value =>
-                            editRepoMeta({ repoId: id, publishDate: value })
-                          }
-                        />
-                      </TdNum>
-                      <Td>
-                        <Phase t={t} phase={phase} />
-                      </Td>
+                      {!templates && (
+                        <TdNum>
+                          <EditMetaDate
+                            value={publishDate}
+                            onChange={value =>
+                              editRepoMeta({ repoId: id, publishDate: value })
+                            }
+                          />
+                        </TdNum>
+                      )}
+                      {!templates && (
+                        <Td>
+                          <Phase t={t} phase={phase} />
+                        </Td>
+                      )}
                       <Td style={{ textAlign: 'right' }}>
                         {repo.latestPublications
                           .filter(
