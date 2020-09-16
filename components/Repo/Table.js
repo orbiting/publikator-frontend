@@ -312,7 +312,7 @@ class RepoList extends Component {
 
     return (
       <div {...styles.container}>
-        <RepoAdd />
+        <RepoAdd isTemplate={templates} />
 
         <Field
           label={t('repo/search/field/label')}

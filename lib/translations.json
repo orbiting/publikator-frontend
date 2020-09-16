@@ -1,5 +1,5 @@
 {
-  "updated": "2020-09-16T14:27:34.321Z",
+  "updated": "2020-09-16T14:34:17.572Z",
   "title": "live",
   "data": [
     {
@@ -121,6 +121,10 @@
     {
       "key": "repo/add/title",
       "value": "Neuer Artikel"
+    },
+    {
+      "key": "repo/add/template/title",
+      "value": "Neues Template"
     },
     {
       "key": "repo/add/titleField/label",
