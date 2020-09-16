@@ -1,5 +1,5 @@
 {
-  "updated": "2020-09-09T08:15:48.388Z",
+  "updated": "2020-09-16T14:14:59.422Z",
   "title": "live",
   "data": [
     {
@@ -279,12 +279,24 @@
       "value": "Artikel tatsächlich archivieren?"
     },
     {
+      "key": "repo/archive/template/confirm",
+      "value": "Template tatsächlich archivieren?"
+    },
+    {
       "key": "repo/archive/button",
       "value": "Artikel archivieren"
     },
     {
+      "key": "repo/archive/template/button",
+      "value": "Template archivieren"
+    },
+    {
       "key": "repo/archived/notice",
       "value": "Artikel wurde archiviert und kann nicht bearbeitet oder veröffentlicht werden."
+    },
+    {
+      "key": "repo/archived/template/notice",
+      "value": "Template wurde archiviert und kann nicht bearbeitet oder verwendet werden."
     },
     {
       "key": "baseCommit/title",

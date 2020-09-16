@@ -181,17 +181,18 @@ class EditorPage extends Component {
             render={() => (
               <Fragment>
                 {repo.isArchived ? (
-                  <RepoArchivedBanner />
+                  <RepoArchivedBanner isTemplate={repo.isTemplate} />
                 ) : (
                   <NarrowContainer {...styles.publishContainer}>
                     <CurrentPublications repoId={repoId} />
-                    <RepoArchive repoId={repoId} />
+                    <RepoArchive repoId={repoId} isTemplate={repo.isTemplate} />
                   </NarrowContainer>
                 )}
                 <Tree
                   commits={commits}
                   localStorageCommitIds={localStorageCommitIds}
                   milestones={repo.milestones}
+                  isTemplate={repo.isTemplate}
                   repoId={repoId}
                 />
                 {/* Load more commits */
