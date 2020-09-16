@@ -326,25 +326,24 @@ class RepoList extends Component {
         />
 
         <div {...styles.filterBar}>
-          {!templates &&
-            phases.map(phase => {
-              const active =
-                activeFilterPhase && activeFilterPhase.key === phase.key
-              return (
-                <Link
-                  key={phase.key}
-                  route='index'
-                  replace
-                  params={getParams({ phase: active ? null : phase.key })}
-                >
-                  <Phase
-                    t={t}
-                    phase={phase}
-                    disabled={activeFilterPhase && !active}
-                  />
-                </Link>
-              )
-            })}
+          {phases.map(phase => {
+            const active =
+              activeFilterPhase && activeFilterPhase.key === phase.key
+            return (
+              <Link
+                key={phase.key}
+                route='index'
+                replace
+                params={getParams({ phase: active ? null : phase.key })}
+              >
+                <Phase
+                  t={t}
+                  phase={phase}
+                  disabled={activeFilterPhase && !active}
+                />
+              </Link>
+            )
+          })}
           {data.repos && (
             <Label {...styles.pageInfo}>
               {data.repos.nodes.length === data.repos.totalCount
@@ -375,24 +374,21 @@ class RepoList extends Component {
             <Tr>
               <Th style={{ width: '28%' }}>{t('repo/table/col/title')}</Th>
               <Th style={{ width: '20%' }}>{t('repo/table/col/credits')}</Th>
-              {(templates ? orderFields.slice(0, 1) : orderFields).map(
-                ({ field, width }) => (
-                  <ThOrder
-                    key={field}
-                    route='index'
-                    params={getParams({ field, order: true })}
-                    activeDirection={orderDirection}
-                    activeField={orderField}
-                    field={field}
-                    style={{ width }}
-                  >
-                    {t(`repo/table/col/${field}`, undefined, field)}
-                  </ThOrder>
-                )
-              )}
-              {!templates && (
-                <Th style={{ width: '10%' }}>{t('repo/table/col/phase')}</Th>
-              )}
+              {orderFields.map(({ field, width }) => (
+                <ThOrder
+                  key={field}
+                  route='index'
+                  params={getParams({ field, order: true })}
+                  activeDirection={orderDirection}
+                  activeField={orderField}
+                  field={field}
+                  style={{ width }}
+                >
+                  {t(`repo/table/col/${field}`, undefined, field)}
+                </ThOrder>
+              ))}
+              <Th style={{ width: '10%' }}>{t('repo/table/col/phase')}</Th>
+
               <Th style={{ width: 70 }} />
             </Tr>
           </thead>
@@ -431,7 +427,6 @@ class RepoList extends Component {
                 .map(({ repo, phase }) => {
                   const {
                     id,
-                    isTemplate,
                     meta: { publishDate },
                     latestCommit: {
                       date,
@@ -498,21 +493,17 @@ class RepoList extends Component {
                           {authorName}: «{message}»
                         </Label>
                       </TdNum>
-                      {!templates && (
-                        <TdNum>
-                          <EditMetaDate
-                            value={publishDate}
-                            onChange={value =>
-                              editRepoMeta({ repoId: id, publishDate: value })
-                            }
-                          />
-                        </TdNum>
-                      )}
-                      {!templates && (
-                        <Td>
-                          <Phase t={t} phase={phase} />
-                        </Td>
-                      )}
+                      <TdNum>
+                        <EditMetaDate
+                          value={publishDate}
+                          onChange={value =>
+                            editRepoMeta({ repoId: id, publishDate: value })
+                          }
+                        />
+                      </TdNum>
+                      <Td>
+                        <Phase t={t} phase={phase} />
+                      </Td>
                       <Td style={{ textAlign: 'right' }}>
                         {repo.latestPublications
                           .filter(
