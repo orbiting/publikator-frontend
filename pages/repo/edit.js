@@ -437,13 +437,13 @@ export class EditorPage extends Component {
       const commit =
         (repo && repo.commit) || (templateRepo && templateRepo.latestCommit)
 
-      const template =
-        (commit && commit.document.meta.template) || router.query.template
+      const schema =
+        (commit && commit.document.meta.template) || router.query.schema
 
-      debug('loadState', 'loadSchema', template)
+      debug('loadState', 'loadSchema', schema)
       this.setState(
         {
-          schema: getSchema(template)
+          schema: getSchema(schema)
         },
         () => {
           this.loadState(this.props)
@@ -648,7 +648,7 @@ export class EditorPage extends Component {
           repoId: repoId.split('/'),
           commitId: data.commit.id,
           isTemplate: null,
-          templateDoc: null
+          templateRepoId: null
         })
       })
       .catch(e => {
@@ -677,9 +677,7 @@ export class EditorPage extends Component {
     Router.pushRoute('repo/raw', {
       repoId: repoId.split('/'),
       commitId,
-      ...(commitId === 'new'
-        ? { template: this.props.router.query.template }
-        : {})
+      ...(commitId === 'new' ? { schema: this.props.router.query.schema } : {})
     })
   }
 
@@ -901,10 +899,10 @@ export default compose(
     }
   }),
   graphql(getTemplateById, {
-    skip: ({ router }) => !router.query.templateDoc,
+    skip: ({ router }) => !router.query.templateRepoId,
     options: ({ router }) => ({
       variables: {
-        repoId: router.query.templateDoc
+        repoId: router.query.templateRepoId
       }
     })
   }),

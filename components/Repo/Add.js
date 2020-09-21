@@ -39,12 +39,10 @@ const getTemplateRepos = gql`
   }
 `
 
-let templateKeys = Object.keys(schemas)
+let schemaKeys = Object.keys(schemas)
 if (TEMPLATES) {
-  const allowedTemplates = TEMPLATES.split(',')
-  templateKeys = templateKeys.filter(
-    key => allowedTemplates.indexOf(key) !== -1
-  )
+  const allowedSchemas = TEMPLATES.split(',')
+  schemaKeys = schemaKeys.filter(key => allowedSchemas.indexOf(key) !== -1)
 }
 
 const styles = {
@@ -84,7 +82,7 @@ class RepoAdd extends Component {
     super(props)
     this.state = {
       title: '',
-      template: templateKeys.includes('article') ? 'article' : templateKeys[0],
+      template: schemaKeys.includes('article') ? 'article' : schemaKeys[0],
       templateFilter: ''
     }
   }
@@ -100,13 +98,13 @@ class RepoAdd extends Component {
   }
 
   goToEdit({ slug, title, template, isTemplate }) {
-    const templateIsRepo = !templateKeys.includes(template)
+    const isRepoId = !schemaKeys.includes(template)
     Router.replaceRoute('repo/edit', {
       repoId: [GITHUB_ORG, slug],
       commitId: 'new',
       title,
-      template: templateIsRepo ? null : template,
-      templateDoc: templateIsRepo ? template : null,
+      schema: isRepoId ? null : template,
+      templateRepoId: isRepoId ? template : null,
       isTemplate
     }).then(() => {
       window.scrollTo(0, 0)
@@ -150,15 +148,15 @@ class RepoAdd extends Component {
       dirty,
       error
     } = this.state
-    const withTemplateDocs = data && data.reposSearch
+    const withTemplateRepos = data && data.reposSearch
 
-    const templateOptions = templateKeys
+    const templateOptions = schemaKeys
       .map(key => ({
         value: key,
         text: t(`repo/add/template/${key}`, null, key)
       }))
       .concat(
-        withTemplateDocs
+        withTemplateRepos
           ? data.reposSearch.nodes.map(node => ({
               value: node.id,
               text: node.latestCommit.document.meta.title
@@ -181,7 +179,7 @@ class RepoAdd extends Component {
           }}
         >
           <div {...styles.select}>
-            {withTemplateDocs ? (
+            {withTemplateRepos ? (
               <Autocomplete
                 label='Vorlage'
                 value={templateItem}
