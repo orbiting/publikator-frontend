@@ -423,7 +423,6 @@ export class EditorPage extends Component {
     const repoId = router.query.repoId
     const commitId = router.query.commitId
 
-    console.log(router.query.isTemplate)
     if (!commitId && repo && repo.latestCommit) {
       debug('loadState', 'redirect', repo.latestCommit)
       Router.replaceRoute('repo/edit', {
