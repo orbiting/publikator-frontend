@@ -47,6 +47,7 @@ import SettingsIcon from 'react-icons/lib/fa/cogs'
 
 import createDebug from 'debug'
 import { DARK_MODE_KEY } from '../../components/editor/modules/meta/DarkModeForm'
+import { findTitleLeaf } from '../../lib/utils/helpers'
 
 const commitMutation = gql`
   mutation commit(
@@ -467,6 +468,10 @@ export class EditorPage extends Component {
           format: commit.document.meta.format,
           section: commit.document.meta.section
         }
+
+        const title = findTitleLeaf(json)
+        title.value = router.query.title
+
         committedEditorState = this.editor.serializer.deserialize(json)
         debug('loadState', 'new document from template', committedEditorState)
       } else {
