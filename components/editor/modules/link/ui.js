@@ -1,5 +1,6 @@
 import { Text } from 'slate'
 import React, { Component } from 'react'
+import ReactDOM from 'react-dom'
 import { graphql } from 'react-apollo'
 import { Label, Field, Autocomplete } from '@project-r/styleguide'
 import LinkIcon from 'react-icons/lib/fa/chain'
@@ -24,30 +25,32 @@ const getUsers = gql`
   }
 `
 
+const UserItem = ({ user }) => (
+  <div style={{ display: 'flex', alignItems: 'center' }}>
+    <img
+      src={user.portrait}
+      width='100%'
+      style={{ width: 54, marginRight: 10 }}
+    />
+    <div>
+      {user.lastName && (
+        <span>
+          {user.firstName} {user.lastName}
+          <br />
+        </span>
+      )}
+      <small>{user.email}</small>
+    </div>
+  </div>
+)
+
 const ConnectedAutoComplete = graphql(getUsers, {
   skip: props => !props.filter,
   options: ({ filter }) => ({ variables: { search: filter } }),
   props: ({ data: { users = [] } }) => ({
     items: users.slice(0, 5).map(user => ({
       value: user,
-      element: (
-        <div style={{ display: 'flex', alignItems: 'center' }}>
-          <img
-            src={user.portrait}
-            width='100%'
-            style={{ width: 54, marginRight: 10 }}
-          />
-          <div>
-            {user.lastName && (
-              <span>
-                {user.firstName} {user.lastName}
-                <br />
-              </span>
-            )}
-            <small>{user.email}</small>
-          </div>
-        </div>
-      )
+      element: <UserItem user={user} />
     }))
   })
 })(Autocomplete)
