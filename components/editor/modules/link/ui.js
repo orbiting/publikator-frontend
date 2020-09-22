@@ -1,6 +1,5 @@
 import { Text } from 'slate'
 import React, { Component } from 'react'
-import ReactDOM from 'react-dom'
 import { graphql } from 'react-apollo'
 import { Label, Field, Autocomplete } from '@project-r/styleguide'
 import LinkIcon from 'react-icons/lib/fa/chain'
@@ -13,14 +12,24 @@ import gql from 'graphql-tag'
 
 import { createInlineButton, matchInline, buttonStyles } from '../../utils'
 
-const getUsers = gql`
-  query getUsers($search: String!) {
-    users(search: $search) {
-      firstName
-      lastName
-      email
-      id
-      portrait
+const searchUsers = gql`
+  query searchUsers($search: String!) {
+    search(
+      first: 5
+      search: $search
+      filters: [{ key: "type", value: "User" }]
+    ) {
+      nodes {
+        entity {
+          ... on User {
+            id
+            firstName
+            lastName
+            email
+            portrait
+          }
+        }
+      }
     }
   }
 `
@@ -44,14 +53,17 @@ const UserItem = ({ user }) => (
   </div>
 )
 
-const ConnectedAutoComplete = graphql(getUsers, {
+const ConnectedAutoComplete = graphql(searchUsers, {
   skip: props => !props.filter,
   options: ({ filter }) => ({ variables: { search: filter } }),
-  props: ({ data: { users = [] } }) => ({
-    items: users.slice(0, 5).map(user => ({
-      value: user,
-      element: <UserItem user={user} />
-    }))
+  props: ({ data: { search } }) => ({
+    items:
+      !!search && search.nodes
+        ? search.nodes.map(({ entity }) => ({
+            value: entity,
+            element: <UserItem user={entity} />
+          }))
+        : []
   })
 })(Autocomplete)
 
