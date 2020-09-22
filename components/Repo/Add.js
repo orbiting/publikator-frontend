@@ -83,6 +83,19 @@ class RepoAdd extends Component {
     this.state = {
       title: '',
       template: schemaKeys.includes('article') ? 'article' : schemaKeys[0],
+      templateItem: schemaKeys.includes('article')
+        ? {
+            value: 'article',
+            text: props.t(`repo/add/template/${'article'}`, null, 'article')
+          }
+        : {
+            value: schemaKeys[0],
+            text: props.t(
+              `repo/add/template/${schemaKeys[0]}`,
+              null,
+              schemaKeys[0]
+            )
+          },
       templateFilter: ''
     }
   }
