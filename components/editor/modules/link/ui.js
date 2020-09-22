@@ -19,6 +19,7 @@ const getUsers = gql`
       lastName
       email
       id
+      portrait
     }
   }
 `
@@ -27,9 +28,26 @@ const ConnectedAutoComplete = graphql(getUsers, {
   skip: props => !props.filter,
   options: ({ filter }) => ({ variables: { search: filter } }),
   props: ({ data: { users = [] } }) => ({
-    items: users.slice(0, 5).map(v => ({
-      value: v,
-      text: v.email
+    items: users.slice(0, 5).map(user => ({
+      value: user,
+      element: (
+        <div style={{ display: 'flex', alignItems: 'center' }}>
+          <img
+            src={user.portrait}
+            width='100%'
+            style={{ width: 54, marginRight: 10 }}
+          />
+          <div>
+            {user.lastName && (
+              <span>
+                {user.firstName} {user.lastName}
+                <br />
+              </span>
+            )}
+            <small>{user.email}</small>
+          </div>
+        </div>
+      )
     }))
   })
 })(Autocomplete)
