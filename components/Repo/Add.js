@@ -12,7 +12,8 @@ import {
   Dropdown,
   Autocomplete,
   mediaQueries,
-  colors
+  colors,
+  Loader
 } from '@project-r/styleguide'
 
 import { GITHUB_ORG, TEMPLATES, REPO_PREFIX } from '../../lib/settings'
@@ -28,7 +29,9 @@ const getTemplateRepos = gql`
       nodes {
         id
         latestCommit {
+          id
           document {
+            id
             meta {
               title
             }
@@ -80,22 +83,14 @@ const styles = {
 class RepoAdd extends Component {
   constructor(props) {
     super(props)
+    const template = schemaKeys.includes('article') ? 'article' : schemaKeys[0]
     this.state = {
       title: '',
-      template: schemaKeys.includes('article') ? 'article' : schemaKeys[0],
-      templateItem: schemaKeys.includes('article')
-        ? {
-            value: 'article',
-            text: props.t(`repo/add/template/${'article'}`, null, 'article')
-          }
-        : {
-            value: schemaKeys[0],
-            text: props.t(
-              `repo/add/template/${schemaKeys[0]}`,
-              null,
-              schemaKeys[0]
-            )
-          },
+      template,
+      templateItem: {
+        value: template,
+        text: props.t(`repo/add/template/${template}`, null, template)
+      },
       templateFilter: ''
     }
   }
@@ -161,21 +156,11 @@ class RepoAdd extends Component {
       dirty,
       error
     } = this.state
-    const withTemplateRepos = data && data.reposSearch
 
-    const templateOptions = schemaKeys
-      .map(key => ({
-        value: key,
-        text: t(`repo/add/template/${key}`, null, key)
-      }))
-      .concat(
-        withTemplateRepos
-          ? data.reposSearch.nodes.map(node => ({
-              value: node.id,
-              text: node.latestCommit.document.meta.title
-            }))
-          : []
-      )
+    const templateOptions = schemaKeys.map(key => ({
+      value: key,
+      text: t(`repo/add/template/${key}`, null, key)
+    }))
 
     return (
       <div {...styles.new}>
@@ -192,31 +177,57 @@ class RepoAdd extends Component {
           }}
         >
           <div {...styles.select}>
-            {withTemplateRepos ? (
-              <Autocomplete
-                label='Vorlage'
-                value={templateItem}
-                filter={templateFilter}
-                items={templateOptions.filter(
-                  ({ text }) =>
-                    !templateFilter ||
-                    text.toLowerCase().includes(templateFilter.toLowerCase())
-                )}
-                onChange={item => {
-                  this.setState({ templateItem: item, template: item.value })
-                }}
-                onFilterChange={templateFilter =>
-                  this.setState({ templateFilter })
-                }
-                icon={
-                  <SearchIcon
-                    size={30}
-                    style={{ color: colors.lightText }}
-                    onClick={() => {
-                      console.log('search')
+            {data ? (
+              <Loader
+                error={data.error}
+                loading={data.loading}
+                render={() => (
+                  <Autocomplete
+                    label='Vorlage'
+                    value={templateItem}
+                    filter={templateFilter}
+                    items={templateOptions
+                      .concat(
+                        (data?.reposSearch?.nodes || []).map(repo => ({
+                          value: repo.id,
+                          text: repo.latestCommit.document.meta.title
+                        }))
+                      )
+                      .filter(
+                        ({ text }) =>
+                          !templateFilter ||
+                          text
+                            .toLowerCase()
+                            .includes(templateFilter.toLowerCase())
+                      )}
+                    onChange={item => {
+                      this.setState({
+                        templateItem: item,
+                        template: item.value,
+                        templateFilter: ''
+                      })
                     }}
+                    onFilterChange={templateFilter => {
+                      this.setState(state => {
+                        if (
+                          !state.templateItem ||
+                          state.templateItem.text !== templateFilter
+                        ) {
+                          return { templateFilter }
+                        }
+                      })
+                    }}
+                    icon={
+                      <SearchIcon
+                        size={30}
+                        style={{ color: colors.lightText }}
+                        onClick={() => {
+                          console.log('search')
+                        }}
+                      />
+                    }
                   />
-                }
+                )}
               />
             ) : (
               <Dropdown
