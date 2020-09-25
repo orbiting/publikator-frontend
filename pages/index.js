@@ -29,7 +29,7 @@ const IndexNav = compose(
       <IndexNavLink
         route='index'
         params={{}}
-        label={t('repo/table/nav/articles')}
+        label={t('repo/table/nav/documents')}
         isActive={!onTemplates}
       />
       <span>&nbsp;</span>

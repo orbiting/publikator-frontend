@@ -221,9 +221,6 @@ class RepoAdd extends Component {
                       <SearchIcon
                         size={30}
                         style={{ color: colors.lightText }}
-                        onClick={() => {
-                          console.log('search')
-                        }}
                       />
                     }
                   />

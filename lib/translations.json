@@ -1,5 +1,5 @@
 {
-  "updated": "2020-09-21T14:00:13.780Z",
+  "updated": "2020-09-25T20:58:31.739Z",
   "title": "live",
   "data": [
     {
@@ -239,8 +239,8 @@
       "value": "Keine Resultate"
     },
     {
-      "key": "repo/table/nav/articles",
-      "value": "Artikel"
+      "key": "repo/table/nav/documents",
+      "value": "Dokumente"
     },
     {
       "key": "repo/table/nav/templates",

@@ -13,10 +13,10 @@ const Text = ({
   onRevert,
   onLock
 }) => {
-  if (isTemplate) {
-    return t('commit/status/new/template')
-  }
   if (isNew) {
+    if (isTemplate) {
+      return t('commit/status/new/template')
+    }
     return t('commit/status/new/short')
   }
   if (hasUncommittedChanges) {
@@ -44,7 +44,6 @@ const CommitButton = props => {
     t,
     hasUncommittedChanges,
     isNew,
-    isTemplate,
     readOnly,
     onCommit,
     onUnlock
