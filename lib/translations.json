@@ -1,5 +1,5 @@
 {
-  "updated": "2020-09-25T20:58:31.739Z",
+  "updated": "2020-09-25T21:18:22.899Z",
   "title": "live",
   "data": [
     {
@@ -120,7 +120,7 @@
     },
     {
       "key": "repo/add/title",
-      "value": "Neuer Artikel"
+      "value": "Neues Dokument"
     },
     {
       "key": "repo/add/template/title",
@@ -252,11 +252,11 @@
     },
     {
       "key": "repo/table/pageInfo/total",
-      "value": "Total {count} Artikel"
+      "value": "Total {count}"
     },
     {
       "key": "repo/table/pageInfo/loadedTotal",
-      "value": "die zuletzt bearbeiteten {loaded} von etwa {total} Artikel"
+      "value": "die zuletzt bearbeiteten {loaded} von etwa {total}"
     },
     {
       "key": "repo/table/col/title",
@@ -288,7 +288,7 @@
     },
     {
       "key": "repo/archive/confirm",
-      "value": "Artikel tatsächlich archivieren?"
+      "value": "Dokument tatsächlich archivieren?"
     },
     {
       "key": "repo/archive/template/confirm",
@@ -296,7 +296,7 @@
     },
     {
       "key": "repo/archive/button",
-      "value": "Artikel archivieren"
+      "value": "Dokument archivieren"
     },
     {
       "key": "repo/archive/template/button",
@@ -304,7 +304,7 @@
     },
     {
       "key": "repo/archived/notice",
-      "value": "Artikel wurde archiviert und kann nicht bearbeitet oder veröffentlicht werden."
+      "value": "Dokument wurde archiviert und kann nicht bearbeitet oder veröffentlicht werden."
     },
     {
       "key": "repo/archived/template/notice",
@@ -469,6 +469,10 @@
     {
       "key": "metaData/field/src",
       "value": "Bild"
+    },
+    {
+      "key": "metaData/field/srcNeg",
+      "value": "Dark Mode (optional)"
     },
     {
       "key": "metaData/field/alt",
@@ -1108,7 +1112,7 @@
     },
     {
       "key": "link/repo/search",
-      "value": "Artikel suchen"
+      "value": "Dokument suchen"
     },
     {
       "key": "styleguide/video/dnt/note",
@@ -1152,11 +1156,11 @@
     },
     {
       "key": "api/publish/disabled",
-      "value": "Artikel können derzeit nicht veröffentlicht werden."
+      "value": "Dokumente können derzeit nicht veröffentlicht werden."
     },
     {
       "key": "api/unpublish/disabled",
-      "value": "Artikel können derzeit nicht zurückgezogen werden."
+      "value": "Dokumente können derzeit nicht zurückgezogen werden."
     },
     {
       "key": "styleguide/Collapsable/expand",
