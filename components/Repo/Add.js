@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React, { Component, useState, useEffect } from 'react'
 import { Router } from '../../lib/routes'
 import slugify from '../../lib/utils/slug'
 import schemas from '../Templates'
@@ -34,6 +34,7 @@ const getTemplateRepos = gql`
             id
             meta {
               title
+              slug
             }
           }
         }
@@ -80,39 +81,114 @@ const styles = {
   })
 }
 
+const TemplatePicker = compose(
+  withT,
+  withRouter,
+  graphql(getTemplateRepos, {
+    skip: ({ isTemplate }) => isTemplate
+  })
+)(({ t, data, schema, onChange, isTemplate }) => {
+  const [schemaOptions] = useState(
+    schemaKeys.map(key => ({
+      value: key,
+      text: t(`repo/add/template/${key}`, null, key)
+    }))
+  )
+  const [templateOptions, setTemplateOptions] = useState(schemaOptions)
+  const [templateFilter, setTemplateFilter] = useState('')
+  const [template, setTemplate] = useState({
+    value: schema,
+    text: t(`repo/add/template/${schema}`, null, schema)
+  })
+
+  useEffect(() => {
+    setTemplateOptions(
+      schemaOptions
+        .concat(
+          (data?.reposSearch?.nodes || []).map(repo => ({
+            value: repo.latestCommit.document.meta.template,
+            text: repo.latestCommit.document.meta.title,
+            repoId: repo.id,
+            slug: repo.latestCommit.document.meta.slug
+          }))
+        )
+        .filter(
+          ({ text }) =>
+            !templateFilter ||
+            text.toLowerCase().includes(templateFilter.toLowerCase())
+        )
+    )
+  }, [data, templateFilter])
+
+  return isTemplate ? (
+    <Dropdown
+      label='Vorlage'
+      items={schemaOptions}
+      value={schema}
+      onChange={item => {
+        onChange({
+          schema: item.value,
+          templateRepoId: undefined
+        })
+      }}
+    />
+  ) : (
+    <Loader
+      error={data.error}
+      loading={data.loading}
+      render={() => (
+        <Autocomplete
+          label='Vorlage'
+          value={template}
+          filter={templateFilter}
+          items={templateOptions}
+          onChange={newTemplate => {
+            setTemplate(newTemplate)
+            setTemplateFilter('')
+            onChange({
+              schema: newTemplate.value,
+              templateRepoId: newTemplate.repoId,
+              templatePrefix: newTemplate.slug + '-'
+            })
+          }}
+          onFilterChange={newFilter => {
+            if (!template || template.text !== newFilter) {
+              setTemplateFilter(newFilter)
+            }
+          }}
+          icon={<SearchIcon size={30} style={{ color: colors.lightText }} />}
+        />
+      )}
+    />
+  )
+})
+
 class RepoAdd extends Component {
   constructor(props) {
     super(props)
-    const template = schemaKeys.includes('article') ? 'article' : schemaKeys[0]
+    const schema = schemaKeys.includes('article') ? 'article' : schemaKeys[0]
     this.state = {
-      title: '',
-      template,
-      templateItem: {
-        value: template,
-        text: props.t(`repo/add/template/${template}`, null, template)
-      },
-      templateFilter: ''
+      schema,
+      title: ''
     }
   }
-  getSlug(title) {
-    const { template } = this.state
-    const schema = schemas[template]
-    const prefix = [REPO_PREFIX, schema && schema.repoPrefix]
+  getSlug() {
+    const { title, schema, templatePrefix } = this.state
+    const prefix = [REPO_PREFIX, schemas[schema]?.repoPrefix || templatePrefix]
       .filter(Boolean)
       .join('')
-    const slug = [prefix, slugify(title)].join('')
-
-    return slug
+    return [prefix, slugify(title)].join('')
   }
 
-  goToEdit({ slug, title, template, isTemplate }) {
-    const isRepoId = !schemaKeys.includes(template)
+  goToEdit({ slug }) {
+    const { title, schema, templateRepoId } = this.state
+    const { isTemplate } = this.props
     Router.replaceRoute('repo/edit', {
       repoId: [GITHUB_ORG, slug],
       commitId: 'new',
       title,
-      schema: isRepoId ? null : template,
-      templateRepoId: isRepoId ? template : null,
+      schema,
+      templateRepoId,
       isTemplate
     }).then(() => {
       window.scrollTo(0, 0)
@@ -122,18 +198,18 @@ class RepoAdd extends Component {
   onSubmit(event) {
     event.preventDefault()
 
-    const { title, template, error } = this.state
-
+    const { title, error } = this.state
     const { isTemplate } = this.props
-    const slug = this.getSlug(title)
-    if (error || !title || slug.length > 100) {
-      this.handleTitle(title, true)
+    const slug = this.getSlug()
+    const maxSlugLength = isTemplate ? 30 : 100
+    if (error || !title || slug.length > maxSlugLength) {
+      this.handleTitle(title, true, maxSlugLength)
       return
     }
-    this.goToEdit({ slug, title, template, isTemplate })
+    this.goToEdit({ slug })
   }
 
-  handleTitle(value, shouldValidate) {
+  handleTitle(value, shouldValidate, maxSlugLength = 100) {
     const { t } = this.props
 
     const slug = this.getSlug(value)
@@ -143,24 +219,12 @@ class RepoAdd extends Component {
       dirty: shouldValidate,
       error:
         (value.trim().length <= 0 && t('repo/add/titleField/error')) ||
-        (slug.length > 100 && t('repo/add/titleField/error/tooLong'))
+        (slug.length > maxSlugLength && t('repo/add/titleField/error/tooLong'))
     })
   }
   render() {
-    const { t, isTemplate, data } = this.props
-    const {
-      title,
-      template,
-      templateFilter,
-      templateItem,
-      dirty,
-      error
-    } = this.state
-
-    const templateOptions = schemaKeys.map(key => ({
-      value: key,
-      text: t(`repo/add/template/${key}`, null, key)
-    }))
+    const { t, isTemplate } = this.props
+    const { title, schema, dirty, error } = this.state
 
     return (
       <div {...styles.new}>
@@ -177,67 +241,11 @@ class RepoAdd extends Component {
           }}
         >
           <div {...styles.select}>
-            {data ? (
-              <Loader
-                error={data.error}
-                loading={data.loading}
-                render={() => (
-                  <Autocomplete
-                    label='Vorlage'
-                    value={templateItem}
-                    filter={templateFilter}
-                    items={templateOptions
-                      .concat(
-                        (data?.reposSearch?.nodes || []).map(repo => ({
-                          value: repo.latestCommit.document.meta.template,
-                          text: repo.latestCommit.document.meta.title,
-                          repoId: repo.id
-                        }))
-                      )
-                      .filter(
-                        ({ text }) =>
-                          !templateFilter ||
-                          text
-                            .toLowerCase()
-                            .includes(templateFilter.toLowerCase())
-                      )}
-                    onChange={item => {
-                      this.setState({
-                        templateItem: item,
-                        template: item.value,
-                        templateRepoId: item.repoId,
-                        templateFilter: ''
-                      })
-                    }}
-                    onFilterChange={templateFilter => {
-                      this.setState(state => {
-                        if (
-                          !state.templateItem ||
-                          state.templateItem.text !== templateFilter
-                        ) {
-                          return { templateFilter }
-                        }
-                      })
-                    }}
-                    icon={
-                      <SearchIcon
-                        size={30}
-                        style={{ color: colors.lightText }}
-                      />
-                    }
-                  />
-                )}
-              />
-            ) : (
-              <Dropdown
-                label='Vorlage'
-                items={templateOptions}
-                value={template}
-                onChange={item => {
-                  this.setState({ template: item.value, templateRepoId: undefined })
-                }}
-              />
-            )}
+            <TemplatePicker
+              isTemplate={isTemplate}
+              schema={schema}
+              onChange={this.setState.bind(this)}
+            />
           </div>
           <div {...styles.input}>
             <Field
@@ -260,10 +268,4 @@ class RepoAdd extends Component {
   }
 }
 
-export default compose(
-  withT,
-  withRouter,
-  graphql(getTemplateRepos, {
-    skip: ({ router }) => router.query.templates
-  })
-)(RepoAdd)
+export default compose(withT, withRouter)(RepoAdd)
