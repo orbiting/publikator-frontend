@@ -1,4 +1,4 @@
-import React, { Component, useState, useEffect } from 'react'
+import React, { Component, useState, useMemo } from 'react'
 import { Router } from '../../lib/routes'
 import slugify from '../../lib/utils/slug'
 import schemas from '../Templates'
@@ -104,7 +104,7 @@ const TemplatePicker = compose(
     text: t(`repo/add/template/${schema}`, null, schema)
   })
 
-  useEffect(() => {
+  useMemo(() => {
     setTemplateOptions(
       schemaOptions
         .concat(
