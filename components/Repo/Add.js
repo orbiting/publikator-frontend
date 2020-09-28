@@ -104,9 +104,8 @@ const TemplatePicker = compose(
     text: t(`repo/add/template/${schema}`, null, schema)
   })
 
-  useMemo(() => {
-    setTemplateOptions(
-      schemaOptions
+  const templateOptions = useMemo(() => {
+    return schemaOptions
         .concat(
           (data?.reposSearch?.nodes || []).map(repo => ({
             value: repo.latestCommit.document.meta.template,
@@ -122,7 +121,6 @@ const TemplatePicker = compose(
             !templateFilter ||
             text.toLowerCase().includes(templateFilter.toLowerCase())
         )
-    )
   }, [data, templateFilter])
 
   return isTemplate ? (
