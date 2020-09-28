@@ -133,7 +133,8 @@ const TemplatePicker = compose(
       onChange={item => {
         onChange({
           schema: item.value,
-          templateRepoId: undefined
+          templateRepoId: undefined,
+          templatePrefix: undefined
         })
       }}
     />
@@ -182,7 +183,7 @@ class RepoAdd extends Component {
     const { isTemplate } = this.props
     const prefix = isTemplate
       ? [REPO_PREFIX]
-      : [REPO_PREFIX, schemas[schema]?.repoPrefix || templatePrefix]
+      : [REPO_PREFIX, templatePrefix || schemas[schema]?.repoPrefix]
           .filter(Boolean)
           .join('')
     return [prefix, slugify(title)].join('')
