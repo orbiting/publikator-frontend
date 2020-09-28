@@ -405,9 +405,15 @@ export class EditorPage extends Component {
     const {
       t,
       data: { loading, error, repo } = {},
-      templateData: { templateRepo } = {},
+      templateData: {
+        loading: templateLoading,
+        error: templateError,
+        templateRepo
+      } = {},
       router
     } = props
+
+    console.log(props, templateRepo)
 
     if (!process.browser && !TEST) {
       // running without local storage doesn't make sense
@@ -420,6 +426,16 @@ export class EditorPage extends Component {
     }
     if (loading || error) {
       debug('loadState', 'isLoading', loading, 'hasError', error)
+      return
+    }
+    if (templateLoading || templateError) {
+      debug(
+        'loadTemplateState',
+        'isLoading',
+        templateLoading,
+        'hasError',
+        templateError
+      )
       return
     }
     const repoId = router.query.repoId
@@ -473,7 +489,9 @@ export class EditorPage extends Component {
         }
 
         const title = findTitleLeaf(json)
-        title.value = router.query.title
+        if (title) {
+          title.value = router.query.title
+        }
 
         json.meta.auto = true
         json.meta.templateRepoId = router.query.templateRepoId

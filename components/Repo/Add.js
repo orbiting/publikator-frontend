@@ -85,6 +85,9 @@ const TemplatePicker = compose(
   withT,
   withRouter,
   graphql(getTemplateRepos, {
+    options: () => ({
+      fetchPolicy: 'network-only'
+    }),
     skip: ({ isTemplate }) => isTemplate
   })
 )(({ t, data, schema, onChange, isTemplate }) => {
@@ -107,9 +110,11 @@ const TemplatePicker = compose(
         .concat(
           (data?.reposSearch?.nodes || []).map(repo => ({
             value: repo.latestCommit.document.meta.template,
-            text: repo.latestCommit.document.meta.title,
+            text:
+              repo.latestCommit.document.meta.title ||
+              repo.id.split('/')[1].replace('-', ' '),
             repoId: repo.id,
-            slug: repo.latestCommit.document.meta.slug
+            slug: repo.latestCommit.document.meta.slug || repo.id.split('/')[1]
           }))
         )
         .filter(
@@ -174,9 +179,12 @@ class RepoAdd extends Component {
   }
   getSlug() {
     const { title, schema, templatePrefix } = this.state
-    const prefix = [REPO_PREFIX, schemas[schema]?.repoPrefix || templatePrefix]
-      .filter(Boolean)
-      .join('')
+    const { isTemplate } = this.props
+    const prefix = isTemplate
+      ? [REPO_PREFIX]
+      : [REPO_PREFIX, schemas[schema]?.repoPrefix || templatePrefix]
+          .filter(Boolean)
+          .join('')
     return [prefix, slugify(title)].join('')
   }
 
