@@ -89,7 +89,7 @@ export default compose(
   }),
   withUncommittedChangesMutation
 )(({ t, router, uncommittedChanges }) => {
-  const { repoId, commitId, template } = router.query
+  const { repoId, commitId, schema, template } = router.query
   const [store, setStore] = useState(undefined)
   const [md, setMd] = useState('')
   const [meta, setMeta] = useState(undefined)
@@ -101,7 +101,7 @@ export default compose(
     Router.pushRoute('repo/edit', {
       repoId: repoId.split('/'),
       commitId,
-      ...(commitId === 'new' ? { template } : {})
+      ...(commitId === 'new' ? { schema: schema || template } : {})
     })
   }
 
@@ -114,8 +114,8 @@ export default compose(
           meta
         }
 
-    if (!editedMdast.meta.template) {
-      editedMdast.meta.template = meta.template
+    if (!editedMdast.meta.schema) {
+      editedMdast.meta.schema = meta.schema
     }
     store.set('editorState', editedMdast)
     goToEditor()

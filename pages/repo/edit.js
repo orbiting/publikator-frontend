@@ -439,7 +439,9 @@ export class EditorPage extends Component {
         (repo && repo.commit) || (templateRepo && templateRepo.latestCommit)
 
       const schema =
-        (commit && commit.document.meta.template) || router.query.schema || router.query.template
+        (commit && commit.document.meta.template) ||
+        router.query.schema ||
+        router.query.template
 
       debug('loadState', 'loadSchema', schema)
       this.setState(
@@ -684,7 +686,12 @@ export class EditorPage extends Component {
     Router.pushRoute('repo/raw', {
       repoId: repoId.split('/'),
       commitId,
-      ...(commitId === 'new' ? { schema: this.props.router.query.schema || this.props.router.query.template } : {})
+      ...(commitId === 'new'
+        ? {
+            schema:
+              this.props.router.query.schema || this.props.router.query.template
+          }
+        : {})
     })
   }
 
