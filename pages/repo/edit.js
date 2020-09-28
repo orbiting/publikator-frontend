@@ -475,6 +475,7 @@ export class EditorPage extends Component {
         title.value = router.query.title
 
         json.meta.auto = true
+        json.meta.templateRepoId = router.query.templateRepoId
 
         committedEditorState = this.editor.serializer.deserialize(json)
         debug('loadState', 'new document from template', committedEditorState)
