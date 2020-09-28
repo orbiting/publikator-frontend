@@ -173,7 +173,8 @@ class RepoAdd extends Component {
     const schema = schemaKeys.includes('article') ? 'article' : schemaKeys[0]
     this.state = {
       schema,
-      title: ''
+      title: '',
+      maxSlugLength: props.isTemplate ? 30 : 100
     }
   }
   getSlug() {
@@ -206,19 +207,19 @@ class RepoAdd extends Component {
   onSubmit(event) {
     event.preventDefault()
 
-    const { title, error } = this.state
-    const { isTemplate } = this.props
+    const { title, error, maxSlugLength } = this.state
     const slug = this.getSlug()
-    const maxSlugLength = isTemplate ? 30 : 100
+
     if (error || !title || slug.length > maxSlugLength) {
-      this.handleTitle(title, true, maxSlugLength)
+      this.handleTitle(title, true)
       return
     }
     this.goToEdit({ slug })
   }
 
-  handleTitle(value, shouldValidate, maxSlugLength = 100) {
+  handleTitle(value, shouldValidate) {
     const { t } = this.props
+    const { maxSlugLength } = this.state
 
     const slug = this.getSlug(value)
     this.setState({
