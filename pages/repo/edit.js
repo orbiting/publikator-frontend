@@ -419,8 +419,6 @@ export class EditorPage extends Component {
       router
     } = props
 
-    console.log(props, templateRepo)
-
     if (!process.browser && !TEST) {
       // running without local storage doesn't make sense
       // - we always want to render the correct version

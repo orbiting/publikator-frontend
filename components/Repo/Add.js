@@ -106,21 +106,21 @@ const TemplatePicker = compose(
 
   const templateOptions = useMemo(() => {
     return schemaOptions
-        .concat(
-          (data?.reposSearch?.nodes || []).map(repo => ({
-            value: repo.latestCommit.document.meta.template,
-            text:
-              repo.latestCommit.document.meta.title ||
-              repo.id.split('/')[1].replace('-', ' '),
-            repoId: repo.id,
-            slug: repo.latestCommit.document.meta.slug || repo.id.split('/')[1]
-          }))
-        )
-        .filter(
-          ({ text }) =>
-            !templateFilter ||
-            text.toLowerCase().includes(templateFilter.toLowerCase())
-        )
+      .concat(
+        (data?.reposSearch?.nodes || []).map(repo => ({
+          value: repo.latestCommit.document.meta.template,
+          text:
+            repo.latestCommit.document.meta.title ||
+            repo.id.split('/')[1].replace('-', ' '),
+          repoId: repo.id,
+          slug: repo.latestCommit.document.meta.slug || repo.id.split('/')[1]
+        }))
+      )
+      .filter(
+        ({ text }) =>
+          !templateFilter ||
+          text.toLowerCase().includes(templateFilter.toLowerCase())
+      )
   }, [data, templateFilter])
 
   return isTemplate ? (
