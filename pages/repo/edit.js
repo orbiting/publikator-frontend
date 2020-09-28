@@ -914,6 +914,7 @@ export default compose(
     }
   }),
   graphql(getTemplateById, {
+    name: 'templateData',
     skip: ({ router }) => !router.query.templateRepoId,
     options: ({ router }) => ({
       variables: {
