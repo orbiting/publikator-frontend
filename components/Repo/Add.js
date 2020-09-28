@@ -35,6 +35,7 @@ const getTemplateRepos = gql`
             meta {
               title
               slug
+              template
             }
           }
         }
