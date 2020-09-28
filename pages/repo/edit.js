@@ -313,13 +313,19 @@ export class EditorPage extends Component {
   UNSAFE_componentWillReceiveProps(nextProps) {
     const emptyRepo = {}
     const { repo = emptyRepo, loading } = this.props.data || {}
+    const { repo: templateRepo = emptyRepo, loading: templateLoading } =
+      this.props.templateData || {}
     const { repo: nextRepo = emptyRepo, loading: nextLoading } =
       nextProps.data || {}
+    const { repo: nextTemplateRepo = emptyRepo, loading: nextTemplateLoading } =
+      nextProps.templateData || {}
 
     const shouldLoad =
       repo !== nextRepo ||
       repo.commit !== nextRepo.commit ||
-      loading !== nextLoading
+      loading !== nextLoading ||
+      templateRepo !== nextTemplateRepo ||
+      templateLoading !== nextTemplateLoading
     debug('componentWillReceiveProps', 'shouldLoad', shouldLoad)
     if (shouldLoad) {
       this.loadState(nextProps)
