@@ -152,7 +152,9 @@ const TemplatePicker = compose(
             onChange({
               schema: newTemplate.value,
               templateRepoId: newTemplate.repoId,
-              templatePrefix: newTemplate.slug.replace('template-', '') + '-'
+              templatePrefix: newTemplate.slug
+                ? newTemplate.slug.replace('template-', '') + '-'
+                : undefined
             })
           }}
           onFilterChange={newFilter => {
