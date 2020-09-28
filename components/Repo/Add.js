@@ -232,7 +232,7 @@ class RepoAdd extends Component {
                 items={templateOptions}
                 value={template}
                 onChange={item => {
-                  this.setState({ template: item.value })
+                  this.setState({ template: item.value, templateRepoId: undefined })
                 }}
               />
             )}
