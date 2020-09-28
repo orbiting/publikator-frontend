@@ -439,7 +439,7 @@ export class EditorPage extends Component {
         (repo && repo.commit) || (templateRepo && templateRepo.latestCommit)
 
       const schema =
-        (commit && commit.document.meta.template) || router.query.schema
+        (commit && commit.document.meta.template) || router.query.schema || router.query.template
 
       debug('loadState', 'loadSchema', schema)
       this.setState(
