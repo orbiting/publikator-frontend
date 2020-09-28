@@ -189,8 +189,9 @@ class RepoAdd extends Component {
                     items={templateOptions
                       .concat(
                         (data?.reposSearch?.nodes || []).map(repo => ({
-                          value: repo.id,
-                          text: repo.latestCommit.document.meta.title
+                          value: repo.latestCommit.document.meta.template,
+                          text: repo.latestCommit.document.meta.title,
+                          repoId: repo.id
                         }))
                       )
                       .filter(
@@ -204,6 +205,7 @@ class RepoAdd extends Component {
                       this.setState({
                         templateItem: item,
                         template: item.value,
+                        templateRepoId: item.repoId,
                         templateFilter: ''
                       })
                     }}
