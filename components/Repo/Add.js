@@ -98,7 +98,6 @@ const TemplatePicker = compose(
       text: t(`repo/add/template/${key}`, null, key)
     }))
   )
-  const [templateOptions, setTemplateOptions] = useState(schemaOptions)
   const [templateFilter, setTemplateFilter] = useState('')
   const [template, setTemplate] = useState({
     value: schema,
