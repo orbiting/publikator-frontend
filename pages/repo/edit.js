@@ -404,7 +404,8 @@ export class EditorPage extends Component {
   loadState(props) {
     const {
       t,
-      data: { loading, error, repo, templateRepo } = {},
+      data: { loading, error, repo } = {},
+      templateData: { templateRepo } = {},
       router
     } = props
 
@@ -697,9 +698,16 @@ export class EditorPage extends Component {
   }
 
   render() {
-    const { router, data = {}, uncommittedChanges, t } = this.props
+    const {
+      router,
+      data = {},
+      templateData = {},
+      uncommittedChanges,
+      t
+    } = this.props
     const { repoId, commitId, isTemplate } = router.query
     const { loading, repo } = data
+    const { loading: templateLoading, error: templateError } = templateData
     const {
       schema,
       editorState,
@@ -714,8 +722,9 @@ export class EditorPage extends Component {
     } = this.state
 
     const isNew = commitId === 'new'
-    const error = data.error || this.state.error
-    const showLoading = committing || loading || (!schema && !error)
+    const error = data.error || templateError || this.state.error
+    const showLoading =
+      committing || loading || templateLoading || (!schema && !error)
     const dark = editorState && editorState.document.data.get(DARK_MODE_KEY)
 
     const sidebarPrependChildren = [
@@ -914,6 +923,7 @@ export default compose(
     }
   }),
   graphql(getTemplateById, {
+    name: 'templateData',
     skip: ({ router }) => !router.query.templateRepoId,
     options: ({ router }) => ({
       variables: {
