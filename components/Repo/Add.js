@@ -152,7 +152,7 @@ const TemplatePicker = compose(
             onChange({
               schema: newTemplate.value,
               templateRepoId: newTemplate.repoId,
-              templatePrefix: newTemplate.slug + '-'
+              templatePrefix: newTemplate.slug.replace('template-', '') + '-'
             })
           }}
           onFilterChange={newFilter => {
@@ -179,11 +179,12 @@ class RepoAdd extends Component {
   getSlug() {
     const { title, schema, templatePrefix } = this.state
     const { isTemplate } = this.props
-    const prefix = isTemplate
-      ? [REPO_PREFIX]
+    const prefix = (isTemplate
+      ? [REPO_PREFIX, 'template-']
       : [REPO_PREFIX, templatePrefix || schemas[schema]?.repoPrefix]
-          .filter(Boolean)
-          .join('')
+    )
+      .filter(Boolean)
+      .join('')
     return [prefix, slugify(title)].join('')
   }
 
