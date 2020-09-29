@@ -115,11 +115,9 @@ const TemplatePicker = compose(
       .concat(
         (data?.reposSearch?.nodes || []).map(repo => ({
           value: repo.latestCommit.document.meta.template,
-          text:
-            repo.latestCommit.document.meta.title ||
-            repo.id.split('/')[1].replace('-', ' '),
+          text: repo.latestCommit.document.meta.title,
           repoId: repo.id,
-          slug: repo.latestCommit.document.meta.slug || repo.id.split('/')[1]
+          slug: repo.latestCommit.document.meta.slug
         }))
       )
       .filter(
@@ -159,7 +157,7 @@ const TemplatePicker = compose(
               schema: newTemplate.value,
               templateRepoId: newTemplate.repoId,
               templatePrefix: newTemplate.slug
-                ? newTemplate.slug.replace('template-', '') + '-'
+                ? newTemplate.slug + '-'
                 : undefined
             })
           }}
