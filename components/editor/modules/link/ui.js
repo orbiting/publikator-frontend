@@ -27,10 +27,16 @@ const getUsers = gql`
 
 const UserItem = ({ user }) => (
   <div style={{ display: 'flex', alignItems: 'center' }}>
-    <img
-      src={user.portrait}
-      width='100%'
-      style={{ width: 54, marginRight: 10 }}
+    <div
+      style={{
+        width: 54,
+        height: 54,
+        backgroundColor: '#E2E8E6',
+        backgroundImage: user.portrait ? `url(${user.portrait})` : undefined,
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        marginRight: 10
+      }}
     />
     <div>
       {user.lastName && (
