@@ -51,6 +51,7 @@ const MetaData = ({
   editor,
   mdastSchema,
   contextMeta,
+  isTemplate,
   series,
   darkMode,
   paynotes,
@@ -127,7 +128,11 @@ const MetaData = ({
         <br />
         <SlugField
           black
-          label={t(`metaData/field/slug`, undefined, 'slug')}
+          label={t(
+            `metaData/field/${isTemplate ? 'repoSlug' : 'slug'}`,
+            undefined,
+            'slug'
+          )}
           value={node.data.get('slug')}
           onChange={onInputChange('slug')}
         />

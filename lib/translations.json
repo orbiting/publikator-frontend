@@ -1,5 +1,5 @@
 {
-  "updated": "2020-09-25T21:18:22.899Z",
+  "updated": "2020-09-29T09:39:30.039Z",
   "title": "live",
   "data": [
     {
@@ -457,6 +457,10 @@
     {
       "key": "metaData/field/slug",
       "value": "Web-Slug"
+    },
+    {
+      "key": "metaData/field/repoSlug",
+      "value": "Repo-Slug"
     },
     {
       "key": "metaData/field/slug/note",

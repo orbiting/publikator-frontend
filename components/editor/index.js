@@ -182,8 +182,10 @@ class Editor extends Component {
     const rootRule = schema.rules[0]
     const context = {
       mdastSchema: schema,
-      meta: props.meta
+      meta: props.meta,
+      isTemplate: props.isTemplate
     }
+    console.log(context)
     const rootModule = initModule(rootRule, context)
 
     this.serializer = context.rootSerializer = rootModule.helpers.serializer

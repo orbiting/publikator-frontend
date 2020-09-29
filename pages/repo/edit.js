@@ -727,7 +727,7 @@ export class EditorPage extends Component {
       uncommittedChanges,
       t
     } = this.props
-    const { repoId, commitId, isTemplate } = router.query
+    const { repoId, commitId } = router.query
     const { loading, repo } = data
     const { loading: templateLoading, error: templateError } = templateData
     const {
@@ -743,6 +743,7 @@ export class EditorPage extends Component {
       didUnlock
     } = this.state
 
+    const isTemplate = repo ? repo.isTemplate : router.query.isTemplate
     const isNew = commitId === 'new'
     const error = data.error || templateError || this.state.error
     const showLoading =
@@ -850,6 +851,7 @@ export class EditorPage extends Component {
                   <Editor
                     ref={this.editorRef}
                     schema={schema}
+                    isTemplate={isTemplate}
                     meta={repo ? repo.meta : {}}
                     value={editorState}
                     onChange={this.changeHandler}
