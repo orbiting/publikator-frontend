@@ -59,7 +59,7 @@ export default ({ rule, subModules, TYPE }) => {
       const lead = title.nodes.get(2)
 
       newData = newData
-        .set('title', 'TEST')
+        .set('title', headlineText)
         .set('subject', subject ? subject.text : '')
         .set('description', lead ? lead.text : '')
         .set('slug', slugify(headlineText))
