@@ -647,6 +647,7 @@ export class EditorPage extends Component {
         query: { repoId, commitId, isTemplate }
       },
       commitMutation,
+      data,
       t
     } = this.props
     const { editorState } = this.state
@@ -664,7 +665,7 @@ export class EditorPage extends Component {
     commitMutation({
       repoId,
       parentId: isNew ? null : commitId,
-      isTemplate: isNew ? isTemplate === 'true' : null,
+      isTemplate: isNew ? isTemplate === 'true' : data?.repo?.isTemplate,
       message: message,
       document: {
         content: this.editor.serializer.serialize(editorState)
