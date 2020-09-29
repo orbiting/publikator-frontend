@@ -1,5 +1,5 @@
 {
-  "updated": "2020-09-29T09:39:30.039Z",
+  "updated": "2020-09-29T10:18:46.507Z",
   "title": "live",
   "data": [
     {
@@ -461,6 +461,10 @@
     {
       "key": "metaData/field/repoSlug",
       "value": "Repo-Slug"
+    },
+    {
+      "key": "metaData/field/repoSlug/error/tooLong",
+      "value": "Repo-Slug zu lange (max. 30 Chars)"
     },
     {
       "key": "metaData/field/slug/note",

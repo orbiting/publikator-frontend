@@ -135,8 +135,9 @@ const MetaData = ({
           )}
           value={node.data.get('slug')}
           onChange={onInputChange('slug')}
+          isTemplate={isTemplate}
         />
-        {mdastSchema && mdastSchema.getPath && (
+        {!isTemplate && mdastSchema && mdastSchema.getPath && (
           <Label>
             {t('metaData/field/slug/note', {
               base: FRONTEND_BASE_URL
