@@ -12,24 +12,13 @@ import gql from 'graphql-tag'
 
 import { createInlineButton, matchInline, buttonStyles } from '../../utils'
 
-const searchUsers = gql`
-  query searchUsers($search: String!) {
-    search(
-      first: 5
-      search: $search
-      filters: [{ key: "type", value: "User" }]
-    ) {
-      nodes {
-        entity {
-          ... on User {
-            id
-            firstName
-            lastName
-            email
-            portrait
-          }
-        }
-      }
+const getUsers = gql`
+  query getUsers($search: String!) {
+    users(search: $search) {
+      firstName
+      lastName
+      email
+      id
     }
   }
 `
@@ -59,17 +48,14 @@ const UserItem = ({ user }) => (
   </div>
 )
 
-const ConnectedAutoComplete = graphql(searchUsers, {
+const ConnectedAutoComplete = graphql(getUsers, {
   skip: props => !props.filter,
   options: ({ filter }) => ({ variables: { search: filter } }),
-  props: ({ data: { search } }) => ({
-    items:
-      !!search && search.nodes
-        ? search.nodes.map(({ entity }) => ({
-            value: entity,
-            element: <UserItem user={entity} />
-          }))
-        : []
+  props: ({ data: { users = [] } }) => ({
+    items: users.map(({ entity }) => ({
+      value: entity,
+      element: <UserItem user={entity} />
+    }))
   })
 })(Autocomplete)
 
