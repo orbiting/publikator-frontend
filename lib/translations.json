@@ -1,5 +1,5 @@
 {
-  "updated": "2020-09-29T10:18:46.507Z",
+  "updated": "2020-09-29T12:29:20.256Z",
   "title": "live",
   "data": [
     {
@@ -428,7 +428,7 @@
     },
     {
       "key": "metaData/field/auto",
-      "value": "Mit Titel syncen"
+      "value": "Automatisch vom Titelblock ableiten (Titel, Deskription & Slug)"
     },
     {
       "key": "metaData/field/shortTitle",
