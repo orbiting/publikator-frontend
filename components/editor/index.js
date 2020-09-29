@@ -185,7 +185,6 @@ class Editor extends Component {
       meta: props.meta,
       isTemplate: props.isTemplate
     }
-    console.log(context)
     const rootModule = initModule(rootRule, context)
 
     this.serializer = context.rootSerializer = rootModule.helpers.serializer

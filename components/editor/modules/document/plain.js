@@ -7,6 +7,7 @@ import slugify from '../../../../lib/utils/slug'
 import MarkdownSerializer from 'slate-mdast-serializer'
 
 import createPasteHtml from './createPasteHtml'
+import { safeDump } from 'js-yaml'
 
 const pubDateFormat = swissTime.format('%d.%m.%Y')
 
@@ -67,7 +68,7 @@ export default ({ rule, subModules, TYPE }) => {
       if (data.get('template') === 'editorialNewsletter') {
         newData = newData
           .set('emailSubject', fallbackTitle)
-          .set('slug', fallbackTitle)
+          .set('slug', slugify(fallbackTitle))
       }
     }
 
@@ -129,12 +130,10 @@ export default ({ rule, subModules, TYPE }) => {
     rules: [documentRule]
   })
 
-  const newDocument = ({ title, schema }, me) =>
+  const newDocument = ({ title = '', schema = '' }, me) =>
     serializer.deserialize(
       parse(`---
-template: ${schema}
-title: ${titleModule ? null : title}
-auto: true
+${safeDump({ template: schema, title, auto: true })}
 ---
 ${
   titleModule
