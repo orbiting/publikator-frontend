@@ -50,6 +50,8 @@ if (TEMPLATES) {
   schemaKeys = schemaKeys.filter(key => allowedSchemas.indexOf(key) !== -1)
 }
 
+const templateSchemas = ['article', 'editorialNewsletter']
+
 const styles = {
   new: css({
     maxWidth: 600,
@@ -92,18 +94,22 @@ const TemplatePicker = compose(
     skip: ({ isTemplate }) => isTemplate
   })
 )(({ t, data, schema, onChange, isTemplate }) => {
-  const [schemaOptions] = useState(
-    schemaKeys.map(key => ({
-      value: key,
-      text: t(`repo/add/template/${key}`, null, key)
-    }))
-  )
   const [templateFilter, setTemplateFilter] = useState('')
   const [template, setTemplate] = useState({
     value: schema,
     text: t(`repo/add/template/${schema}`, null, schema)
   })
 
+  const schemaOptions = useMemo(
+    () =>
+      schemaKeys
+        .filter(key => !isTemplate || templateSchemas.includes(key))
+        .map(key => ({
+          value: key,
+          text: t(`repo/add/template/${key}`, null, key)
+        })),
+    [isTemplate]
+  )
   const templateOptions = useMemo(() => {
     return schemaOptions
       .concat(
@@ -121,7 +127,7 @@ const TemplatePicker = compose(
           !templateFilter ||
           text.toLowerCase().includes(templateFilter.toLowerCase())
       )
-  }, [data, templateFilter])
+  }, [data, templateFilter, schemaOptions])
 
   return isTemplate ? (
     <Dropdown
