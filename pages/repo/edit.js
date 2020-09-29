@@ -492,9 +492,9 @@ export class EditorPage extends Component {
           section: commit.document.meta.section
         }
 
-        const title = findTitleLeaf(json)
-        if (title) {
-          title.value = router.query.title
+        const titleLeaf = findTitleLeaf(json)
+        if (titleLeaf) {
+          titleLeaf.value = router.query.title
         }
 
         json.meta.auto = true

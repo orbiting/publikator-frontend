@@ -50,6 +50,8 @@ export default ({ rule, subModules, TYPE }) => {
       documentNode.nodes.find(
         n => n.type === titleModule.TYPE && n.kind === 'block'
       )
+    const fallbackTitle = data.get('title')
+
     if (title) {
       const headline = title.nodes.first()
       const headlineText = headline ? headline.text : ''
@@ -125,6 +127,8 @@ export default ({ rule, subModules, TYPE }) => {
     serializer.deserialize(
       parse(`---
 template: ${schema}
+title: ${titleModule ? null : title}
+auto: true
 ---
 ${
   titleModule
