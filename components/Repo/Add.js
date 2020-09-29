@@ -179,8 +179,7 @@ class RepoAdd extends Component {
     const schema = schemaKeys.includes('article') ? 'article' : schemaKeys[0]
     this.state = {
       schema,
-      title: '',
-      maxSlugLength: props.isTemplate ? 30 : 100
+      title: ''
     }
   }
   getSlug() {
@@ -213,10 +212,10 @@ class RepoAdd extends Component {
   onSubmit(event) {
     event.preventDefault()
 
-    const { title, error, maxSlugLength } = this.state
+    const { title, error } = this.state
     const slug = this.getSlug()
 
-    if (error || !title || slug.length > maxSlugLength) {
+    if (error || !title || slug.length > 100) {
       this.handleTitle(title, true)
       return
     }
@@ -225,7 +224,6 @@ class RepoAdd extends Component {
 
   handleTitle(value, shouldValidate) {
     const { t } = this.props
-    const { maxSlugLength } = this.state
 
     const slug = this.getSlug(value)
     this.setState({
@@ -234,7 +232,7 @@ class RepoAdd extends Component {
       dirty: shouldValidate,
       error:
         (value.trim().length <= 0 && t('repo/add/titleField/error')) ||
-        (slug.length > maxSlugLength && t('repo/add/titleField/error/tooLong'))
+        (slug.length > 100 && t('repo/add/titleField/error/tooLong'))
     })
   }
   render() {
