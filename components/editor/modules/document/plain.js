@@ -59,10 +59,16 @@ export default ({ rule, subModules, TYPE }) => {
       const lead = title.nodes.get(2)
 
       newData = newData
-        .set('title', headlineText)
+        .set('title', 'TEST')
         .set('subject', subject ? subject.text : '')
         .set('description', lead ? lead.text : '')
         .set('slug', slugify(headlineText))
+    } else if (fallbackTitle) {
+      if (data.get('template') === 'editorialNewsletter') {
+        newData = newData
+          .set('emailSubject', fallbackTitle)
+          .set('slug', fallbackTitle)
+      }
     }
 
     if (data.get('template') === 'discussion') {
