@@ -52,9 +52,9 @@ const ConnectedAutoComplete = graphql(getUsers, {
   skip: props => !props.filter,
   options: ({ filter }) => ({ variables: { search: filter } }),
   props: ({ data: { users = [] } }) => ({
-    items: users.map(({ entity }) => ({
-      value: entity,
-      element: <UserItem user={entity} />
+    items: users.slice(0, 5).map(user => ({
+      value: user,
+      element: <UserItem user={user} />
     }))
   })
 })(Autocomplete)
