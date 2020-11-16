@@ -42,15 +42,16 @@ export const editRepoMeta = gql`
   }
 `
 
-export const filterAndOrderRepos = gql`
+const filterAndOrderRepos = gql`
   query repoListSearch(
+    $first: Int
     $after: String
     $search: String
     $orderBy: RepoOrderBy
     $isTemplate: Boolean
   ) {
     repos: reposSearch(
-      first: 50
+      first: $first
       after: $after
       search: $search
       orderBy: $orderBy
@@ -573,6 +574,7 @@ const RepoListWithQuery = compose(
       ssr: false,
       notifyOnNetworkStatusChange: true,
       variables: {
+        first: router.query.phase ? 500 : 50,
         search:
           search && search.length >= SEARCH_MIN_LENGTH ? search : undefined,
         orderBy: { field: 'PUSHED_AT', direction: 'DESC' },
