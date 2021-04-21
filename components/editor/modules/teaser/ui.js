@@ -30,7 +30,7 @@ import {
   CheckIcon,
   MoveIntoIcon,
   MoveToEndIcon,
-  CopyToClipboard
+  CopyToClippboardIcon
 } from '@project-r/styleguide/icons'
 
 import UIForm from '../../UIForm'
@@ -613,7 +613,7 @@ const CopyMdButton = ({ node, serializer }) => {
       {success ? (
         <CheckIcon size={24} {...colorScheme.set('fill', 'primary')} />
       ) : (
-        <CopyToClipboard size={24} />
+        <CopyToClippboardIcon size={24} />
       )}
     </MarkButton>
   )
