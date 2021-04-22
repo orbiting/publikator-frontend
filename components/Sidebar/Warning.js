@@ -2,7 +2,7 @@ import React from 'react'
 import { css } from 'glamor'
 
 import { colors, plainButtonRule } from '@project-r/styleguide'
-import { CloseIcon } from '@project-r/styleguide/icons'
+import { CloseIcon } from '../../lib/icons'
 
 const styles = {
   warning: css({

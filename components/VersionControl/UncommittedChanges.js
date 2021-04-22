@@ -21,7 +21,7 @@ import {
   UNCOMMITTED_CHANGES_POLL_INTERVAL_MS,
   MILESTONES_POLL_INTERVAL_MS
 } from '../../lib/settings'
-import { OfflineIcon } from '@project-r/styleguide/icons'
+import { OfflineIcon } from '../../lib/icons'
 import createDebug from 'debug'
 
 import { getMilestones } from './Checklist'

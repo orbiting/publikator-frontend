@@ -1,11 +1,7 @@
 import React from 'react'
 
 import { A, Radio, Label, RawHtml, Interaction } from '@project-r/styleguide'
-import {
-  CloseIcon,
-  AddIcon,
-  InfoOutlineIcon
-} from '@project-r/styleguide/icons'
+import { CloseIcon, AddIcon, InfoOutlineIcon } from '../../../../lib/icons'
 import { css } from 'glamor'
 
 import withT from '../../../../lib/withT'

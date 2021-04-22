@@ -31,7 +31,7 @@ import {
   MoveIntoIcon,
   MoveToEndIcon,
   CopyToClippboardIcon
-} from '@project-r/styleguide/icons'
+} from '../../../../lib/icons'
 
 import UIForm from '../../UIForm'
 import ImageInput from '../../utils/ImageInput'

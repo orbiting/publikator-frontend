@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import SlatePropTypes from 'slate-prop-types'
 import { css } from 'glamor'
 import { useColorContext } from '@project-r/styleguide'
-import { EditIcon } from '@project-r/styleguide/icons'
+import { EditIcon } from '../../../../lib/icons'
 
 import OverlayForm from './OverlayForm'
 

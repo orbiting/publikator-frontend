@@ -1,10 +1,6 @@
 import React, { Component } from 'react'
 import { css } from 'glamor'
-import {
-  CheckIcon,
-  LockOpenIcon,
-  StarFilledIcon
-} from '@project-r/styleguide/icons'
+import { CheckIcon, LockOpenIcon, StarFilledIcon } from '../../lib/icons'
 import { Interaction, Label } from '@project-r/styleguide'
 import { lab } from 'd3-color'
 import { Link } from '../../lib/routes'

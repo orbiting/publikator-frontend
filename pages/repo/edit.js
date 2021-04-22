@@ -52,7 +52,7 @@ import {
   Interaction,
   Checkbox
 } from '@project-r/styleguide'
-import { SettingsIcon } from '@project-r/styleguide/icons'
+import { SettingsIcon } from '../../lib/icons'
 import createDebug from 'debug'
 import { DARK_MODE_KEY } from '../../components/editor/modules/meta/DarkModeForm'
 import { findTitleLeaf } from '../../lib/utils/helpers'

@@ -2,7 +2,7 @@ import React from 'react'
 import { css } from 'glamor'
 
 import { fontStyles, colors } from '@project-r/styleguide'
-import { DropDownIcon, DropUpIcon } from '@project-r/styleguide/icons'
+import { DropDownIcon, DropUpIcon } from '../../lib/icons'
 import { Link } from '../../lib/routes'
 
 const styles = {

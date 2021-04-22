@@ -7,7 +7,7 @@ import {
   Autocomplete,
   InlineSpinner
 } from '@project-r/styleguide'
-import { LinkIcon } from '@project-r/styleguide/icons'
+import { LinkIcon } from '../../../../lib/icons'
 import UIForm from '../../UIForm'
 import createOnFieldChange from '../../utils/createOnFieldChange'
 import RepoSearch from '../../utils/RepoSearch'

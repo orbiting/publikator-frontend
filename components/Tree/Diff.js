@@ -3,11 +3,7 @@ import { css } from 'glamor'
 import { Query } from 'react-apollo'
 import gql from 'graphql-tag'
 import ReactDiffViewer, { DiffMethod } from 'react-diff-viewer'
-import {
-  CloseIcon,
-  TextDiffIcon,
-  MoreHorizIcon
-} from '@project-r/styleguide/icons'
+import { CloseIcon, TextDiffIcon, MoreHorizIcon } from '../../lib/icons'
 
 import {
   Overlay,

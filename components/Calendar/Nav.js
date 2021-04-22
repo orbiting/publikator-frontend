@@ -5,7 +5,7 @@ import {
   fontFamilies,
   plainButtonRule
 } from '@project-r/styleguide'
-import { ChevronLeftIcon, ChevronRightIcon } from '@project-r/styleguide/icons'
+import { ChevronLeftIcon, ChevronRightIcon } from '../../lib/icons'
 import { datePickerFormat, reformatUrlDate } from '../../lib/utils/calendar'
 import withT from '../../lib/withT'
 

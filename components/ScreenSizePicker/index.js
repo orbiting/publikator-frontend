@@ -10,7 +10,7 @@ import {
   DeviceTabletIcon,
   DeviceLaptopIcon,
   DeviceDesktopIcon
-} from '@project-r/styleguide/icons'
+} from '../../lib/icons'
 
 const styles = {
   container: css({

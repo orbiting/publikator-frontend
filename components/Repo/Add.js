@@ -27,7 +27,7 @@ import {
 import gql from 'graphql-tag'
 import { compose, graphql } from 'react-apollo'
 import { withRouter } from 'next/router'
-import { InfoOutlineIcon, SearchIcon } from '@project-r/styleguide/icons'
+import { InfoOutlineIcon, SearchIcon } from '../../lib/icons'
 
 const getTemplateRepos = gql`
   query templateListSearch {

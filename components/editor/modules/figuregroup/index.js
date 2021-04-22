@@ -4,7 +4,7 @@ import React from 'react'
 import { FigureGroupButton, FigureGroupForm } from './ui'
 import { matchBlock } from '../../utils'
 import { createRemoveEmptyKeyHandler } from '../../utils/keyHandlers'
-import { GalleryIcon } from '@project-r/styleguide/icons'
+import { GalleryIcon } from '../../../../lib/icons'
 
 export const getData = data => ({
   columns: 2,

@@ -8,7 +8,7 @@ import {
   StrikethroughIcon,
   SubscriptIcon,
   SuperscriptIcon
-} from '@project-r/styleguide/icons'
+} from '../../../../lib/icons'
 
 import MarkdownSerializer from 'slate-mdast-serializer'
 

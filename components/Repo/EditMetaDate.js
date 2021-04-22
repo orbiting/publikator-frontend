@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { css } from 'glamor'
 import MaskedInput from 'react-maskedinput'
-import { EditIcon } from '@project-r/styleguide/icons'
+import { EditIcon } from '../../lib/icons'
 
 import { timeParse, timeFormat } from 'd3-time-format'
 import { compose, graphql } from 'react-apollo'

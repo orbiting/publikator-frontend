@@ -4,7 +4,7 @@ import { parse } from '@orbiting/remark-preset'
 import { Block, Inline } from 'slate'
 
 import { Label } from '@project-r/styleguide'
-import { InsertVarIcon } from '@project-r/styleguide/icons'
+import { InsertVarIcon } from '../../../../lib/icons'
 import MetaForm from '../../utils/MetaForm'
 import withT from '../../../../lib/withT'
 

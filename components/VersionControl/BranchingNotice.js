@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Subscription } from 'react-apollo'
 
 import { Button, colors } from '@project-r/styleguide'
-import { NewerVersionIcon } from '@project-r/styleguide/icons'
+import { NewerVersionIcon } from '../../lib/icons'
 import { repoSubscription } from './index'
 import { Link } from '../../lib/routes'
 

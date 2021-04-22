@@ -1,5 +1,5 @@
 import React from 'react'
-import { LockIcon, PublicIcon } from '@project-r/styleguide/icons'
+import { LockIcon, PublicIcon } from '../../lib/icons'
 import { renderMdast } from 'mdast-react-render'
 import { matchType } from 'mdast-react-render/lib/utils'
 

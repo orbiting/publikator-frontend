@@ -2,7 +2,7 @@ import App from 'next/app'
 import React from 'react'
 import { ApolloProvider } from 'react-apollo'
 import Head from 'next/head'
-import { IconContextProvider } from '@project-r/styleguide/icons'
+import { IconContextProvider } from '../lib/icons'
 import withApolloClient from '../lib/apollo/withApolloClient'
 import Track from '../components/Track'
 

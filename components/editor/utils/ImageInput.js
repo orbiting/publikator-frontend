@@ -2,7 +2,7 @@ import React from 'react'
 import { css } from 'glamor'
 import { Label } from '@project-r/styleguide'
 import withT from '../../../lib/withT'
-import { CloseIcon } from '@project-r/styleguide/icons'
+import { CloseIcon } from '../../../lib/icons'
 
 const styles = {
   label: css({

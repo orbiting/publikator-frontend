@@ -18,7 +18,7 @@ import {
   Checkbox
 } from '@project-r/styleguide'
 import { Router } from '../../lib/routes'
-import { CircleFilledIcon, InfoOutlineIcon } from '@project-r/styleguide/icons'
+import { CircleFilledIcon, InfoOutlineIcon } from '../../lib/icons'
 import { Controlled as CodeMirror } from 'react-codemirror2'
 import {
   UncommittedChanges,

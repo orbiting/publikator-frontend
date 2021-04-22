@@ -1,6 +1,6 @@
 import React from 'react'
 import { useColorContext, plainButtonRule } from '@project-r/styleguide'
-import { DarkmodeIcon } from '@project-r/styleguide/icons'
+import { DarkmodeIcon } from '../../lib/icons'
 
 function DarkmodeToggle({ previewDarkmode, onToggle }) {
   const [colorScheme] = useColorContext()
