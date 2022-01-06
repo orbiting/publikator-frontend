@@ -47,7 +47,7 @@ Irland,0.236,0
       type: 'Bar',
       color: 'type',
       colorSort: 'none',
-      numberFormat: '%',
+      numberFormat: '.0%',
       sort: 'none',
       column: 'type',
       y: 'category',
@@ -67,7 +67,7 @@ Pädagogik und Sozialkompetenz,Individuelle berufsbezogene Weiterbildung,0.17
     screenshot: '/static/charts/filled-bars.png',
     config: {
       type: 'Bar',
-      numberFormat: '%',
+      numberFormat: '.0%',
       color: 'concern',
       colorRange: 'diverging2',
       colorLegend: true,
@@ -133,7 +133,7 @@ Energieversorgung,8210,6873,10182
       },
       xTicks: [1990, 2000, 2010, 2016],
       yTicks: [10000000000, 5000000000, 0, -5000000000, -10000000000],
-      numberFormat: '.3s'
+      numberFormat: 's'
     },
     values: `
 year,value,type
@@ -204,7 +204,7 @@ age,date,value
       type: 'TimeBar',
       color: 'gas',
       unit: 'Tonnen',
-      numberFormat: '.3s',
+      numberFormat: 's',
       xAnnotations: [
         {
           x1: '2008',
@@ -380,7 +380,7 @@ year,category,value
       type: 'Line',
       unit: 'Jahre',
       numberFormat: '.1f',
-      zero: false,
+      zero: true,
       colorRange: ['#C40046', '#F2BF18', '#F28502'],
       color: 'gender'
     },
