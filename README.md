@@ -1,4 +1,6 @@
-# Publikator Frontend
+# [DEPRECATED] Publikator Frontend
+
+⚠️ This repository together with others has been merged into the [republik/plattform](https://github.com/republik/plattform) monorepo. Let's continue the journey there. ⚠️
 
 A CMS prototype: an Editor implemented with [Slate](https://github.com/ianstormtaylor/slate) and saving content on GitHub via an API.
 
